@@ -1,0 +1,131 @@
+{
+  "_pinia-CYKYPu56.js": {
+    "file": "chunks/pinia-CYKYPu56.js",
+    "name": "pinia"
+  },
+  "_useAdminApi-GB7ZepRz.js": {
+    "file": "chunks/useAdminApi-GB7ZepRz.js",
+    "name": "useAdminApi"
+  },
+  "assets/js/admin/components/pages/AppointmentsPage.vue": {
+    "file": "chunks/AppointmentsPage-d1ZpxHl4.js",
+    "name": "AppointmentsPage",
+    "src": "assets/js/admin/components/pages/AppointmentsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/DashboardPage.vue": {
+    "file": "chunks/DashboardPage-Cfl--bQj.js",
+    "name": "DashboardPage",
+    "src": "assets/js/admin/components/pages/DashboardPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_useAdminApi-GB7ZepRz.js",
+      "_pinia-CYKYPu56.js"
+    ]
+  },
+  "assets/js/admin/components/pages/DepartmentsPage.vue": {
+    "file": "chunks/DepartmentsPage-D087MHAA.js",
+    "name": "DepartmentsPage",
+    "src": "assets/js/admin/components/pages/DepartmentsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/FormsPage.vue": {
+    "file": "chunks/FormsPage-CdqsU10H.js",
+    "name": "FormsPage",
+    "src": "assets/js/admin/components/pages/FormsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/NotificationsPage.vue": {
+    "file": "chunks/NotificationsPage-BENgfN5g.js",
+    "name": "NotificationsPage",
+    "src": "assets/js/admin/components/pages/NotificationsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/ProvidersPage.vue": {
+    "file": "chunks/ProvidersPage-MtkTrb3Y.js",
+    "name": "ProvidersPage",
+    "src": "assets/js/admin/components/pages/ProvidersPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/ReportsPage.vue": {
+    "file": "chunks/ReportsPage-D_MTGDhm.js",
+    "name": "ReportsPage",
+    "src": "assets/js/admin/components/pages/ReportsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/SettingsPage.vue": {
+    "file": "chunks/SettingsPage-Cn7R_dCw.js",
+    "name": "SettingsPage",
+    "src": "assets/js/admin/components/pages/SettingsPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/components/pages/WorkingHoursPage.vue": {
+    "file": "chunks/WorkingHoursPage-YcmVxegD.js",
+    "name": "WorkingHoursPage",
+    "src": "assets/js/admin/components/pages/WorkingHoursPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js",
+      "_useAdminApi-GB7ZepRz.js"
+    ]
+  },
+  "assets/js/admin/main.js": {
+    "file": "admin.js",
+    "name": "admin",
+    "src": "assets/js/admin/main.js",
+    "isEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js"
+    ],
+    "dynamicImports": [
+      "assets/js/admin/components/pages/DashboardPage.vue",
+      "assets/js/admin/components/pages/AppointmentsPage.vue",
+      "assets/js/admin/components/pages/DepartmentsPage.vue",
+      "assets/js/admin/components/pages/ProvidersPage.vue",
+      "assets/js/admin/components/pages/FormsPage.vue",
+      "assets/js/admin/components/pages/WorkingHoursPage.vue",
+      "assets/js/admin/components/pages/NotificationsPage.vue",
+      "assets/js/admin/components/pages/ReportsPage.vue",
+      "assets/js/admin/components/pages/SettingsPage.vue",
+      "assets/js/admin/components/pages/DashboardPage.vue",
+      "assets/js/admin/components/pages/AppointmentsPage.vue"
+    ]
+  },
+  "assets/js/frontend/main.js": {
+    "file": "frontend.js",
+    "name": "frontend",
+    "src": "assets/js/frontend/main.js",
+    "isEntry": true,
+    "imports": [
+      "_pinia-CYKYPu56.js"
+    ]
+  }
+}

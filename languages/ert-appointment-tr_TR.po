@@ -1,0 +1,576 @@
+# Turkish translation for WP Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0300\n"
+"Last-Translator: WP Appointment Team\n"
+"Language-Team: Turkish\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "dashboard"
+msgstr "Gösterge Paneli"
+
+msgid "appointments"
+msgstr "Randevular"
+
+msgid "departments"
+msgstr "Bölümler"
+
+msgid "providers"
+msgstr "Sağlayıcılar"
+
+msgid "forms"
+msgstr "Formlar"
+
+msgid "workingHours"
+msgstr "Çalışma Saatleri"
+
+msgid "notifications"
+msgstr "Bildirimler"
+
+msgid "reports"
+msgstr "Raporlar"
+
+msgid "settings"
+msgstr "Ayarlar"
+
+msgid "save"
+msgstr "Kaydet"
+
+msgid "cancel"
+msgstr "İptal"
+
+msgid "edit"
+msgstr "Düzenle"
+
+msgid "delete"
+msgstr "Sil"
+
+msgid "confirm"
+msgstr "Onayla"
+
+msgid "close"
+msgstr "Kapat"
+
+msgid "loading"
+msgstr "Yükleniyor"
+
+msgid "saved"
+msgstr "Kaydedildi"
+
+msgid "error"
+msgstr "Hata"
+
+msgid "name"
+msgstr "Ad"
+
+msgid "email"
+msgstr "E-posta"
+
+msgid "phone"
+msgstr "Telefon"
+
+msgid "status"
+msgstr "Durum"
+
+msgid "actions"
+msgstr "İşlemler"
+
+msgid "date"
+msgstr "Tarih"
+
+msgid "time"
+msgstr "Saat"
+
+msgid "notes"
+msgstr "Notlar"
+
+msgid "general"
+msgstr "Genel"
+
+msgid "payment"
+msgstr "Ödeme"
+
+msgid "integrations"
+msgstr "Entegrasyonlar"
+
+msgid "slotDuration"
+msgstr "Slot Süresi"
+
+msgid "bufferBefore"
+msgstr "Önceki Tampon"
+
+msgid "bufferAfter"
+msgstr "Sonraki Tampon"
+
+msgid "minNotice"
+msgstr "Min. İhbar Süresi"
+
+msgid "minNoticeDesc"
+msgstr "Rezervasyonun kaç saat öncesine kadar yapılabileceği"
+
+msgid "maxAdvance"
+msgstr "Maks. İleri Tarih"
+
+msgid "autoConfirm"
+msgstr "Otomatik Onay"
+
+msgid "currency"
+msgstr "Para Birimi"
+
+msgid "paymentRequired"
+msgstr "Ödeme Zorunlu"
+
+msgid "pending"
+msgstr "Beklemede"
+
+msgid "confirmed"
+msgstr "Onaylandı"
+
+msgid "cancelled"
+msgstr "İptal Edildi"
+
+msgid "completed"
+msgstr "Tamamlandı"
+
+msgid "newAppointment"
+msgstr "Yeni Randevu"
+
+msgid "noAppointments"
+msgstr "Randevu bulunamadı"
+
+msgid "customer"
+msgstr "Müşteri"
+
+msgid "provider"
+msgstr "Sağlayıcı"
+
+msgid "department"
+msgstr "Bölüm"
+
+msgid "newDepartment"
+msgstr "Yeni Bölüm"
+
+msgid "editDepartment"
+msgstr "Bölümü Düzenle"
+
+msgid "noDepartments"
+msgstr "Bölüm bulunamadı"
+
+msgid "newProvider"
+msgstr "Yeni Sağlayıcı"
+
+msgid "editProvider"
+msgstr "Sağlayıcıyı Düzenle"
+
+msgid "noProviders"
+msgstr "Sağlayıcı bulunamadı"
+
+msgid "newForm"
+msgstr "Yeni Form"
+
+msgid "editForm"
+msgstr "Formu Düzenle"
+
+msgid "noForms"
+msgstr "Form bulunamadı"
+
+msgid "formName"
+msgstr "Form Adı"
+
+msgid "fields"
+msgstr "Alanlar"
+
+msgid "addField"
+msgstr "Alan Ekle"
+
+msgid "fieldLabel"
+msgstr "Alan Etiketi"
+
+msgid "fieldId"
+msgstr "Alan ID"
+
+msgid "placeholder"
+msgstr "Yer Tutucu"
+
+msgid "required"
+msgstr "Zorunlu"
+
+msgid "helpText"
+msgstr "Yardım Metni"
+
+msgid "helpTextPlaceholder"
+msgstr "Kullanıcıya gösterilecek açıklama"
+
+msgid "options"
+msgstr "Seçenekler"
+
+msgid "optionLabel"
+msgstr "Seçenek Etiketi"
+
+msgid "optionValue"
+msgstr "Seçenek Değeri"
+
+msgid "addOption"
+msgstr "Seçenek Ekle"
+
+msgid "preview"
+msgstr "Önizleme"
+
+msgid "noFieldsYet"
+msgstr "Henüz alan eklenmedi. Soldan alan türü seçin."
+
+msgid "untitledField"
+msgstr "Adsız Alan"
+
+msgid "global"
+msgstr "Genel"
+
+msgid "scope"
+msgstr "Kapsam"
+
+msgid "editScope"
+msgstr "Kapsam Düzenle"
+
+msgid "globalScopeHint"
+msgstr "Bu ayarlar tüm bölüm ve sağlayıcılara uygulanır."
+
+msgid "departmentScopeHint"
+msgstr "Bu ayarlar yalnızca seçili bölüme uygulanır."
+
+msgid "providerScopeHint"
+msgstr "Bu ayarlar yalnızca seçili sağlayıcıya uygulanır."
+
+msgid "workingHoursHint"
+msgstr "Haftanın her günü için çalışma saatlerini ayarlayın."
+
+msgid "breaksHint"
+msgstr "Tekrarlayan molalar ekleyin (öğle, namaz vb.)."
+
+msgid "specialDaysHint"
+msgstr "Tatil günleri veya özel saatli günler ekleyin."
+
+msgid "breaks"
+msgstr "Molalar"
+
+msgid "specialDays"
+msgstr "Özel Günler"
+
+msgid "closed"
+msgstr "Kapalı"
+
+msgid "everyDay"
+msgstr "Her Gün"
+
+msgid "breakName"
+msgstr "Mola Adı"
+
+msgid "newBreak"
+msgstr "Yeni Mola"
+
+msgid "addBreak"
+msgstr "Mola Ekle"
+
+msgid "noBreaks"
+msgstr "Mola tanımlanmadı"
+
+msgid "specialDayName"
+msgstr "Özel Gün Adı"
+
+msgid "addSpecialDay"
+msgstr "Özel Gün Ekle"
+
+msgid "noSpecialDays"
+msgstr "Özel gün tanımlanmadı"
+
+msgid "customHours"
+msgstr "Özel Saatler"
+
+msgid "callbackUrl"
+msgstr "Callback URL"
+
+msgid "connected"
+msgstr "Bağlı"
+
+msgid "notConnected"
+msgstr "Bağlı Değil"
+
+msgid "configured"
+msgstr "Yapılandırıldı"
+
+msgid "notConfigured"
+msgstr "Yapılandırılmadı"
+
+msgid "connectGoogle"
+msgstr "Google'a Bağlan"
+
+msgid "disconnect"
+msgstr "Bağlantıyı Kes"
+
+msgid "testConnection"
+msgstr "Bağlantıyı Test Et"
+
+msgid "connectionOk"
+msgstr "Bağlantı başarılı"
+
+msgid "connectionFailed"
+msgstr "Bağlantı başarısız"
+
+msgid "autoCreateMeeting"
+msgstr "Otomatik Toplantı Oluştur"
+
+msgid "autoCreateMeetingDesc"
+msgstr "Onaylanan randevular için otomatik Zoom toplantısı oluştur"
+
+msgid "testMode"
+msgstr "Test Modu"
+
+msgid "subject"
+msgstr "Konu"
+
+msgid "body"
+msgstr "İçerik"
+
+msgid "active"
+msgstr "Aktif"
+
+msgid "event"
+msgstr "Olay"
+
+msgid "channel"
+msgstr "Kanal"
+
+msgid "recipient"
+msgstr "Alıcı"
+
+msgid "noTemplates"
+msgstr "Şablon bulunamadı"
+
+msgid "availablePlaceholders"
+msgstr "Kullanılabilir Yer Tutucular"
+
+msgid "clickToInsert"
+msgstr "Eklemek için tıklayın"
+
+msgid "templateBodyHint"
+msgstr "{{placeholder}} formatında değişken kullanabilirsiniz"
+
+msgid "deleteConfirm"
+msgstr "Silmek istediğinizden emin misiniz?"
+
+msgid "Appointment: %s"
+msgstr "Randevu: %s"
+
+msgid "Customer"
+msgstr "Müşteri"
+
+msgid "Email"
+msgstr "E-posta"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Notes"
+msgstr "Notlar"
+
+msgid "Join Zoom"
+msgstr "Zoom'a Katıl"
+
+msgid "Password"
+msgstr "Şifre"
+
+msgid "Host link"
+msgstr "Host Linki"
+
+msgid "Managed by"
+msgstr "Yönetici:"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "Randevunuz onaylandı – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "Randevunuz iptal edildi"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "Randevunuz yeniden planlandı – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "Hatırlatma: Randevunuz yarın"
+
+msgid "Your booking request has been received"
+msgstr "Rezervasyon talebiniz alındı"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "Yeni randevu oluşturuldu – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "Randevu iptal edildi – {{customer_name}}"
+
+msgid "Select a Department"
+msgstr "Bölüm Seçin"
+
+msgid "Select a Provider"
+msgstr "Sağlayıcı Seçin"
+
+msgid "Choose a Date"
+msgstr "Tarih Seçin"
+
+msgid "Choose a Time"
+msgstr "Saat Seçin"
+
+msgid "Your Details"
+msgstr "Bilgileriniz"
+
+msgid "Confirm Appointment"
+msgstr "Randevuyu Onayla"
+
+msgid "Book Now"
+msgstr "Rezervasyon Yap"
+
+msgid "No available slots on this day."
+msgstr "Bu günde müsait slot yok."
+
+msgid "Loading…"
+msgstr "Yükleniyor…"
+
+msgid "Your appointment has been booked!"
+msgstr "Randevunuz alındı!"
+
+msgid "Something went wrong. Please try again."
+msgstr "Bir hata oluştu. Lütfen tekrar deneyin."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Bu slot artık müsait değil. Başka bir seçin."
+
+msgid "Reschedule"
+msgstr "Yeniden Planla"
+
+msgid "Back"
+msgstr "Geri"
+
+msgid "Next"
+msgstr "İleri"
+
+msgid "This field is required."
+msgstr "Bu alan zorunludur."
+
+msgid "Please enter a valid email address."
+msgstr "Geçerli bir e-posta adresi girin."
+
+msgid "upcomingAppointments"
+msgstr "Yaklaşan Randevular"
+
+msgid "todayAppointments"
+msgstr "Bugünkü Randevular"
+
+msgid "thisMonth"
+msgstr "Bu Ay"
+
+msgid "searchCustomer"
+msgstr "Müşteri ara"
+
+msgid "allStatuses"
+msgstr "Tüm Durumlar"
+
+msgid "addProvider"
+msgstr "Sağlayıcı Ekle"
+
+msgid "addDepartment"
+msgstr "Bölüm Ekle"
+
+msgid "type"
+msgstr "Tür"
+
+msgid "Individual"
+msgstr "Bireysel"
+
+msgid "Unit"
+msgstr "Birim"
+
+msgid "Monday"
+msgstr "Pazartesi"
+
+msgid "Tuesday"
+msgstr "Salı"
+
+msgid "Wednesday"
+msgstr "Çarşamba"
+
+msgid "Thursday"
+msgstr "Perşembe"
+
+msgid "Friday"
+msgstr "Cuma"
+
+msgid "Saturday"
+msgstr "Cumartesi"
+
+msgid "Sunday"
+msgstr "Pazar"
+
+msgid "noUpcomingAppointments"
+msgstr "Yaklaşan randevu yok"
+
+msgid "New Booking (Pending)"
+msgstr "Yeni Rezervasyon (Beklemede)"
+
+msgid "Booking Confirmed"
+msgstr "Rezervasyon Onaylandı"
+
+msgid "Booking Cancelled"
+msgstr "Rezervasyon İptal Edildi"
+
+msgid "Booking Rescheduled"
+msgstr "Rezervasyon Yeniden Planlandı"
+
+msgid "Appointment Completed"
+msgstr "Randevu Tamamlandı"
+
+msgid "No-Show Marked"
+msgstr "Gelmedi Olarak İşaretlendi"
+
+msgid "Reminder"
+msgstr "Hatırlatma"
+
+msgid "24h Reminder"
+msgstr "24 Saatlik Hatırlatma"
+
+msgid "1h Reminder"
+msgstr "1 Saatlik Hatırlatma"
+
+msgid "Waitlist Slot Available"
+msgstr "Bekleme listesinden slot açıldı"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Connected as"
+msgstr "Bağlı hesap"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Randevuları sağlayıcı Google Takvimlerine otomatik senkronize edin."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "Google Cloud Console'da OAuth 2.0 kimlik bilgileri oluşturun."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Bu URI'yi Google OAuth izin verilen yönlendirme URI'lerine ekleyin."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "Google auth URL alınamadı. Kimlik bilgilerini kontrol edip tekrar deneyin."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Onaylanan randevular için otomatik Zoom toplantısı oluşturun."
+
+msgid "Accept online payments via PayTR."
+msgstr "PayTR ile online ödeme alın."
+
+msgid "Enter email subject…"
+msgstr "E-posta konusunu girin…"
+
+msgid "This feature requires WP Appointment Pro."
+msgstr "Bu özellik WP Appointment Pro gerektirir."

@@ -1,0 +1,549 @@
+# Copyright (C) 2025 WP Appointment
+# This file is distributed under the same license as the WP Appointment plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Appointment 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/ert-appointment/issues\n"
+"POT-Creation-Date: 2025-06-01 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: WP Appointment POT Generator\n"
+"X-Domain: ert-appointment\n"
+
+msgid "dashboard"
+msgstr ""
+
+msgid "appointments"
+msgstr ""
+
+msgid "departments"
+msgstr ""
+
+msgid "providers"
+msgstr ""
+
+msgid "forms"
+msgstr ""
+
+msgid "workingHours"
+msgstr ""
+
+msgid "notifications"
+msgstr ""
+
+msgid "reports"
+msgstr ""
+
+msgid "settings"
+msgstr ""
+
+msgid "save"
+msgstr ""
+
+msgid "cancel"
+msgstr ""
+
+msgid "edit"
+msgstr ""
+
+msgid "delete"
+msgstr ""
+
+msgid "confirm"
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "loading"
+msgstr ""
+
+msgid "saved"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "name"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "phone"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "actions"
+msgstr ""
+
+msgid "date"
+msgstr ""
+
+msgid "time"
+msgstr ""
+
+msgid "notes"
+msgstr ""
+
+msgid "general"
+msgstr ""
+
+msgid "payment"
+msgstr ""
+
+msgid "integrations"
+msgstr ""
+
+msgid "slotDuration"
+msgstr ""
+
+msgid "bufferBefore"
+msgstr ""
+
+msgid "bufferAfter"
+msgstr ""
+
+msgid "minNotice"
+msgstr ""
+
+msgid "minNoticeDesc"
+msgstr ""
+
+msgid "maxAdvance"
+msgstr ""
+
+msgid "autoConfirm"
+msgstr ""
+
+msgid "currency"
+msgstr ""
+
+msgid "paymentRequired"
+msgstr ""
+
+msgid "pending"
+msgstr ""
+
+msgid "confirmed"
+msgstr ""
+
+msgid "cancelled"
+msgstr ""
+
+msgid "completed"
+msgstr ""
+
+msgid "newAppointment"
+msgstr ""
+
+msgid "noAppointments"
+msgstr ""
+
+msgid "customer"
+msgstr ""
+
+msgid "provider"
+msgstr ""
+
+msgid "department"
+msgstr ""
+
+msgid "newDepartment"
+msgstr ""
+
+msgid "editDepartment"
+msgstr ""
+
+msgid "noDepartments"
+msgstr ""
+
+msgid "newProvider"
+msgstr ""
+
+msgid "editProvider"
+msgstr ""
+
+msgid "noProviders"
+msgstr ""
+
+msgid "newForm"
+msgstr ""
+
+msgid "editForm"
+msgstr ""
+
+msgid "noForms"
+msgstr ""
+
+msgid "formName"
+msgstr ""
+
+msgid "fields"
+msgstr ""
+
+msgid "addField"
+msgstr ""
+
+msgid "fieldLabel"
+msgstr ""
+
+msgid "fieldId"
+msgstr ""
+
+msgid "placeholder"
+msgstr ""
+
+msgid "required"
+msgstr ""
+
+msgid "helpText"
+msgstr ""
+
+msgid "helpTextPlaceholder"
+msgstr ""
+
+msgid "options"
+msgstr ""
+
+msgid "optionLabel"
+msgstr ""
+
+msgid "optionValue"
+msgstr ""
+
+msgid "addOption"
+msgstr ""
+
+msgid "preview"
+msgstr ""
+
+msgid "noFieldsYet"
+msgstr ""
+
+msgid "untitledField"
+msgstr ""
+
+msgid "global"
+msgstr ""
+
+msgid "scope"
+msgstr ""
+
+msgid "editScope"
+msgstr ""
+
+msgid "globalScopeHint"
+msgstr ""
+
+msgid "departmentScopeHint"
+msgstr ""
+
+msgid "providerScopeHint"
+msgstr ""
+
+msgid "workingHoursHint"
+msgstr ""
+
+msgid "breaksHint"
+msgstr ""
+
+msgid "specialDaysHint"
+msgstr ""
+
+msgid "breaks"
+msgstr ""
+
+msgid "specialDays"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "everyDay"
+msgstr ""
+
+msgid "breakName"
+msgstr ""
+
+msgid "newBreak"
+msgstr ""
+
+msgid "addBreak"
+msgstr ""
+
+msgid "noBreaks"
+msgstr ""
+
+msgid "specialDayName"
+msgstr ""
+
+msgid "addSpecialDay"
+msgstr ""
+
+msgid "noSpecialDays"
+msgstr ""
+
+msgid "customHours"
+msgstr ""
+
+msgid "callbackUrl"
+msgstr ""
+
+msgid "connected"
+msgstr ""
+
+msgid "notConnected"
+msgstr ""
+
+msgid "configured"
+msgstr ""
+
+msgid "notConfigured"
+msgstr ""
+
+msgid "connectGoogle"
+msgstr ""
+
+msgid "disconnect"
+msgstr ""
+
+msgid "testConnection"
+msgstr ""
+
+msgid "connectionOk"
+msgstr ""
+
+msgid "connectionFailed"
+msgstr ""
+
+msgid "autoCreateMeeting"
+msgstr ""
+
+msgid "autoCreateMeetingDesc"
+msgstr ""
+
+msgid "testMode"
+msgstr ""
+
+msgid "subject"
+msgstr ""
+
+msgid "body"
+msgstr ""
+
+msgid "active"
+msgstr ""
+
+msgid "event"
+msgstr ""
+
+msgid "channel"
+msgstr ""
+
+msgid "recipient"
+msgstr ""
+
+msgid "noTemplates"
+msgstr ""
+
+msgid "availablePlaceholders"
+msgstr ""
+
+msgid "clickToInsert"
+msgstr ""
+
+msgid "templateBodyHint"
+msgstr ""
+
+msgid "deleteConfirm"
+msgstr ""
+
+msgid "Appointment: %s"
+msgstr ""
+
+msgid "Customer"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Join Zoom"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Host link"
+msgstr ""
+
+msgid "Managed by"
+msgstr ""
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr ""
+
+msgid "Your appointment has been cancelled"
+msgstr ""
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr ""
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr ""
+
+msgid "Your booking request has been received"
+msgstr ""
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr ""
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr ""
+
+msgid "Select a Department"
+msgstr ""
+
+msgid "Select a Provider"
+msgstr ""
+
+msgid "Choose a Date"
+msgstr ""
+
+msgid "Choose a Time"
+msgstr ""
+
+msgid "Your Details"
+msgstr ""
+
+msgid "Confirm Appointment"
+msgstr ""
+
+msgid "Book Now"
+msgstr ""
+
+msgid "No available slots on this day."
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "Your appointment has been booked!"
+msgstr ""
+
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "This slot is no longer available. Please choose another."
+msgstr ""
+
+msgid "Reschedule"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
+msgid "Please enter a valid email address."
+msgstr ""
+
+msgid "upcomingAppointments"
+msgstr ""
+
+msgid "todayAppointments"
+msgstr ""
+
+msgid "thisMonth"
+msgstr ""
+
+msgid "searchCustomer"
+msgstr ""
+
+msgid "allStatuses"
+msgstr ""
+
+msgid "addProvider"
+msgstr ""
+
+msgid "addDepartment"
+msgstr ""
+
+msgid "type"
+msgstr ""
+
+msgid "Individual"
+msgstr ""
+
+msgid "Unit"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid "noUpcomingAppointments"
+msgstr ""
+
+msgid "New Booking (Pending)"
+msgstr ""
+
+msgid "Booking Confirmed"
+msgstr ""
+
+msgid "Booking Cancelled"
+msgstr ""
+
+msgid "Booking Rescheduled"
+msgstr ""
+
+msgid "Appointment Completed"
+msgstr ""
+
+msgid "No-Show Marked"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "24h Reminder"
+msgstr ""
+
+msgid "1h Reminder"
+msgstr ""
+
+msgid "Waitlist Slot Available"
+msgstr ""

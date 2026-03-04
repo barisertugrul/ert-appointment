@@ -1,0 +1,432 @@
+/**
+ * WP Appointment — Frontend Stylesheet
+ * BEM-like naming: .erta-{block}___{element}--{modifier}
+ */
+
+/* ── Variables ───────────────────────────────────────────────────────────── */
+:root {
+  --erta-primary:      #2563eb;
+  --erta-primary-dark: #1d4ed8;
+  --erta-danger:       #dc2626;
+  --erta-success:      #16a34a;
+  --erta-warning:      #d97706;
+  --erta-gray-50:      #f9fafb;
+  --erta-gray-100:     #f3f4f6;
+  --erta-gray-200:     #e5e7eb;
+  --erta-gray-500:     #6b7280;
+  --erta-gray-800:     #1f2937;
+  --erta-radius:       8px;
+  --erta-shadow:       0 2px 8px rgba(0,0,0,.08);
+  --erta-transition:   .18s ease;
+}
+
+/* ── Booking Wizard ───────────────────────────────────────────────────────── */
+.erta-booking-wizard {
+  max-width: 680px;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+/* ── Steps Progress ──────────────────────────────────────────────────────── */
+.erta-steps {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.erta-step {
+  flex: 1;
+  height: 4px;
+  background: var(--erta-gray-200);
+  border-radius: 4px;
+  transition: background var(--erta-transition);
+}
+
+.erta-step--active, .erta-step--completed {
+  background: var(--erta-primary);
+}
+
+/* ── Step Panels ─────────────────────────────────────────────────────────── */
+.erta-step-panel {
+  animation: erta-fade-in .22s ease;
+}
+
+@keyframes erta-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.erta-step-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--erta-gray-800);
+  margin: 0 0 16px;
+}
+
+.erta-step-subtitle {
+  color: var(--erta-gray-500);
+  margin: -10px 0 16px;
+  font-size: .9rem;
+}
+
+/* ── Card Lists (departments / providers) ────────────────────────────────── */
+.erta-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.erta-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  background: #fff;
+  border: 2px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--erta-transition), box-shadow var(--erta-transition);
+}
+
+.erta-card:hover {
+  border-color: var(--erta-primary);
+  box-shadow: var(--erta-shadow);
+}
+
+.erta-card--provider { flex-direction: row; align-items: flex-start; }
+
+.erta-card__avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.erta-card__name { font-weight: 600; color: var(--erta-gray-800); }
+.erta-card__desc { font-size: .85rem; color: var(--erta-gray-500); }
+
+/* ── Calendar ────────────────────────────────────────────────────────────── */
+.erta-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.erta-calendar-month {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.erta-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.erta-calendar-dow {
+  text-align: center;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--erta-gray-500);
+  padding: 4px 0;
+}
+
+.erta-calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  font-size: .9rem;
+  cursor: pointer;
+  background: transparent;
+  transition: background var(--erta-transition), color var(--erta-transition);
+}
+
+.erta-calendar-cell--empty { pointer-events: none; }
+
+.erta-calendar-cell--available {
+  background: #dbeafe;
+  color: var(--erta-primary);
+  font-weight: 600;
+}
+
+.erta-calendar-cell--available:hover,
+.erta-calendar-cell--selected {
+  background: var(--erta-primary);
+  color: #fff;
+}
+
+.erta-calendar-cell--unavailable {
+  color: var(--erta-gray-200);
+  cursor: not-allowed;
+}
+
+.erta-calendar-cell--today {
+  outline: 2px solid var(--erta-primary);
+  outline-offset: 1px;
+}
+
+/* ── Slots ───────────────────────────────────────────────────────────────── */
+.erta-slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.erta-slot {
+  padding: 8px 16px;
+  border: 2px solid var(--erta-gray-200);
+  border-radius: 6px;
+  background: #fff;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: all var(--erta-transition);
+}
+
+.erta-slot:hover { border-color: var(--erta-primary); color: var(--erta-primary); }
+.erta-slot--selected { background: var(--erta-primary); border-color: var(--erta-primary); color: #fff; }
+.erta-slot:disabled { opacity: .4; cursor: not-allowed; }
+
+.erta-no-slots {
+  padding: 20px;
+  text-align: center;
+  color: var(--erta-gray-500);
+  background: var(--erta-gray-50);
+  border-radius: var(--erta-radius);
+}
+
+/* ── Form ────────────────────────────────────────────────────────────────── */
+.erta-form { display: flex; flex-direction: column; gap: 16px; }
+
+.erta-form-field { display: flex; flex-direction: column; gap: 4px; }
+
+.erta-form-label {
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--erta-gray-800);
+}
+
+.erta-req { color: var(--erta-danger); margin-left: 2px; }
+
+.erta-input {
+  padding: 10px 12px;
+  border: 1.5px solid var(--erta-gray-200);
+  border-radius: 6px;
+  font-size: .95rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color var(--erta-transition);
+}
+
+.erta-input:focus { outline: none; border-color: var(--erta-primary); }
+.erta-input--error { border-color: var(--erta-danger); }
+
+.erta-field-error { font-size: .8rem; color: var(--erta-danger); }
+
+.erta-datetime-badge {
+  display: inline-flex;
+  padding: 8px 14px;
+  background: #dbeafe;
+  color: var(--erta-primary);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.erta-check-label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+
+/* ── Summary bar ─────────────────────────────────────────────────────────── */
+.erta-summary-bar {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--erta-gray-50);
+  border-radius: var(--erta-radius);
+  font-size: .875rem;
+  color: var(--erta-gray-800);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.erta-step-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.erta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-size: .95rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all var(--erta-transition);
+}
+
+.erta-btn:disabled { opacity: .5; cursor: not-allowed; }
+.erta-btn--primary { background: var(--erta-primary); color: #fff; }
+.erta-btn--primary:hover:not(:disabled) { background: var(--erta-primary-dark); }
+.erta-btn--ghost { background: transparent; border: 1.5px solid var(--erta-gray-200); color: var(--erta-gray-800); }
+.erta-btn--ghost:hover { border-color: var(--erta-gray-500); }
+.erta-btn--danger { background: var(--erta-danger); color: #fff; }
+.erta-btn--secondary { background: var(--erta-gray-100); color: var(--erta-gray-800); }
+.erta-btn--sm { padding: 6px 14px; font-size: .85rem; }
+
+/* ── Success step ────────────────────────────────────────────────────────── */
+.erta-step-success { text-align: center; padding: 32px 16px; }
+.erta-success-icon { font-size: 3rem; margin-bottom: 16px; }
+.erta-success-title { font-size: 1.4rem; margin: 0 0 12px; color: var(--erta-success); }
+.erta-success-details {
+  background: var(--erta-gray-50);
+  border-radius: var(--erta-radius);
+  padding: 16px;
+  margin: 20px 0;
+  text-align: left;
+}
+.erta-detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--erta-gray-200); }
+.erta-detail-row:last-child { border-bottom: none; }
+.erta-detail-label { color: var(--erta-gray-500); }
+.erta-detail-value { font-weight: 500; }
+.erta-success-email-note { font-size: .85rem; color: var(--erta-gray-500); margin-top: 12px; }
+
+/* ── Badges ──────────────────────────────────────────────────────────────── */
+.erta-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.erta-badge--pending     { background: #fef3c7; color: #92400e; }
+.erta-badge--confirmed   { background: #d1fae5; color: #065f46; }
+.erta-badge--cancelled   { background: #fee2e2; color: #991b1b; }
+.erta-badge--completed   { background: #e0e7ff; color: #3730a3; }
+.erta-badge--rescheduled { background: #fce7f3; color: #9d174d; }
+.erta-badge--no-show     { background: var(--erta-gray-100); color: var(--erta-gray-500); }
+
+/* ── My Appointments ─────────────────────────────────────────────────────── */
+.erta-section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; }
+
+.erta-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--erta-gray-200); }
+.erta-tab {
+  padding: 8px 20px;
+  border: none;
+  background: none;
+  font-size: .9rem;
+  cursor: pointer;
+  color: var(--erta-gray-500);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--erta-transition);
+}
+.erta-tab--active { color: var(--erta-primary); border-bottom-color: var(--erta-primary); font-weight: 600; }
+
+.erta-appt-list { display: flex; flex-direction: column; gap: 12px; }
+
+.erta-appt-card {
+  border: 1.5px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  padding: 16px;
+  background: #fff;
+}
+
+.erta-appt-card__header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.erta-appt-card__date { font-weight: 600; }
+.erta-appt-card__time { color: var(--erta-gray-500); }
+.erta-appt-card__provider { margin: 0; color: var(--erta-gray-500); font-size: .9rem; }
+.erta-appt-card__actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ── Modal ───────────────────────────────────────────────────────────────── */
+.erta-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.erta-modal {
+  background: #fff;
+  border-radius: var(--erta-radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.erta-modal h4 { margin: 0; font-size: 1.1rem; }
+.erta-modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ── Loading / Spinner ───────────────────────────────────────────────────── */
+.erta-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  color: var(--erta-gray-500);
+  justify-content: center;
+}
+
+.erta-spinner {
+  display: inline-block;
+  width: 20px; height: 20px;
+  border: 2px solid var(--erta-gray-200);
+  border-top-color: var(--erta-primary);
+  border-radius: 50%;
+  animation: erta-spin .7s linear infinite;
+}
+
+.erta-spinner--sm { width: 14px; height: 14px; }
+
+@keyframes erta-spin { to { transform: rotate(360deg); } }
+
+/* ── Alerts ──────────────────────────────────────────────────────────────── */
+.erta-alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .9rem;
+  margin-bottom: 16px;
+}
+
+.erta-alert--error { background: #fee2e2; color: #991b1b; }
+.erta-alert__close { border: none; background: none; cursor: pointer; font-size: 1.1rem; }
+
+.erta-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--erta-gray-500);
+  background: var(--erta-gray-50);
+  border-radius: var(--erta-radius);
+}
+
+/* ── Loading placeholder (before Vue mounts) ─────────────────────────────── */
+.erta-loading-placeholder {
+  padding: 24px;
+  color: var(--erta-gray-500);
+  text-align: center;
+  animation: erta-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes erta-pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }

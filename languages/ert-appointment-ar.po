@@ -1,0 +1,492 @@
+# Arabic translation for WP Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0300\n"
+"Last-Translator: WP Appointment Team\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "dashboard"
+msgstr "لوحة التحكم"
+
+msgid "appointments"
+msgstr "المواعيد"
+
+msgid "departments"
+msgstr "الأقسام"
+
+msgid "providers"
+msgstr "مقدمو الخدمة"
+
+msgid "forms"
+msgstr "النماذج"
+
+msgid "workingHours"
+msgstr "ساعات العمل"
+
+msgid "notifications"
+msgstr "الإشعارات"
+
+msgid "reports"
+msgstr "التقارير"
+
+msgid "settings"
+msgstr "الإعدادات"
+
+msgid "save"
+msgstr "حفظ"
+
+msgid "cancel"
+msgstr "إلغاء"
+
+msgid "edit"
+msgstr "تعديل"
+
+msgid "delete"
+msgstr "حذف"
+
+msgid "confirm"
+msgstr "تأكيد"
+
+msgid "close"
+msgstr "إغلاق"
+
+msgid "loading"
+msgstr "جارٍ التحميل"
+
+msgid "saved"
+msgstr "تم الحفظ"
+
+msgid "error"
+msgstr "خطأ"
+
+msgid "name"
+msgstr "الاسم"
+
+msgid "email"
+msgstr "البريد الإلكتروني"
+
+msgid "phone"
+msgstr "الهاتف"
+
+msgid "status"
+msgstr "الحالة"
+
+msgid "actions"
+msgstr "الإجراءات"
+
+msgid "date"
+msgstr "التاريخ"
+
+msgid "time"
+msgstr "الوقت"
+
+msgid "notes"
+msgstr "ملاحظات"
+
+msgid "general"
+msgstr "عام"
+
+msgid "payment"
+msgstr "الدفع"
+
+msgid "integrations"
+msgstr "التكاملات"
+
+msgid "slotDuration"
+msgstr "مدة الفترة"
+
+msgid "bufferBefore"
+msgstr "وقت التحضير قبل"
+
+msgid "bufferAfter"
+msgstr "وقت التحضير بعد"
+
+msgid "minNotice"
+msgstr "الحد الأدنى للإشعار"
+
+msgid "minNoticeDesc"
+msgstr "كم ساعة مسبقاً يمكن حجز موعد"
+
+msgid "maxAdvance"
+msgstr "أقصى مدة للحجز المسبق"
+
+msgid "autoConfirm"
+msgstr "التأكيد التلقائي"
+
+msgid "currency"
+msgstr "العملة"
+
+msgid "paymentRequired"
+msgstr "الدفع مطلوب"
+
+msgid "pending"
+msgstr "قيد الانتظار"
+
+msgid "confirmed"
+msgstr "مؤكد"
+
+msgid "cancelled"
+msgstr "ملغى"
+
+msgid "completed"
+msgstr "مكتمل"
+
+msgid "newAppointment"
+msgstr "موعد جديد"
+
+msgid "noAppointments"
+msgstr "لا توجد مواعيد"
+
+msgid "customer"
+msgstr "العميل"
+
+msgid "provider"
+msgstr "مقدم الخدمة"
+
+msgid "department"
+msgstr "القسم"
+
+msgid "newDepartment"
+msgstr "قسم جديد"
+
+msgid "editDepartment"
+msgstr "تعديل القسم"
+
+msgid "noDepartments"
+msgstr "لا توجد أقسام"
+
+msgid "newProvider"
+msgstr "مقدم خدمة جديد"
+
+msgid "editProvider"
+msgstr "تعديل مقدم الخدمة"
+
+msgid "noProviders"
+msgstr "لا يوجد مقدمو خدمة"
+
+msgid "newForm"
+msgstr "نموذج جديد"
+
+msgid "editForm"
+msgstr "تعديل النموذج"
+
+msgid "noForms"
+msgstr "لا توجد نماذج"
+
+msgid "formName"
+msgstr "اسم النموذج"
+
+msgid "fields"
+msgstr "الحقول"
+
+msgid "addField"
+msgstr "إضافة حقل"
+
+msgid "fieldLabel"
+msgstr "تسمية الحقل"
+
+msgid "fieldId"
+msgstr "معرّف الحقل"
+
+msgid "placeholder"
+msgstr "نص توضيحي"
+
+msgid "required"
+msgstr "مطلوب"
+
+msgid "helpText"
+msgstr "نص المساعدة"
+
+msgid "helpTextPlaceholder"
+msgstr "وصف يظهر للمستخدم"
+
+msgid "options"
+msgstr "الخيارات"
+
+msgid "optionLabel"
+msgstr "تسمية الخيار"
+
+msgid "optionValue"
+msgstr "قيمة الخيار"
+
+msgid "addOption"
+msgstr "إضافة خيار"
+
+msgid "preview"
+msgstr "معاينة"
+
+msgid "noFieldsYet"
+msgstr "لا توجد حقول بعد. اختر نوعاً من اليسار."
+
+msgid "untitledField"
+msgstr "حقل بدون عنوان"
+
+msgid "global"
+msgstr "عام"
+
+msgid "scope"
+msgstr "النطاق"
+
+msgid "editScope"
+msgstr "تعديل النطاق"
+
+msgid "globalScopeHint"
+msgstr "تنطبق هذه الإعدادات على جميع الأقسام ومقدمي الخدمة."
+
+msgid "departmentScopeHint"
+msgstr "تنطبق هذه الإعدادات على القسم المحدد فقط."
+
+msgid "providerScopeHint"
+msgstr "تنطبق هذه الإعدادات على مقدم الخدمة المحدد فقط."
+
+msgid "workingHoursHint"
+msgstr "حدد ساعات العمل لكل يوم من أيام الأسبوع."
+
+msgid "breaksHint"
+msgstr "أضف استراحات متكررة (غداء، إلخ)."
+
+msgid "specialDaysHint"
+msgstr "أضف أيام العطل أو الأيام ذات الساعات الخاصة."
+
+msgid "breaks"
+msgstr "الاستراحات"
+
+msgid "specialDays"
+msgstr "الأيام الخاصة"
+
+msgid "closed"
+msgstr "مغلق"
+
+msgid "everyDay"
+msgstr "كل يوم"
+
+msgid "breakName"
+msgstr "اسم الاستراحة"
+
+msgid "newBreak"
+msgstr "استراحة جديدة"
+
+msgid "addBreak"
+msgstr "إضافة استراحة"
+
+msgid "noBreaks"
+msgstr "لا توجد استراحات محددة"
+
+msgid "specialDayName"
+msgstr "اسم اليوم الخاص"
+
+msgid "addSpecialDay"
+msgstr "إضافة يوم خاص"
+
+msgid "noSpecialDays"
+msgstr "لا توجد أيام خاصة محددة"
+
+msgid "customHours"
+msgstr "ساعات مخصصة"
+
+msgid "callbackUrl"
+msgstr "رابط الاستجابة"
+
+msgid "connected"
+msgstr "متصل"
+
+msgid "notConnected"
+msgstr "غير متصل"
+
+msgid "configured"
+msgstr "مُهيَّأ"
+
+msgid "notConfigured"
+msgstr "غير مُهيَّأ"
+
+msgid "connectGoogle"
+msgstr "ربط بـ Google"
+
+msgid "disconnect"
+msgstr "قطع الاتصال"
+
+msgid "testConnection"
+msgstr "اختبار الاتصال"
+
+msgid "connectionOk"
+msgstr "الاتصال ناجح"
+
+msgid "connectionFailed"
+msgstr "فشل الاتصال"
+
+msgid "autoCreateMeeting"
+msgstr "إنشاء اجتماع تلقائياً"
+
+msgid "autoCreateMeetingDesc"
+msgstr "إنشاء اجتماع Zoom تلقائياً للمواعيد المؤكدة"
+
+msgid "testMode"
+msgstr "وضع الاختبار"
+
+msgid "subject"
+msgstr "الموضوع"
+
+msgid "body"
+msgstr "المحتوى"
+
+msgid "active"
+msgstr "نشط"
+
+msgid "event"
+msgstr "الحدث"
+
+msgid "channel"
+msgstr "القناة"
+
+msgid "recipient"
+msgstr "المستلم"
+
+msgid "noTemplates"
+msgstr "لا توجد قوالب"
+
+msgid "availablePlaceholders"
+msgstr "المتغيرات المتاحة"
+
+msgid "clickToInsert"
+msgstr "انقر للإدراج"
+
+msgid "templateBodyHint"
+msgstr "استخدم متغيرات بتنسيق {{متغير}}"
+
+msgid "deleteConfirm"
+msgstr "هل أنت متأكد من الحذف؟"
+
+msgid "Appointment: %s"
+msgstr "موعد: %s"
+
+msgid "Customer"
+msgstr "العميل"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Phone"
+msgstr "الهاتف"
+
+msgid "Notes"
+msgstr "ملاحظات"
+
+msgid "Join Zoom"
+msgstr "الانضمام إلى Zoom"
+
+msgid "Password"
+msgstr "كلمة المرور"
+
+msgid "Host link"
+msgstr "رابط المضيف"
+
+msgid "Managed by"
+msgstr "تتم إدارته بواسطة"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "تم تأكيد موعدك – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "تم إلغاء موعدك"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "تم إعادة جدولة موعدك – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "تذكير: موعدك غداً"
+
+msgid "Your booking request has been received"
+msgstr "تم استلام طلب الحجز"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "موعد جديد محجوز – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "تم إلغاء الموعد – {{customer_name}}"
+
+msgid "Select a Department"
+msgstr "اختر القسم"
+
+msgid "Select a Provider"
+msgstr "اختر مقدم الخدمة"
+
+msgid "Choose a Date"
+msgstr "اختر تاريخاً"
+
+msgid "Choose a Time"
+msgstr "اختر وقتاً"
+
+msgid "Your Details"
+msgstr "بياناتك"
+
+msgid "Confirm Appointment"
+msgstr "تأكيد الموعد"
+
+msgid "Book Now"
+msgstr "احجز الآن"
+
+msgid "No available slots on this day."
+msgstr "لا توجد مواعيد متاحة في هذا اليوم."
+
+msgid "Loading…"
+msgstr "جارٍ التحميل…"
+
+msgid "Your appointment has been booked!"
+msgstr "تم حجز موعدك!"
+
+msgid "Something went wrong. Please try again."
+msgstr "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "هذا الموعد لم يعد متاحاً. يرجى اختيار آخر."
+
+msgid "Reschedule"
+msgstr "إعادة الجدولة"
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Next"
+msgstr "التالي"
+
+msgid "This field is required."
+msgstr "هذا الحقل مطلوب."
+
+msgid "Please enter a valid email address."
+msgstr "يرجى إدخال بريد إلكتروني صحيح."
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Connected as"
+msgstr "متصل كـ"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "مزامنة المواعيد تلقائياً مع تقويم Google للمزود."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "أنشئ بيانات اعتماد OAuth 2.0 في Google Cloud Console."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "أضف هذا URI إلى عناوين إعادة التوجيه المسموح بها في Google OAuth."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "تعذر الحصول على رابط مصادقة Google. تحقق من بيانات الاعتماد."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "إنشاء اجتماعات Zoom تلقائياً للمواعيد المؤكدة."
+
+msgid "Accept online payments via PayTR."
+msgstr "قبول المدفوعات الإلكترونية عبر PayTR."
+
+msgid "Enter email subject…"
+msgstr "أدخل موضوع البريد الإلكتروني…"
+
+msgid "This feature requires WP Appointment Pro."
+msgstr "هذه الميزة تتطلب WP Appointment Pro."

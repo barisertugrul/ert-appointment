@@ -1,0 +1,230 @@
+# ERT Appointment – WordPress Randevu Eklentisi
+# Cursor AI Kuralları
+
+## Proje Kimliği
+- Ürün: ERT Appointment (Lite + Pro)
+- Tür: WordPress Plugin (Freemium)
+- PHP: 8.1+, WordPress: 6.0+
+- Lisans Sistemi: ERT License Server + ERT License Client
+
+---
+
+## Mimari & Yapı
+
+### Dosya Organizasyonu (Güncel)
+```
+ert-appointment/
+├── ert-appointment.php          # Ana plugin dosyası (header + bootstrap, sabitler + autoloader)
+├── src/
+│   ├── Plugin.php               # Merkez plugin sınıfı, container + hook kayıtları
+│   ├── Container.php            # Basit DI container
+│   ├── Core/
+│   │   ├── Installer.php        # Aktivasyon, roller, veritabanı tabloları
+│   │   ├── Assets.php           # Admin / public script ve stil enqueue
+│   │   ├── Shortcodes.php       # Shortcode kayıtları
+│   │   └── RestApiRegistrar.php # REST API route ve controller kayıtları
+│   ├── Admin/
+│   │   └── AdminMenu.php        # Yönetici menüsü (Vue admin SPA shell)
+│   ├── Provider/
+│   │   └── ProviderMenu.php     # Sağlayıcı rolüne özel menü
+│   ├── Settings/
+│   │   ├── SettingsManager.php  # Ayar okuma/yazma, cache
+│   │   └── ResolvedConfig.php   # Çözümlenmiş ayar nesnesi
+│   ├── Domain/
+│   │   ├── Appointment/         # Randevu entity, service ve repository arayüzleri
+│   │   ├── Department/          # Departman domain modeli
+│   │   ├── Provider/            # Sağlayıcı domain modeli
+│   │   ├── Schedule/            # Slot üretimi ve uygunluk
+│   │   └── Notification/        # Bildirim servisi, şablonlar ve kanallar
+│   ├── Infrastructure/
+│   │   ├── Cache/               # Transient tabanlı cache implementation
+│   │   └── Repositories/        # WP_DB tabanlı repository implementasyonları
+│   └── Api/
+│       └── Controllers/         # REST API controller sınıfları (admin + public)
+├── assets/
+│   └── dist/
+│       ├── admin.js             # Admin Vue SPA bundle
+│       ├── frontend.js          # Public booking widget bundle
+│       └── chunks/              # Code-splitted route chunk'ları
+├── languages/                   # .po/.mo çeviri dosyaları
+└── vendor/                      # (Varsa) Composer autoloader ve bağımlılıklar
+```
+
+### Namespace Kuralları (Güncel)
+```php
+// Tüm PHP kodu PSR-4 ile `ERTAppointment\` kök namespace'i altında.
+namespace ERTAppointment;
+namespace ERTAppointment\Admin;
+namespace ERTAppointment\Provider;
+namespace ERTAppointment\Core;
+namespace ERTAppointment\Domain\Appointment;
+namespace ERTAppointment\Domain\Department;
+namespace ERTAppointment\Domain\Provider;
+namespace ERTAppointment\Domain\Schedule;
+namespace ERTAppointment\Domain\Notification;
+namespace ERTAppointment\Infrastructure\Cache;
+namespace ERTAppointment\Infrastructure\Repositories;
+namespace ERTAppointment\Api\Controllers;
+namespace ERTAppointment\Settings;
+```
+
+---
+
+## PHP Kodlama Standartları
+
+### Genel Kurallar
+- WordPress Coding Standards (WPCS) uygula
+- PSR-12 ile uyumlu ol
+- Her public metod için PHPDoc yaz
+- Tip belirtimi kullan: `string`, `int`, `bool`, `array`, `?string`
+- `esc_html__()`, `esc_attr__()`, `wp_kses()` ile her çıktıyı escape et
+- Nonce doğrulaması: Her form submit'te `wp_verify_nonce()` kullan
+- Capability kontrolü: Her admin işlemde `current_user_can()` kontrol et
+
+### Hook Pattern
+```php
+// Doğru kullanım
+add_action( 'init', [ $this, 'method_name' ] );
+add_filter( 'the_content', [ $this, 'filter_method' ], 10, 1 );
+
+// Prefix kuralı – her hook/option/meta ERT prefix almalı
+add_action( 'ert_appointment_before_booking', $callback );
+$option = get_option( 'ert_appointment_settings' );
+update_post_meta( $post_id, '_ert_appointment_date', $value );
+```
+
+### Veritabanı
+```php
+// Her zaman $wpdb->prepare() kullan
+global $wpdb;
+$result = $wpdb->get_results(
+    $wpdb->prepare(
+        "SELECT * FROM {$wpdb->prefix}ert_appointments WHERE status = %s AND date = %s",
+        $status,
+        $date
+    )
+);
+
+// Tablo adları
+{$wpdb->prefix}ert_appointments
+{$wpdb->prefix}ert_appointment_services
+{$wpdb->prefix}ert_appointment_staff
+{$wpdb->prefix}ert_appointment_settings
+```
+
+### AJAX
+```php
+// Her AJAX handler şablonu
+public function ajax_handler(): void {
+    check_ajax_referer( 'ert_appointment_nonce', 'nonce' );
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( [ 'message' => __( 'Yetkisiz erişim.', 'ert-appointment' ) ] );
+    }
+
+    // İşlem...
+
+    wp_send_json_success( [ 'data' => $result ] );
+}
+```
+
+---
+
+## Lite / Pro Ayrımı
+
+### Lite'ta asla şunlar olmaz:
+- ERT License Client kodu
+- Pro feature çağrıları
+- lib/ klasörü
+
+### Pro feature kontrolü
+```php
+// Pro özellik kontrolü her zaman böyle yapılır
+if ( class_exists( 'ERT\Appointment\Pro\Features' ) ) {
+    // Pro özellik
+}
+
+// Lite'ta stub bırak
+apply_filters( 'ert_appointment_pro_feature_enabled', false );
+```
+
+### Lisans Entegrasyonu (Pro)
+```php
+// ERT License Client – "highest version wins" autoloader
+// lib/ert-license-client/ içinde bulunur
+// Ana plugin dosyasında:
+require_once plugin_dir_path( __FILE__ ) . 'lib/ert-license-client/autoload.php';
+ERT\LicenseClient\Autoloader::register( __FILE__, '1.2.0' );
+```
+
+---
+
+## Frontend (Admin & Public)
+
+### JavaScript
+- Vanilla JS veya jQuery (WordPress ile uyumlu)
+- `wp_localize_script()` ile PHP → JS veri aktar
+- Her script `ert_appointment_` prefix alır
+
+```javascript
+// wp_localize_script ile gelen obje
+const ertAppointment = window.ertAppointmentData || {};
+const { ajaxUrl, nonce, i18n } = ertAppointment;
+```
+
+### CSS
+- BEM metodolojisi: `.ert-appointment__element--modifier`
+- Admin stilleri: `ert-appointment-admin.css`
+- Public stiller: `ert-appointment-public.css`
+- WordPress admin renk şemasını bozmayacak şekilde scope et
+
+---
+
+## Çeviri & i18n
+```php
+// Text domain: 'ert-appointment'
+__( 'Randevu Al', 'ert-appointment' )
+esc_html__( 'Başarılı!', 'ert-appointment' )
+_n( '%d randevu', '%d randevu', $count, 'ert-appointment' )
+```
+
+---
+
+## Güvenlik Kontrol Listesi
+Her yeni özellikte şunları kontrol et:
+- [ ] Nonce doğrulaması var mı?
+- [ ] Capability kontrolü var mı?
+- [ ] Input sanitize edildi mi? (`sanitize_text_field`, `absint`, `sanitize_email`)
+- [ ] Output escape edildi mi? (`esc_html`, `esc_attr`, `esc_url`)
+- [ ] SQL prepared statement kullanıldı mı?
+- [ ] Direct file access engellendi mi? (`ABSPATH` kontrolü)
+
+```php
+// Her PHP dosyasının başı
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+```
+
+---
+
+## Hata Yönetimi
+```php
+// WP_Error kullan
+$result = new \WP_Error( 'ert_error_code', __( 'Hata mesajı', 'ert-appointment' ) );
+
+// is_wp_error kontrol et
+if ( is_wp_error( $result ) ) {
+    return $result->get_error_message();
+}
+```
+
+---
+
+## CodeCanyon Uyumluluğu
+- Plugin header'da tüm bilgiler eksiksiz
+- readme.txt dosyası güncel
+- Screenshot açıklamaları var
+- Lisans: GPL-2.0+
+- Activation/Deactivation hook'ları temiz çalışıyor
+- Uninstall.php mevcut ve veri temizliği yapıyor

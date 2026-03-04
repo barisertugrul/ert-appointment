@@ -1,0 +1,114 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ERTAppointment\Domain\Notification\Channels;
+
+use RuntimeException;
+use ERTAppointment\Domain\Notification\ChannelInterface;
+
+/**
+ * Email delivery channel using wp_mail().
+ * Included in Lite; SMS channel is Pro-only.
+ */
+final class EmailChannel implements ChannelInterface
+{
+    public function getName(): string
+    {
+        return 'email';
+    }
+
+    /**
+     * Sends an HTML email via wp_mail.
+     *
+     * @throws RuntimeException When wp_mail returns false.
+     */
+    public function send(string $recipient, string $subject, string $body): void
+    {
+        $fromName    = get_option('erta_email_from_name', get_bloginfo('name'));
+        $fromAddress = get_option('erta_email_from_address', get_option('admin_email'));
+
+        $headers = [
+            'Content-Type: text/html; charset=UTF-8',
+            "From: {$fromName} <{$fromAddress}>",
+        ];
+
+        /**
+         * Filter: allows customising email headers before sending.
+         *
+         * @param string[] $headers
+         * @param string   $recipient
+         * @param string   $subject
+         */
+        $headers = apply_filters('erta_email_headers', $headers, $recipient, $subject);
+
+        $htmlBody = $this->wrapInTemplate($body, $subject);
+
+        $sent = wp_mail($recipient, $subject, $htmlBody, $headers);
+
+        if (! $sent) {
+            throw new RuntimeException(
+                sprintf('wp_mail failed to deliver email to "%s".', $recipient)
+            );
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // HTML template wrapper
+    // -------------------------------------------------------------------------
+
+    /**
+     * Wraps the plain notification body in a simple, branded HTML email shell.
+     * Operators can override this by filtering 'erta_email_html_template'.
+     */
+    private function wrapInTemplate(string $body, string $subject): string
+    {
+        $siteName  = esc_html(get_bloginfo('name'));
+        $siteUrl   = esc_url(get_bloginfo('url'));
+        $bodyHtml  = nl2br(esc_html($body));
+        $year      = date('Y');
+
+        $html = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$subject}</title>
+    <style>
+        body { margin: 0; padding: 0; background: #f4f4f4; font-family: Arial, sans-serif; }
+        .wrapper { max-width: 600px; margin: 30px auto; background: #fff; border-radius: 6px; overflow: hidden; }
+        .header  { background: #2563eb; padding: 24px 32px; }
+        .header a { color: #fff; text-decoration: none; font-size: 20px; font-weight: bold; }
+        .body    { padding: 32px; color: #333; font-size: 15px; line-height: 1.7; }
+        .footer  { background: #f9f9f9; padding: 16px 32px; text-align: center;
+                   font-size: 12px; color: #999; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <a href="{$siteUrl}">{$siteName}</a>
+        </div>
+        <div class="body">
+            {$bodyHtml}
+        </div>
+        <div class="footer">
+            &copy; {$year} <a href="{$siteUrl}" style="color:#999">{$siteName}</a>.
+            All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+
+        /**
+         * Filter: override the entire HTML email template.
+         *
+         * @param string $html
+         * @param string $body    Plain body text (already nl2br'd in the default template)
+         * @param string $subject
+         */
+        return apply_filters('erta_email_html_template', $html, $body, $subject);
+    }
+}

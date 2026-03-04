@@ -1,0 +1,492 @@
+# German translation for WP Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0200\n"
+"Last-Translator: WP Appointment Team\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "dashboard"
+msgstr "Dashboard"
+
+msgid "appointments"
+msgstr "Termine"
+
+msgid "departments"
+msgstr "Abteilungen"
+
+msgid "providers"
+msgstr "Anbieter"
+
+msgid "forms"
+msgstr "Formulare"
+
+msgid "workingHours"
+msgstr "Arbeitszeiten"
+
+msgid "notifications"
+msgstr "Benachrichtigungen"
+
+msgid "reports"
+msgstr "Berichte"
+
+msgid "settings"
+msgstr "Einstellungen"
+
+msgid "save"
+msgstr "Speichern"
+
+msgid "cancel"
+msgstr "Abbrechen"
+
+msgid "edit"
+msgstr "Bearbeiten"
+
+msgid "delete"
+msgstr "Löschen"
+
+msgid "confirm"
+msgstr "Bestätigen"
+
+msgid "close"
+msgstr "Schließen"
+
+msgid "loading"
+msgstr "Lädt"
+
+msgid "saved"
+msgstr "Gespeichert"
+
+msgid "error"
+msgstr "Fehler"
+
+msgid "name"
+msgstr "Name"
+
+msgid "email"
+msgstr "E-Mail"
+
+msgid "phone"
+msgstr "Telefon"
+
+msgid "status"
+msgstr "Status"
+
+msgid "actions"
+msgstr "Aktionen"
+
+msgid "date"
+msgstr "Datum"
+
+msgid "time"
+msgstr "Uhrzeit"
+
+msgid "notes"
+msgstr "Notizen"
+
+msgid "general"
+msgstr "Allgemein"
+
+msgid "payment"
+msgstr "Zahlung"
+
+msgid "integrations"
+msgstr "Integrationen"
+
+msgid "slotDuration"
+msgstr "Slot-Dauer"
+
+msgid "bufferBefore"
+msgstr "Puffer vorher"
+
+msgid "bufferAfter"
+msgstr "Puffer nachher"
+
+msgid "minNotice"
+msgstr "Mindestvorlaufzeit"
+
+msgid "minNoticeDesc"
+msgstr "Wie viele Stunden im Voraus kann ein Termin gebucht werden"
+
+msgid "maxAdvance"
+msgstr "Max. Vorauszeitraum"
+
+msgid "autoConfirm"
+msgstr "Automatisch bestätigen"
+
+msgid "currency"
+msgstr "Währung"
+
+msgid "paymentRequired"
+msgstr "Zahlung erforderlich"
+
+msgid "pending"
+msgstr "Ausstehend"
+
+msgid "confirmed"
+msgstr "Bestätigt"
+
+msgid "cancelled"
+msgstr "Storniert"
+
+msgid "completed"
+msgstr "Abgeschlossen"
+
+msgid "newAppointment"
+msgstr "Neuer Termin"
+
+msgid "noAppointments"
+msgstr "Keine Termine gefunden"
+
+msgid "customer"
+msgstr "Kunde"
+
+msgid "provider"
+msgstr "Anbieter"
+
+msgid "department"
+msgstr "Abteilung"
+
+msgid "newDepartment"
+msgstr "Neue Abteilung"
+
+msgid "editDepartment"
+msgstr "Abteilung bearbeiten"
+
+msgid "noDepartments"
+msgstr "Keine Abteilungen gefunden"
+
+msgid "newProvider"
+msgstr "Neuer Anbieter"
+
+msgid "editProvider"
+msgstr "Anbieter bearbeiten"
+
+msgid "noProviders"
+msgstr "Keine Anbieter gefunden"
+
+msgid "newForm"
+msgstr "Neues Formular"
+
+msgid "editForm"
+msgstr "Formular bearbeiten"
+
+msgid "noForms"
+msgstr "Keine Formulare gefunden"
+
+msgid "formName"
+msgstr "Formularname"
+
+msgid "fields"
+msgstr "Felder"
+
+msgid "addField"
+msgstr "Feld hinzufügen"
+
+msgid "fieldLabel"
+msgstr "Feldbezeichnung"
+
+msgid "fieldId"
+msgstr "Feld-ID"
+
+msgid "placeholder"
+msgstr "Platzhalter"
+
+msgid "required"
+msgstr "Pflichtfeld"
+
+msgid "helpText"
+msgstr "Hilfetext"
+
+msgid "helpTextPlaceholder"
+msgstr "Beschreibung für den Benutzer"
+
+msgid "options"
+msgstr "Optionen"
+
+msgid "optionLabel"
+msgstr "Optionsbezeichnung"
+
+msgid "optionValue"
+msgstr "Optionswert"
+
+msgid "addOption"
+msgstr "Option hinzufügen"
+
+msgid "preview"
+msgstr "Vorschau"
+
+msgid "noFieldsYet"
+msgstr "Noch keine Felder. Wählen Sie links einen Feldtyp."
+
+msgid "untitledField"
+msgstr "Unbenanntes Feld"
+
+msgid "global"
+msgstr "Global"
+
+msgid "scope"
+msgstr "Bereich"
+
+msgid "editScope"
+msgstr "Bereich bearbeiten"
+
+msgid "globalScopeHint"
+msgstr "Diese Einstellungen gelten für alle Abteilungen und Anbieter."
+
+msgid "departmentScopeHint"
+msgstr "Diese Einstellungen gelten nur für die ausgewählte Abteilung."
+
+msgid "providerScopeHint"
+msgstr "Diese Einstellungen gelten nur für den ausgewählten Anbieter."
+
+msgid "workingHoursHint"
+msgstr "Legen Sie die Arbeitszeiten für jeden Wochentag fest."
+
+msgid "breaksHint"
+msgstr "Wiederkehrende Pausen hinzufügen (Mittagspause usw.)."
+
+msgid "specialDaysHint"
+msgstr "Feiertage oder Tage mit besonderen Öffnungszeiten hinzufügen."
+
+msgid "breaks"
+msgstr "Pausen"
+
+msgid "specialDays"
+msgstr "Besondere Tage"
+
+msgid "closed"
+msgstr "Geschlossen"
+
+msgid "everyDay"
+msgstr "Jeden Tag"
+
+msgid "breakName"
+msgstr "Pausenname"
+
+msgid "newBreak"
+msgstr "Neue Pause"
+
+msgid "addBreak"
+msgstr "Pause hinzufügen"
+
+msgid "noBreaks"
+msgstr "Keine Pausen definiert"
+
+msgid "specialDayName"
+msgstr "Name des besonderen Tages"
+
+msgid "addSpecialDay"
+msgstr "Besonderen Tag hinzufügen"
+
+msgid "noSpecialDays"
+msgstr "Keine besonderen Tage definiert"
+
+msgid "customHours"
+msgstr "Sonderöffnungszeiten"
+
+msgid "callbackUrl"
+msgstr "Callback-URL"
+
+msgid "connected"
+msgstr "Verbunden"
+
+msgid "notConnected"
+msgstr "Nicht verbunden"
+
+msgid "configured"
+msgstr "Konfiguriert"
+
+msgid "notConfigured"
+msgstr "Nicht konfiguriert"
+
+msgid "connectGoogle"
+msgstr "Mit Google verbinden"
+
+msgid "disconnect"
+msgstr "Trennen"
+
+msgid "testConnection"
+msgstr "Verbindung testen"
+
+msgid "connectionOk"
+msgstr "Verbindung erfolgreich"
+
+msgid "connectionFailed"
+msgstr "Verbindung fehlgeschlagen"
+
+msgid "autoCreateMeeting"
+msgstr "Meeting automatisch erstellen"
+
+msgid "autoCreateMeetingDesc"
+msgstr "Zoom-Meeting bei bestätigten Terminen automatisch erstellen"
+
+msgid "testMode"
+msgstr "Testmodus"
+
+msgid "subject"
+msgstr "Betreff"
+
+msgid "body"
+msgstr "Inhalt"
+
+msgid "active"
+msgstr "Aktiv"
+
+msgid "event"
+msgstr "Ereignis"
+
+msgid "channel"
+msgstr "Kanal"
+
+msgid "recipient"
+msgstr "Empfänger"
+
+msgid "noTemplates"
+msgstr "Keine Vorlagen gefunden"
+
+msgid "availablePlaceholders"
+msgstr "Verfügbare Platzhalter"
+
+msgid "clickToInsert"
+msgstr "Zum Einfügen klicken"
+
+msgid "templateBodyHint"
+msgstr "Variablen im Format {{platzhalter}} verwenden"
+
+msgid "deleteConfirm"
+msgstr "Sind Sie sicher, dass Sie löschen möchten?"
+
+msgid "Appointment: %s"
+msgstr "Termin: %s"
+
+msgid "Customer"
+msgstr "Kunde"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Notes"
+msgstr "Notizen"
+
+msgid "Join Zoom"
+msgstr "Zoom beitreten"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Host link"
+msgstr "Host-Link"
+
+msgid "Managed by"
+msgstr "Verwaltet von"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "Ihr Termin wurde bestätigt – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "Ihr Termin wurde storniert"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "Ihr Termin wurde verschoben – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "Erinnerung: Ihr Termin ist morgen"
+
+msgid "Your booking request has been received"
+msgstr "Ihre Buchungsanfrage wurde erhalten"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "Neuer Termin gebucht – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "Termin storniert – {{customer_name}}"
+
+msgid "Select a Department"
+msgstr "Abteilung wählen"
+
+msgid "Select a Provider"
+msgstr "Anbieter wählen"
+
+msgid "Choose a Date"
+msgstr "Datum wählen"
+
+msgid "Choose a Time"
+msgstr "Uhrzeit wählen"
+
+msgid "Your Details"
+msgstr "Ihre Angaben"
+
+msgid "Confirm Appointment"
+msgstr "Termin bestätigen"
+
+msgid "Book Now"
+msgstr "Jetzt buchen"
+
+msgid "No available slots on this day."
+msgstr "An diesem Tag sind keine Termine verfügbar."
+
+msgid "Loading…"
+msgstr "Lädt…"
+
+msgid "Your appointment has been booked!"
+msgstr "Ihr Termin wurde gebucht!"
+
+msgid "Something went wrong. Please try again."
+msgstr "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Dieser Termin ist nicht mehr verfügbar. Bitte wählen Sie einen anderen."
+
+msgid "Reschedule"
+msgstr "Umplanen"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Next"
+msgstr "Weiter"
+
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
+msgid "Please enter a valid email address."
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Connected as"
+msgstr "Verbunden als"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Termine automatisch mit Google Kalender des Anbieters synchronisieren."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "OAuth 2.0-Anmeldedaten in der Google Cloud Console erstellen."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Diese URI zu den erlaubten Weiterleitungs-URIs in Google OAuth hinzufügen."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "Google-Auth-URL konnte nicht abgerufen werden. Anmeldedaten prüfen."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Zoom-Meetings automatisch für bestätigte Termine erstellen."
+
+msgid "Accept online payments via PayTR."
+msgstr "Online-Zahlungen über PayTR akzeptieren."
+
+msgid "Enter email subject…"
+msgstr "E-Mail-Betreff eingeben…"
+
+msgid "This feature requires WP Appointment Pro."
+msgstr "Diese Funktion erfordert WP Appointment Pro."

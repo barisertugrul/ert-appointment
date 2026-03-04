@@ -1,0 +1,492 @@
+# Spanish translation for WP Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0200\n"
+"Last-Translator: WP Appointment Team\n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "dashboard"
+msgstr "Panel de control"
+
+msgid "appointments"
+msgstr "Citas"
+
+msgid "departments"
+msgstr "Departamentos"
+
+msgid "providers"
+msgstr "Proveedores"
+
+msgid "forms"
+msgstr "Formularios"
+
+msgid "workingHours"
+msgstr "Horario laboral"
+
+msgid "notifications"
+msgstr "Notificaciones"
+
+msgid "reports"
+msgstr "Informes"
+
+msgid "settings"
+msgstr "Ajustes"
+
+msgid "save"
+msgstr "Guardar"
+
+msgid "cancel"
+msgstr "Cancelar"
+
+msgid "edit"
+msgstr "Editar"
+
+msgid "delete"
+msgstr "Eliminar"
+
+msgid "confirm"
+msgstr "Confirmar"
+
+msgid "close"
+msgstr "Cerrar"
+
+msgid "loading"
+msgstr "Cargando"
+
+msgid "saved"
+msgstr "Guardado"
+
+msgid "error"
+msgstr "Error"
+
+msgid "name"
+msgstr "Nombre"
+
+msgid "email"
+msgstr "Correo electrónico"
+
+msgid "phone"
+msgstr "Teléfono"
+
+msgid "status"
+msgstr "Estado"
+
+msgid "actions"
+msgstr "Acciones"
+
+msgid "date"
+msgstr "Fecha"
+
+msgid "time"
+msgstr "Hora"
+
+msgid "notes"
+msgstr "Notas"
+
+msgid "general"
+msgstr "General"
+
+msgid "payment"
+msgstr "Pago"
+
+msgid "integrations"
+msgstr "Integraciones"
+
+msgid "slotDuration"
+msgstr "Duración del intervalo"
+
+msgid "bufferBefore"
+msgstr "Margen anterior"
+
+msgid "bufferAfter"
+msgstr "Margen posterior"
+
+msgid "minNotice"
+msgstr "Aviso mínimo"
+
+msgid "minNoticeDesc"
+msgstr "Cuántas horas de antelación se puede reservar una cita"
+
+msgid "maxAdvance"
+msgstr "Reserva máxima anticipada"
+
+msgid "autoConfirm"
+msgstr "Confirmación automática"
+
+msgid "currency"
+msgstr "Moneda"
+
+msgid "paymentRequired"
+msgstr "Pago requerido"
+
+msgid "pending"
+msgstr "Pendiente"
+
+msgid "confirmed"
+msgstr "Confirmado"
+
+msgid "cancelled"
+msgstr "Cancelado"
+
+msgid "completed"
+msgstr "Completado"
+
+msgid "newAppointment"
+msgstr "Nueva cita"
+
+msgid "noAppointments"
+msgstr "No se encontraron citas"
+
+msgid "customer"
+msgstr "Cliente"
+
+msgid "provider"
+msgstr "Proveedor"
+
+msgid "department"
+msgstr "Departamento"
+
+msgid "newDepartment"
+msgstr "Nuevo departamento"
+
+msgid "editDepartment"
+msgstr "Editar departamento"
+
+msgid "noDepartments"
+msgstr "No se encontraron departamentos"
+
+msgid "newProvider"
+msgstr "Nuevo proveedor"
+
+msgid "editProvider"
+msgstr "Editar proveedor"
+
+msgid "noProviders"
+msgstr "No se encontraron proveedores"
+
+msgid "newForm"
+msgstr "Nuevo formulario"
+
+msgid "editForm"
+msgstr "Editar formulario"
+
+msgid "noForms"
+msgstr "No se encontraron formularios"
+
+msgid "formName"
+msgstr "Nombre del formulario"
+
+msgid "fields"
+msgstr "Campos"
+
+msgid "addField"
+msgstr "Añadir campo"
+
+msgid "fieldLabel"
+msgstr "Etiqueta del campo"
+
+msgid "fieldId"
+msgstr "ID del campo"
+
+msgid "placeholder"
+msgstr "Marcador de posición"
+
+msgid "required"
+msgstr "Obligatorio"
+
+msgid "helpText"
+msgstr "Texto de ayuda"
+
+msgid "helpTextPlaceholder"
+msgstr "Descripción mostrada al usuario"
+
+msgid "options"
+msgstr "Opciones"
+
+msgid "optionLabel"
+msgstr "Etiqueta de opción"
+
+msgid "optionValue"
+msgstr "Valor de opción"
+
+msgid "addOption"
+msgstr "Añadir opción"
+
+msgid "preview"
+msgstr "Vista previa"
+
+msgid "noFieldsYet"
+msgstr "Aún no hay campos. Seleccione un tipo a la izquierda."
+
+msgid "untitledField"
+msgstr "Campo sin título"
+
+msgid "global"
+msgstr "Global"
+
+msgid "scope"
+msgstr "Ámbito"
+
+msgid "editScope"
+msgstr "Editar ámbito"
+
+msgid "globalScopeHint"
+msgstr "Estos ajustes se aplican a todos los departamentos y proveedores."
+
+msgid "departmentScopeHint"
+msgstr "Estos ajustes se aplican solo al departamento seleccionado."
+
+msgid "providerScopeHint"
+msgstr "Estos ajustes se aplican solo al proveedor seleccionado."
+
+msgid "workingHoursHint"
+msgstr "Configure el horario laboral para cada día de la semana."
+
+msgid "breaksHint"
+msgstr "Añada descansos recurrentes (almuerzo, etc.)."
+
+msgid "specialDaysHint"
+msgstr "Añada festivos o días con horario especial."
+
+msgid "breaks"
+msgstr "Descansos"
+
+msgid "specialDays"
+msgstr "Días especiales"
+
+msgid "closed"
+msgstr "Cerrado"
+
+msgid "everyDay"
+msgstr "Todos los días"
+
+msgid "breakName"
+msgstr "Nombre del descanso"
+
+msgid "newBreak"
+msgstr "Nuevo descanso"
+
+msgid "addBreak"
+msgstr "Añadir descanso"
+
+msgid "noBreaks"
+msgstr "No hay descansos definidos"
+
+msgid "specialDayName"
+msgstr "Nombre del día especial"
+
+msgid "addSpecialDay"
+msgstr "Añadir día especial"
+
+msgid "noSpecialDays"
+msgstr "No hay días especiales definidos"
+
+msgid "customHours"
+msgstr "Horario personalizado"
+
+msgid "callbackUrl"
+msgstr "URL de devolución de llamada"
+
+msgid "connected"
+msgstr "Conectado"
+
+msgid "notConnected"
+msgstr "No conectado"
+
+msgid "configured"
+msgstr "Configurado"
+
+msgid "notConfigured"
+msgstr "No configurado"
+
+msgid "connectGoogle"
+msgstr "Conectar con Google"
+
+msgid "disconnect"
+msgstr "Desconectar"
+
+msgid "testConnection"
+msgstr "Probar conexión"
+
+msgid "connectionOk"
+msgstr "Conexión exitosa"
+
+msgid "connectionFailed"
+msgstr "Error de conexión"
+
+msgid "autoCreateMeeting"
+msgstr "Crear reunión automáticamente"
+
+msgid "autoCreateMeetingDesc"
+msgstr "Crear reunión de Zoom automáticamente para citas confirmadas"
+
+msgid "testMode"
+msgstr "Modo de prueba"
+
+msgid "subject"
+msgstr "Asunto"
+
+msgid "body"
+msgstr "Contenido"
+
+msgid "active"
+msgstr "Activo"
+
+msgid "event"
+msgstr "Evento"
+
+msgid "channel"
+msgstr "Canal"
+
+msgid "recipient"
+msgstr "Destinatario"
+
+msgid "noTemplates"
+msgstr "No se encontraron plantillas"
+
+msgid "availablePlaceholders"
+msgstr "Variables disponibles"
+
+msgid "clickToInsert"
+msgstr "Haga clic para insertar"
+
+msgid "templateBodyHint"
+msgstr "Use variables en formato {{variable}}"
+
+msgid "deleteConfirm"
+msgstr "¿Está seguro de que desea eliminar?"
+
+msgid "Appointment: %s"
+msgstr "Cita: %s"
+
+msgid "Customer"
+msgstr "Cliente"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Join Zoom"
+msgstr "Unirse a Zoom"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Host link"
+msgstr "Enlace del anfitrión"
+
+msgid "Managed by"
+msgstr "Gestionado por"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "Su cita está confirmada – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "Su cita ha sido cancelada"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "Su cita ha sido reprogramada – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "Recordatorio: Su cita es mañana"
+
+msgid "Your booking request has been received"
+msgstr "Su solicitud de reserva ha sido recibida"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "Nueva cita reservada – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "Cita cancelada – {{customer_name}}"
+
+msgid "Select a Department"
+msgstr "Seleccionar departamento"
+
+msgid "Select a Provider"
+msgstr "Seleccionar proveedor"
+
+msgid "Choose a Date"
+msgstr "Elegir fecha"
+
+msgid "Choose a Time"
+msgstr "Elegir hora"
+
+msgid "Your Details"
+msgstr "Sus datos"
+
+msgid "Confirm Appointment"
+msgstr "Confirmar cita"
+
+msgid "Book Now"
+msgstr "Reservar ahora"
+
+msgid "No available slots on this day."
+msgstr "No hay horarios disponibles este día."
+
+msgid "Loading…"
+msgstr "Cargando…"
+
+msgid "Your appointment has been booked!"
+msgstr "¡Su cita ha sido reservada!"
+
+msgid "Something went wrong. Please try again."
+msgstr "Algo salió mal. Por favor, inténtelo de nuevo."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Este horario ya no está disponible. Por favor, elija otro."
+
+msgid "Reschedule"
+msgstr "Reprogramar"
+
+msgid "Back"
+msgstr "Atrás"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "This field is required."
+msgstr "Este campo es obligatorio."
+
+msgid "Please enter a valid email address."
+msgstr "Introduzca una dirección de correo electrónico válida."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Connected as"
+msgstr "Conectado como"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Sincronice automáticamente las citas con Google Calendar del proveedor."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "Cree credenciales OAuth 2.0 en Google Cloud Console."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Añada este URI a los URI de redirección permitidos en Google OAuth."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "No se pudo obtener la URL de autenticación de Google. Verifique las credenciales."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Cree reuniones de Zoom automáticamente para citas confirmadas."
+
+msgid "Accept online payments via PayTR."
+msgstr "Acepte pagos en línea a través de PayTR."
+
+msgid "Enter email subject…"
+msgstr "Introduzca el asunto del correo…"
+
+msgid "This feature requires WP Appointment Pro."
+msgstr "Esta función requiere WP Appointment Pro."
