@@ -1,6 +1,7 @@
 <template>
   <div class="erta-step-panel erta-step-form">
     <h3 class="erta-step-title">{{ t('fillDetails') }}</h3>
+    <p v-if="introText" class="erta-step-intro" v-text="introText"></p>
 
     <!-- Booking summary bar -->
     <div class="erta-summary-bar">
@@ -100,6 +101,7 @@ import { ref, computed, watch } from 'vue';
 const props = defineProps({
   form:       { type: Object,  default: null },
   summary:    { type: Object,  required: true },
+  introText:  { type: String,  default: '' },
   modelValue: { type: Object,  default: () => ({}) },
   submitting: { type: Boolean, default: false },
 });
@@ -113,6 +115,9 @@ const localData = ref({ ...props.modelValue });
 const errors    = ref({});
 
 watch(localData, (val) => emit('update:modelValue', { ...val }), { deep: true });
+watch(() => props.modelValue, (val) => {
+  localData.value = { ...(val ?? {}) };
+}, { deep: true });
 
 // Default fields used when no custom form is configured.
 const defaultFields = [

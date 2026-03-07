@@ -69,7 +69,12 @@ final class ResolvedConfig {
 	 * Returns slot duration in minutes.
 	 */
 	public function slotDuration(): int {
-		return $this->getInt( 'slot_duration', 30 );
+		$modern = $this->getInt( 'slot_duration', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		return $this->getInt( 'slot_duration_minutes', 30 );
 	}
 
 	/**
@@ -83,35 +88,93 @@ final class ResolvedConfig {
 	 * Returns the required pre-appointment buffer in minutes.
 	 */
 	public function bufferBefore(): int {
-		return $this->getInt( 'buffer_before', 0 );
+		$modern = $this->getInt( 'buffer_before', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		return $this->getInt( 'buffer_before_minutes', 0 );
 	}
 
 	/**
 	 * Returns the required post-appointment buffer in minutes.
 	 */
 	public function bufferAfter(): int {
-		return $this->getInt( 'buffer_after', 0 );
+		$modern = $this->getInt( 'buffer_after', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		return $this->getInt( 'buffer_after_minutes', 0 );
 	}
 
 	/**
 	 * Returns the minimum advance notice required to book, in minutes.
 	 */
 	public function minimumNotice(): int {
-		return $this->getInt( 'minimum_notice', 60 );
+		$modern = $this->getInt( 'minimum_notice', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		$hours = $this->getInt( 'min_notice_hours', 1 );
+		return max( 0, $hours * 60 );
 	}
 
 	/**
 	 * Returns how many days in advance a booking can be made.
 	 */
 	public function maximumAdvanceDays(): int {
-		return $this->getInt( 'maximum_advance', 60 );
+		$modern = $this->getInt( 'maximum_advance', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		return $this->getInt( 'max_advance_days', 60 );
 	}
 
 	/**
 	 * Returns the arrival buffer (how many minutes early the customer should arrive).
 	 */
 	public function arrivalBuffer(): int {
-		return $this->getInt( 'arrival_buffer', 0 );
+		$modern = $this->getInt( 'arrival_buffer', 0 );
+		if ( $modern > 0 ) {
+			return $modern;
+		}
+
+		return $this->getInt( 'arrival_buffer_minutes', 0 );
+	}
+
+	public function bookingStartDate(): string {
+		return $this->getString( 'booking_start_date', '' );
+	}
+
+	public function bookingEndDate(): string {
+		return $this->getString( 'booking_end_date', '' );
+	}
+
+	public function appointmentLocation(): string {
+		return $this->getString( 'appointment_location', '' );
+	}
+
+	public function showArrivalReminder(): bool {
+		return $this->getBool( 'show_arrival_reminder', false );
+	}
+
+	public function bookingFormIntro(): string {
+		return $this->getString( 'booking_form_intro', '' );
+	}
+
+	public function postBookingInstructions(): string {
+		return $this->getString( 'post_booking_instructions', '' );
+	}
+
+	public function allowGeneralBooking(): bool {
+		return $this->getBool( 'allow_general_booking', false );
+	}
+
+	public function generalProviderId(): int {
+		return $this->getInt( 'general_provider_id', 0 );
 	}
 
 	/**

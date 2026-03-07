@@ -9,6 +9,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 use ERTAppointment\Domain\Schedule\AvailabilityService;
+use ERTAppointment\Settings\SettingsManager;
 
 /**
  * REST controller for slot and calendar availability queries.
@@ -17,7 +18,8 @@ use ERTAppointment\Domain\Schedule\AvailabilityService;
 final class AvailabilityApiController {
 
 	public function __construct(
-		private readonly AvailabilityService $availabilityService
+		private readonly AvailabilityService $availabilityService,
+		private readonly SettingsManager $settings
 	) {}
 
 	/**
@@ -40,11 +42,13 @@ final class AvailabilityApiController {
 		}
 
 		$slots = $this->availabilityService->getAvailableSlots( $providerId, $date );
+		$config = $this->settings->resolveForProvider( $providerId );
 
 		return new WP_REST_Response(
 			array(
 				'date'  => $dateStr,
 				'slots' => array_map( fn( $slot ) => $slot->toArray(), $slots ),
+				'meta'  => $this->metaFromConfig( $config ),
 			)
 		);
 	}
@@ -78,6 +82,7 @@ final class AvailabilityApiController {
 		}
 
 		$calendar = $this->availabilityService->getAvailabilityCalendar( $providerId, $from, $to );
+		$config = $this->settings->resolveForProvider( $providerId );
 
 		return new WP_REST_Response(
 			array(
@@ -86,7 +91,22 @@ final class AvailabilityApiController {
 				'to'           => $to->format( 'Y-m-d' ),
 				// Availability map of date => available slot count.
 				'availability' => $calendar,
+				'meta'         => $this->metaFromConfig( $config ),
 			)
+		);
+	}
+
+	private function metaFromConfig( $config ): array {
+		return array(
+			'booking_start_date'       => $config->bookingStartDate(),
+			'booking_end_date'         => $config->bookingEndDate(),
+			'appointment_location'     => $config->appointmentLocation(),
+			'booking_form_intro'       => $config->bookingFormIntro(),
+			'post_booking_instructions'=> $config->postBookingInstructions(),
+			'show_arrival_reminder'    => $config->showArrivalReminder(),
+			'arrival_buffer'           => $config->arrivalBuffer(),
+			'allow_general_booking'    => $config->allowGeneralBooking(),
+			'general_provider_id'      => $config->generalProviderId(),
 		);
 	}
 }

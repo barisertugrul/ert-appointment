@@ -21,6 +21,7 @@
             <td><span class="erta-badge" :class="p.status === 'active' ? 'erta-badge--active' : 'erta-badge--inactive'">{{ statusLabel(p.status) }}</span></td>
             <td>
               <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="openForm(p)">✏️</button>
+              <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="openScopedSettings(p.id)">⚙️</button>
               <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="toggleStatus(p)">
                 {{ p.status === 'active' ? t('deactivate') : t('activate') }}
               </button>
@@ -132,5 +133,13 @@ async function toggleStatus(item) {
   const { error: err } = await api.saveProvider(payload);
   if (err) { error.value = err; return; }
   item.status = nextStatus;
+}
+
+function openScopedSettings(providerId) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('page', 'erta-settings');
+  url.searchParams.set('scope', 'provider');
+  url.searchParams.set('scope_id', String(providerId));
+  window.location.href = url.toString();
 }
 </script>

@@ -34,6 +34,10 @@
         <p class="erta-success-email-note">
           {{ t('confirmationEmailSent') }}
         </p>
+
+        <p v-if="appointmentLocation" class="erta-success-info" v-text="appointmentLocation"></p>
+        <p v-if="arrivalNotice" class="erta-success-info" v-text="arrivalNotice"></p>
+        <p v-if="postBookingInstructions" class="erta-success-info" v-text="postBookingInstructions"></p>
       </div>
 
       <button class="erta-btn erta-btn--ghost" @click="$emit('book-again')">
@@ -50,6 +54,9 @@ import { formatDateSafe, formatTimeSafe } from '../../utils/locale.js';
 const props = defineProps({
   appointment: { type: Object, default: null },
   paymentUrl:  { type: String, default: null },
+  appointmentLocation: { type: String, default: '' },
+  arrivalNotice: { type: String, default: '' },
+  postBookingInstructions: { type: String, default: '' },
 });
 
 defineEmits(['book-again']);

@@ -20,6 +20,7 @@
             <td><span class="erta-badge" :class="d.status === 'active' ? 'erta-badge--active' : 'erta-badge--inactive'">{{ statusLabel(d.status) }}</span></td>
             <td>
               <button class="erta-btn erta-btn--sm erta-btn--ghost" :disabled="!isPro" @click="openForm(d)">✏️</button>
+              <button class="erta-btn erta-btn--sm erta-btn--ghost" :disabled="!isPro" @click="openScopedSettings(d.id)">⚙️</button>
               <button class="erta-btn erta-btn--sm erta-btn--ghost" :disabled="!isPro" @click="toggleStatus(d)">
                 {{ d.status === 'active' ? t('deactivate') : t('activate') }}
               </button>
@@ -110,5 +111,13 @@ async function reloadDepartments() {
   const { data, error: err } = await api.listDepartments();
   if (err) { error.value = err; return; }
   items.value = data?.items ?? data ?? [];
+}
+
+function openScopedSettings(departmentId) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('page', 'erta-settings');
+  url.searchParams.set('scope', 'department');
+  url.searchParams.set('scope_id', String(departmentId));
+  window.location.href = url.toString();
 }
 </script>

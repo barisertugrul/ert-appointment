@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ERTAppointment\Domain\Notification;
 
 use ERTAppointment\Domain\Appointment\Appointment;
+use ERTAppointment\Settings\SettingsManager;
 
 /**
  * Dispatches notifications for appointment lifecycle events.
@@ -23,6 +24,7 @@ final class NotificationService {
 	public function __construct(
 		private readonly array $channels,
 		private readonly TemplateRenderer $templateRenderer,
+		private readonly SettingsManager $settings,
 	) {}
 
 	// -------------------------------------------------------------------------
@@ -54,6 +56,10 @@ final class NotificationService {
 				$rule['body'],
 				$this->buildContext( $appointment )
 			);
+
+			if ( ( $rule['recipient_type'] ?? '' ) === 'customer' ) {
+				$rendered = $this->appendCustomerInfo( $rendered, $appointment );
+			}
 
 			try {
 				$channel->send( $recipient, $rendered['subject'], $rendered['body'] );
@@ -125,6 +131,27 @@ final class NotificationService {
 	 * @return array<string, string>
 	 */
 	private function buildContext( Appointment $appointment ): array {
+		$config = $this->settings->resolveForProvider( $appointment->providerId );
+		$location = $config->appointmentLocation();
+		$arrivalInstructions = '';
+
+		if ( $config->showArrivalReminder() && $appointment->arrivalBufferMinutes > 0 ) {
+			if ( $location !== '' ) {
+				$arrivalInstructions = sprintf(
+					/* translators: 1: location text, 2: minutes */
+					__( 'You should be at %1$s at least %2$d minutes before your appointment.', 'ert-appointment' ),
+					$location,
+					$appointment->arrivalBufferMinutes
+				);
+			} else {
+				$arrivalInstructions = sprintf(
+					/* translators: %d: minutes */
+					__( 'You should arrive at least %d minutes before your appointment.', 'ert-appointment' ),
+					$appointment->arrivalBufferMinutes
+				);
+			}
+		}
+
 		$context = array(
 			'customer_name'       => $appointment->customerName,
 			'customer_email'      => $appointment->customerEmail,
@@ -132,7 +159,10 @@ final class NotificationService {
 			'appointment_date'    => $appointment->formattedDate( get_option( 'date_format', 'Y-m-d' ) ),
 			'appointment_time'    => $appointment->formattedTime( get_option( 'time_format', 'H:i' ) ),
 			'provider_name'       => $this->loadProviderName( $appointment->providerId ),
+			'appointment_location'=> $location,
 			'arrival_buffer'      => (string) $appointment->arrivalBufferMinutes,
+			'arrival_instructions'=> $arrivalInstructions,
+			'post_booking_instructions' => $config->postBookingInstructions(),
 			'cancellation_reason' => $appointment->cancellationReason,
 			'notes'               => $appointment->notes,
 			'site_name'           => get_bloginfo( 'name' ),
@@ -152,6 +182,33 @@ final class NotificationService {
 		 * @param \ERTAppointment\Domain\Appointment\Appointment $appointment The appointment being notified.
 		 */
 		return (array) apply_filters( 'erta_template_placeholders', $context, $appointment );
+	}
+
+	private function appendCustomerInfo( array $rendered, Appointment $appointment ): array {
+		$context = $this->buildContext( $appointment );
+		$extraLines = array();
+
+		if ( ! empty( $context['appointment_location'] ) ) {
+			$extraLines[] = sprintf(
+				/* translators: %s: appointment location */
+				__( 'Location: %s', 'ert-appointment' ),
+				$context['appointment_location']
+			);
+		}
+
+		if ( ! empty( $context['arrival_instructions'] ) ) {
+			$extraLines[] = $context['arrival_instructions'];
+		}
+
+		if ( ! empty( $context['post_booking_instructions'] ) ) {
+			$extraLines[] = $context['post_booking_instructions'];
+		}
+
+		if ( ! empty( $extraLines ) ) {
+			$rendered['body'] .= "\n\n" . implode( "\n", $extraLines );
+		}
+
+		return $rendered;
 	}
 
 	private function loadProviderName( int $providerId ): string {

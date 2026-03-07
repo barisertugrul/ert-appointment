@@ -154,7 +154,8 @@ final class Plugin {
 						$c->make( EmailChannel::class ),
 					)
 				),
-				$c->make( TemplateRenderer::class )
+				$c->make( TemplateRenderer::class ),
+				$c->make( SettingsManager::class )
 			)
 		);
 

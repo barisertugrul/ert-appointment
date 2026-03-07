@@ -47,6 +47,10 @@ final class AvailabilityService {
 			function () use ( $providerId, $date, $dateStr ) {
 				$config = $this->settings->resolveForProvider( $providerId );
 
+				if ( ! $this->isWithinBookingWindow( $date, $config ) ) {
+					return array();
+				}
+
 				// Check special-day override first.
 				$specialDay = $this->loadSpecialDay( $providerId, $date, $config );
 
@@ -99,6 +103,22 @@ final class AvailabilityService {
 				return apply_filters( 'erta_available_slots', $slots, $providerId, $dateStr );
 			}
 		);
+	}
+
+	private function isWithinBookingWindow( DateTimeImmutable $date, $config ): bool {
+		$target = $date->format( 'Y-m-d' );
+
+		$start = $config->bookingStartDate();
+		if ( $start !== '' && $target < $start ) {
+			return false;
+		}
+
+		$end = $config->bookingEndDate();
+		if ( $end !== '' && $target > $end ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

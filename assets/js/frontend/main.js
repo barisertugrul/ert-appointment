@@ -15,10 +15,14 @@ import MyAppointmentsApp from './components/MyAppointmentsApp.vue';
 const bookingEl = document.getElementById('erta-booking-app');
 if (bookingEl) {
     const pinia = createPinia();
+    const asBool = (value) => value === '1' || value === 'true';
     const app   = createApp(BookingApp, {
         preselectedDepartment: bookingEl.dataset.department || null,
         preselectedProvider:   bookingEl.dataset.provider   ? Number(bookingEl.dataset.provider) : null,
         formOverrideId:        bookingEl.dataset.form       ? Number(bookingEl.dataset.form) : null,
+        generalBooking:        asBool(bookingEl.dataset.generalBooking),
+        lockDepartment:        asBool(bookingEl.dataset.lockDepartment),
+        lockProvider:          asBool(bookingEl.dataset.lockProvider),
     });
     app.use(pinia);
     app.mount(bookingEl);

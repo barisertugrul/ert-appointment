@@ -41,6 +41,9 @@ final class Shortcodes {
 	 *  - department  : pre-select department slug
 	 *  - provider    : pre-select provider ID
 	 *  - form        : override form ID
+	 *  - general_booking : skip department/provider selection when possible
+	 *  - lock_department : prevent changing preselected department
+	 *  - lock_provider   : prevent changing preselected provider
 	 *
 	 * @param array<string, string>|string $atts
 	 */
@@ -50,6 +53,9 @@ final class Shortcodes {
 				'department' => '',
 				'provider'   => '',
 				'form'       => '',
+				'general_booking' => '0',
+				'lock_department' => '0',
+				'lock_provider'   => '0',
 			),
 			$atts,
 			'erta_booking'
@@ -65,6 +71,18 @@ final class Shortcodes {
 		}
 		if ( $atts['form'] ) {
 			$dataAttrs .= ' data-form="' . esc_attr( $atts['form'] ) . '"';
+		}
+
+		if ( ! empty( $atts['general_booking'] ) && in_array( strtolower( (string) $atts['general_booking'] ), array( '1', 'true', 'yes' ), true ) ) {
+			$dataAttrs .= ' data-general-booking="1"';
+		}
+
+		if ( ! empty( $atts['lock_department'] ) && in_array( strtolower( (string) $atts['lock_department'] ), array( '1', 'true', 'yes' ), true ) ) {
+			$dataAttrs .= ' data-lock-department="1"';
+		}
+
+		if ( ! empty( $atts['lock_provider'] ) && in_array( strtolower( (string) $atts['lock_provider'] ), array( '1', 'true', 'yes' ), true ) ) {
+			$dataAttrs .= ' data-lock-provider="1"';
 		}
 
 		ob_start();

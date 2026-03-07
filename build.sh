@@ -58,6 +58,7 @@ EXCLUDES=(
     ".gitattributes"
     ".github"
     ".cursorrules"
+    ".curssorrules"
     ".vscode"
     ".editorconfig"
     ".prettierignore"
@@ -70,6 +71,7 @@ EXCLUDES=(
     "tests"
     "*.sh"
     "phpunit.xml*"
+    "phpcs.xml*"
     "phpstan.neon*"
     "*.lock"
     "*.log"
@@ -232,8 +234,10 @@ fi
 # Güvenlik ağı: dağıtımda asla bulunmaması gereken geliştirme/artık dosyaları kaldır.
 rm -rf "${STAGE}/scripts" 2>/dev/null || true
 rm -f "${STAGE}/.cursorrules" 2>/dev/null || true
+rm -f "${STAGE}/.curssorrules" 2>/dev/null || true
 rm -f "${STAGE}/WPORG_PRECHECK.md" 2>/dev/null || true
 rm -f "${STAGE}/repomix-output.xml" 2>/dev/null || true
+rm -f "${STAGE}/phpcs.xml.dist" 2>/dev/null || true
 find "${STAGE}" -maxdepth 1 -type f \( -name "*.docx" -o -name "*.html" \) -delete 2>/dev/null || true
 
 [[ -f "${STAGE}/${MAIN_FILE}" ]] || die "Hazırlama başarısız — ${MAIN_FILE} stage'de yok"

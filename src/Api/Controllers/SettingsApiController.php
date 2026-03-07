@@ -26,12 +26,26 @@ final class SettingsApiController {
 	private const ALLOWED_KEYS = array(
 		// Scheduling
 		'slot_duration_minutes',
+		'slot_duration',
 		'buffer_before_minutes',
+		'buffer_before',
 		'buffer_after_minutes',
+		'buffer_after',
 		'min_notice_hours',
+		'minimum_notice',
 		'max_advance_days',
+		'maximum_advance',
 		'auto_confirm',
 		'arrival_buffer_minutes',
+		'arrival_buffer',
+		'booking_start_date',
+		'booking_end_date',
+		'show_arrival_reminder',
+		'allow_general_booking',
+		'general_provider_id',
+		'appointment_location',
+		'booking_form_intro',
+		'post_booking_instructions',
 
 		// Payment
 		'payment_required',

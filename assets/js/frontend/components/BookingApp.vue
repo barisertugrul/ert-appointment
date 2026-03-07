@@ -4,12 +4,12 @@
     <!-- Progress bar -->
     <div class="erta-steps" v-if="!isComplete">
       <div
-        v-for="n in store.totalSteps"
+        v-for="n in store.visualTotalSteps"
         :key="n"
         class="erta-step"
         :class="{
-          'erta-step--active':    n === store.currentStep,
-          'erta-step--completed': n < store.currentStep,
+          'erta-step--active':    n === store.visualCurrentStep,
+          'erta-step--completed': n < store.visualCurrentStep,
         }"
       >{{ n }}</div>
     </div>
@@ -28,14 +28,14 @@
 
     <!-- Step 1: Department -->
     <DepartmentStep
-      v-else-if="store.currentStep === 1 && store.departmentsEnabled"
+      v-else-if="store.currentStep === 1 && !store.skipDepartmentStep && store.departmentsEnabled"
       :departments="store.departments"
       @select="store.selectDepartment"
     />
 
     <!-- Step 2: Provider -->
     <ProviderStep
-      v-else-if="store.currentStep === 2"
+      v-else-if="store.currentStep === 2 && !store.skipProviderStep"
       :providers="store.providers"
       :department="store.selectedDepartment"
       @select="store.selectProvider"
@@ -66,6 +66,7 @@
       v-else-if="store.currentStep === 5"
       :form="store.form"
       :summary="bookingSummary"
+      :intro-text="store.bookingMeta.booking_form_intro || ''"
       v-model="store.formData"
       @submit="handleSubmit"
       @back="store.goBack"
@@ -76,6 +77,9 @@
       v-else-if="isComplete"
       :appointment="store.bookedAppointment"
       :paymentUrl="store.paymentUrl"
+      :appointment-location="store.bookedAppointment?.appointment_location || ''"
+      :arrival-notice="store.bookedAppointment?.arrival_notice || ''"
+      :post-booking-instructions="store.bookedAppointment?.post_booking_instructions || ''"
       @book-again="store.reset"
     />
 
@@ -96,12 +100,15 @@ const props = defineProps({
   preselectedDepartment: { type: String,  default: null },
   preselectedProvider:   { type: Number,  default: null },
   formOverrideId:        { type: Number,  default: null },
+  generalBooking:        { type: Boolean, default: false },
+  lockDepartment:        { type: Boolean, default: false },
+  lockProvider:          { type: Boolean, default: false },
 });
 
 const store = useBookingStore();
 const t     = (key) => store.i18n[key] ?? key;
 
-const isComplete = computed(() => store.currentStep > store.totalSteps);
+const isComplete = computed(() => store.currentStep === 6);
 
 const bookingSummary = computed(() => ({
   department: store.selectedDepartment?.name,
@@ -116,6 +123,9 @@ onMounted(() => {
     preselectedDepartment: props.preselectedDepartment,
     preselectedProvider:   props.preselectedProvider,
     formOverrideId:        props.formOverrideId,
+    generalBooking:        props.generalBooking,
+    lockDepartment:        props.lockDepartment,
+    lockProvider:          props.lockProvider,
   });
 });
 

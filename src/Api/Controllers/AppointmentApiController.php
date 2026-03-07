@@ -347,6 +347,27 @@ final class AppointmentApiController {
 	 * @return array<string, mixed>
 	 */
 	private function formatAppointment( \ERTAppointment\Domain\Appointment\Appointment $appointment ): array {
+		$config = $this->settings->resolveForProvider( $appointment->providerId );
+		$location = $config->appointmentLocation();
+		$arrivalNotice = '';
+
+		if ( $config->showArrivalReminder() && $appointment->arrivalBufferMinutes > 0 ) {
+			if ( $location !== '' ) {
+				$arrivalNotice = sprintf(
+					/* translators: 1: location text, 2: minutes */
+					__( 'You should be at %1$s at least %2$d minutes before your appointment.', 'ert-appointment' ),
+					$location,
+					$appointment->arrivalBufferMinutes
+				);
+			} else {
+				$arrivalNotice = sprintf(
+					/* translators: %d: minutes */
+					__( 'You should arrive at least %d minutes before your appointment.', 'ert-appointment' ),
+					$appointment->arrivalBufferMinutes
+				);
+			}
+		}
+
 		return array(
 			'id'               => $appointment->id,
 			'provider_id'      => $appointment->providerId,
@@ -366,6 +387,11 @@ final class AppointmentApiController {
 			'notes'            => $appointment->notes,
 			'form_data'        => $appointment->formData,
 			'arrival_buffer'   => $appointment->arrivalBufferMinutes,
+			'show_arrival_reminder' => $config->showArrivalReminder(),
+			'appointment_location' => $location,
+			'arrival_notice'   => $arrivalNotice,
+			'booking_form_intro' => $config->bookingFormIntro(),
+			'post_booking_instructions' => $config->postBookingInstructions(),
 			'is_upcoming'      => $appointment->isUpcoming(),
 			'is_cancellable'   => $appointment->isCancellable(),
 			'is_reschedulable' => $appointment->isReschedulable(),

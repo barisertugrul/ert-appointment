@@ -11,6 +11,41 @@
     <div v-if="saved" class="erta-alert erta-alert--success">{{ t('settingsSaved') }}</div>
     <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
 
+    <div class="erta-scope-row">
+      <label>{{ t('scope') }}</label>
+      <div class="erta-scope-grid">
+        <select class="erta-input" v-model="scope" @change="onScopeChanged">
+          <option value="global">Global</option>
+          <option value="department">Department</option>
+          <option value="provider">Provider</option>
+        </select>
+
+        <select
+          v-if="scope === 'department'"
+          class="erta-input"
+          v-model.number="scopeId"
+          @change="onScopeIdChanged"
+        >
+          <option :value="0">— Select Department —</option>
+          <option v-for="item in departments" :key="item.id" :value="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+
+        <select
+          v-if="scope === 'provider'"
+          class="erta-input"
+          v-model.number="scopeId"
+          @change="onScopeIdChanged"
+        >
+          <option :value="0">— Select Provider —</option>
+          <option v-for="item in providers" :key="item.id" :value="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <div v-if="installation" class="erta-install-checklist-wrap">
       <button
         type="button"
@@ -127,6 +162,49 @@
             <option value="USD">USD — US Dollar</option>
             <option value="EUR">EUR — Euro</option>
             <option value="GBP">GBP — Pound</option>
+          </select>
+        </div>
+        <div class="erta-form-row">
+          <label>Booking Start Date</label>
+          <input class="erta-input" type="date" v-model="form.booking_start_date" />
+        </div>
+        <div class="erta-form-row">
+          <label>Booking End Date</label>
+          <input class="erta-input" type="date" v-model="form.booking_end_date" />
+        </div>
+        <div class="erta-form-row">
+          <label>Arrival Reminder</label>
+          <label class="erta-toggle">
+            <input type="checkbox" v-model="form.show_arrival_reminder" />
+            <span class="erta-toggle__slider"></span>
+          </label>
+        </div>
+        <div class="erta-form-row">
+          <label>Appointment Location</label>
+          <input class="erta-input" type="text" v-model="form.appointment_location" />
+        </div>
+        <div class="erta-form-row">
+          <label>Booking Form Intro</label>
+          <textarea class="erta-input" rows="3" v-model="form.booking_form_intro"></textarea>
+        </div>
+        <div class="erta-form-row">
+          <label>Post Booking Instructions</label>
+          <textarea class="erta-input" rows="3" v-model="form.post_booking_instructions"></textarea>
+        </div>
+        <div class="erta-form-row">
+          <label>Allow General Booking</label>
+          <label class="erta-toggle">
+            <input type="checkbox" v-model="form.allow_general_booking" />
+            <span class="erta-toggle__slider"></span>
+          </label>
+        </div>
+        <div class="erta-form-row" v-if="form.allow_general_booking">
+          <label>General Provider</label>
+          <select class="erta-input" v-model.number="form.general_provider_id">
+            <option :value="0">— Auto (first available) —</option>
+            <option v-for="item in providers" :key="item.id" :value="item.id">
+              {{ item.name }}
+            </option>
           </select>
         </div>
       </template>
@@ -379,6 +457,10 @@ const checklistOpen = ref(false);
 const checkingInstallation = ref(false);
 const repairingInstallation = ref(false);
 const activeTab = ref('general');
+const scope = ref('global');
+const scopeId = ref(0);
+const departments = ref([]);
+const providers = ref([]);
 
 // Integration state
 const googleConnected  = ref(false);
@@ -398,7 +480,7 @@ const tabs = [
   { key: 'integrations', label: t('integrations'), pro: true },
 ];
 
-const form = ref({
+const defaultForm = {
   slot_duration_minutes: 30,
   buffer_before_minutes: 0,
   buffer_after_minutes: 0,
@@ -424,9 +506,21 @@ const form = ref({
   zoom_client_id: '',
   zoom_client_secret: '',
   zoom_auto_create: false,
-});
+  booking_start_date: '',
+  booking_end_date: '',
+  show_arrival_reminder: false,
+  appointment_location: '',
+  booking_form_intro: '',
+  post_booking_instructions: '',
+  allow_general_booking: false,
+  general_provider_id: 0,
+};
+
+const form = ref({ ...defaultForm });
 
 onMounted(async () => {
+  await loadScopeEntities();
+  parseScopeFromUrl();
   await loadSettings();
 
   // Check Google Calendar connection status only when integration routes exist.
@@ -451,11 +545,78 @@ onMounted(async () => {
 });
 
 async function loadSettings() {
-  const { data } = await api.getSettings('global', null);
+  const currentScope = scope.value;
+  const currentScopeId = currentScope === 'global' ? null : (scopeId.value || null);
+
+  if (currentScope !== 'global' && !currentScopeId) {
+    Object.assign(form.value, defaultForm);
+    return;
+  }
+
+  const { data, error: err } = await api.getSettings(currentScope, currentScopeId);
+  if (err) {
+    error.value = err;
+    return;
+  }
+
   if (data) {
+    Object.assign(form.value, defaultForm);
     Object.assign(form.value, data.settings ?? data ?? {});
     installation.value = data.installation ?? null;
   }
+}
+
+async function loadScopeEntities() {
+  const [deptRes, provRes] = await Promise.all([
+    api.listDepartments(),
+    api.listProviders(),
+  ]);
+
+  departments.value = deptRes.data?.items ?? deptRes.data ?? [];
+  providers.value = provRes.data?.items ?? provRes.data ?? [];
+}
+
+function parseScopeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const nextScope = params.get('scope');
+  const nextScopeId = Number(params.get('scope_id') || 0);
+
+  if (nextScope === 'department' || nextScope === 'provider' || nextScope === 'global') {
+    scope.value = nextScope;
+  }
+
+  if (scope.value === 'department' || scope.value === 'provider') {
+    scopeId.value = Number.isFinite(nextScopeId) ? nextScopeId : 0;
+  }
+}
+
+function updateUrlForScope() {
+  const url = new URL(window.location.href);
+  url.searchParams.set('page', 'erta-settings');
+  url.searchParams.set('scope', scope.value);
+
+  if (scope.value === 'global') {
+    url.searchParams.delete('scope_id');
+  } else {
+    url.searchParams.set('scope_id', String(scopeId.value || 0));
+  }
+
+  history.replaceState({}, '', url.toString());
+}
+
+async function onScopeChanged() {
+  scopeId.value = 0;
+  error.value = null;
+  updateUrlForScope();
+  Object.assign(form.value, defaultForm);
+  await loadSettings();
+}
+
+async function onScopeIdChanged() {
+  error.value = null;
+  updateUrlForScope();
+  Object.assign(form.value, defaultForm);
+  await loadSettings();
 }
 
 async function refreshInstallationChecklist() {
@@ -499,7 +660,16 @@ async function save() {
 
   saving.value = true;
   error.value  = null;
-  const { error: err } = await api.saveSettings('global', null, form.value);
+  const currentScope = scope.value;
+  const currentScopeId = currentScope === 'global' ? null : (scopeId.value || null);
+
+  if (currentScope !== 'global' && !currentScopeId) {
+    saving.value = false;
+    error.value = 'Please select a scope item first.';
+    return;
+  }
+
+  const { error: err } = await api.saveSettings(currentScope, currentScopeId, form.value);
   saving.value = false;
   if (err) { error.value = err; return; }
   saved.value = true;

@@ -61,8 +61,20 @@ final class TemplateRenderer {
 				'description' => __( 'Provider / unit name', 'ert-appointment' ),
 			),
 			array(
+				'token'       => '{{appointment_location}}',
+				'description' => __( 'Resolved appointment location (global/department/provider)', 'ert-appointment' ),
+			),
+			array(
 				'token'       => '{{arrival_buffer}}',
 				'description' => __( 'Minutes to arrive early', 'ert-appointment' ),
+			),
+			array(
+				'token'       => '{{arrival_instructions}}',
+				'description' => __( 'Human-friendly arrival reminder text', 'ert-appointment' ),
+			),
+			array(
+				'token'       => '{{post_booking_instructions}}',
+				'description' => __( 'Extra instructions shown after booking', 'ert-appointment' ),
 			),
 			array(
 				'token'       => '{{cancellation_reason}}',

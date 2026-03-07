@@ -28,7 +28,7 @@
     ]
   },
   "assets/js/admin/components/pages/DepartmentsPage.vue": {
-    "file": "chunks/DepartmentsPage-Bev6cQAw.js",
+    "file": "chunks/DepartmentsPage-BYDGZ2nL.js",
     "name": "DepartmentsPage",
     "src": "assets/js/admin/components/pages/DepartmentsPage.vue",
     "isDynamicEntry": true,
@@ -58,7 +58,7 @@
     ]
   },
   "assets/js/admin/components/pages/ProvidersPage.vue": {
-    "file": "chunks/ProvidersPage-TXXWMKD-.js",
+    "file": "chunks/ProvidersPage-CQpbBbcY.js",
     "name": "ProvidersPage",
     "src": "assets/js/admin/components/pages/ProvidersPage.vue",
     "isDynamicEntry": true,
@@ -78,7 +78,7 @@
     ]
   },
   "assets/js/admin/components/pages/SettingsPage.vue": {
-    "file": "chunks/SettingsPage-CzbUMV0e.js",
+    "file": "chunks/SettingsPage-DP8IAi19.js",
     "name": "SettingsPage",
     "src": "assets/js/admin/components/pages/SettingsPage.vue",
     "isDynamicEntry": true,

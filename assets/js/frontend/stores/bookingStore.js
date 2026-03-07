@@ -3,12 +3,11 @@
  *
  * Manages the multi-step booking wizard state:
  *  Step 1: Department selection (optional)
- *  Step 2: Provider selection
+ *  Step 2: Provider selection (optional)
  *  Step 3: Date selection (calendar)
  *  Step 4: Time slot selection
  *  Step 5: Form fill
- *  Step 6: Confirmation
- *  Step 7: Success / Payment redirect
+ *  Step 6: Confirmation / Success
  */
 
 import { defineStore } from 'pinia';
@@ -18,80 +17,128 @@ import { useApi } from '../composables/useApi.js';
 export const useBookingStore = defineStore('booking', () => {
     const api = useApi();
 
-    // ── Step tracking ──────────────────────────────────────────────────────
     const currentStep = ref(1);
-    const totalSteps  = ref(6);
+    const totalSteps = ref(5);
+    const stepOffset = ref(0);
+    const skipDepartmentStep = ref(false);
+    const skipProviderStep = ref(false);
+    const initOptions = ref({});
 
-    // ── Data from API ──────────────────────────────────────────────────────
     const departments = ref([]);
-    const providers   = ref([]);
-    const slots       = ref([]);
-    const form        = ref(null);
-    const calendar    = ref({}); // { 'YYYY-MM-DD': slotsCount }
+    const providers = ref([]);
+    const slots = ref([]);
+    const form = ref(null);
+    const calendar = ref({});
 
-    // ── User selections ────────────────────────────────────────────────────
     const selectedDepartment = ref(null);
-    const selectedProvider   = ref(null);
-    const selectedDate       = ref('');     // 'YYYY-MM-DD'
-    const selectedSlot       = ref(null);   // TimeSlot object
-    const formData           = ref({});     // form field values
+    const selectedProvider = ref(null);
+    const selectedDate = ref('');
+    const selectedSlot = ref(null);
+    const formData = ref({});
 
-    // ── UI state ───────────────────────────────────────────────────────────
-    const loading  = ref(false);
-    const error    = ref(null);
+    const loading = ref(false);
+    const error = ref(null);
 
-    // ── Booking result ─────────────────────────────────────────────────────
     const bookedAppointment = ref(null);
-    const paymentUrl        = ref(null);
+    const paymentUrl = ref(null);
+    const bookingMeta = ref({});
 
-    // ── Computed ───────────────────────────────────────────────────────────
-    const i18n             = computed(() => window.ertaData?.i18n ?? {});
+    const i18n = computed(() => window.ertaData?.i18n ?? {});
     const departmentsEnabled = computed(() => departments.value.length > 0);
-    const availableDates   = computed(() =>
+    const availableDates = computed(() =>
         Object.entries(calendar.value)
             .filter(([, count]) => count > 0)
             .map(([date]) => date)
     );
 
-    // ── Actions ────────────────────────────────────────────────────────────
+    const visualTotalSteps = computed(() => {
+        return Math.max(1, totalSteps.value - stepOffset.value);
+    });
+
+    const visualCurrentStep = computed(() => {
+        return Math.max(1, currentStep.value - stepOffset.value);
+    });
+
+    function resetState() {
+        selectedDepartment.value = null;
+        selectedProvider.value = null;
+        selectedDate.value = '';
+        selectedSlot.value = null;
+        formData.value = {};
+        bookedAppointment.value = null;
+        paymentUrl.value = null;
+        bookingMeta.value = {};
+        providers.value = [];
+        slots.value = [];
+        calendar.value = {};
+    }
+
+    function recalculateFlow() {
+        skipDepartmentStep.value =
+            !departmentsEnabled.value ||
+            Boolean(initOptions.value.generalBooking) ||
+            (Boolean(initOptions.value.lockDepartment) && Boolean(selectedDepartment.value));
+
+        skipProviderStep.value =
+            Boolean(initOptions.value.generalBooking) ||
+            (Boolean(initOptions.value.lockProvider) && Boolean(selectedProvider.value));
+
+        stepOffset.value = (skipDepartmentStep.value ? 1 : 0) + (skipProviderStep.value ? 1 : 0);
+
+        if (selectedProvider.value) {
+            currentStep.value = 3;
+        } else if (skipDepartmentStep.value) {
+            currentStep.value = 2;
+        } else {
+            currentStep.value = 1;
+        }
+    }
 
     async function init(options = {}) {
+        initOptions.value = { ...options };
         loading.value = true;
-        error.value   = null;
+        error.value = null;
+
+        resetState();
+        skipDepartmentStep.value = false;
+        skipProviderStep.value = false;
+        stepOffset.value = 0;
+        totalSteps.value = 5;
 
         try {
-            // Load departments.
             const { data: depts } = await api.getDepartments();
             departments.value = depts ?? [];
 
-            // Apply pre-selections from shortcode attributes.
             if (options.preselectedDepartment) {
-                const dept = departments.value.find(d => d.slug === options.preselectedDepartment);
-                if (dept) selectedDepartment.value = dept;
-            }
-
-            if (!departmentsEnabled.value) {
-                currentStep.value = 2;
-            } else if (selectedDepartment.value) {
-                currentStep.value = 2;
-            }
-
-            // If no departments or one pre-selected, jump straight to providers.
-            if (!departmentsEnabled.value || selectedDepartment.value) {
-                await loadProviders(selectedDepartment.value?.id ?? null);
-
-                if (options.preselectedProvider) {
-                    const prov = providers.value.find(p => p.id === options.preselectedProvider);
-                    if (prov) {
-                        selectedProvider.value = prov;
-                        currentStep.value = 3; // Jump to calendar.
-                    }
+                const dept = departments.value.find((item) => item.slug === options.preselectedDepartment);
+                if (dept) {
+                    selectedDepartment.value = dept;
                 }
             }
 
-            // Load form.
+            if (!departmentsEnabled.value || selectedDepartment.value || options.generalBooking) {
+                await loadProviders(selectedDepartment.value?.id ?? null);
+            }
+
+            if (options.preselectedProvider) {
+                const providerId = Number(options.preselectedProvider);
+                const provider = providers.value.find((item) => Number(item.id) === providerId);
+                if (provider) {
+                    selectedProvider.value = provider;
+                }
+            }
+
+            if (options.generalBooking && !selectedProvider.value && providers.value.length > 0) {
+                const preferredId = Number(bookingMeta.value?.general_provider_id || 0);
+                selectedProvider.value = providers.value.find((item) => Number(item.id) === preferredId) ?? providers.value[0];
+            }
+
+            recalculateFlow();
             await loadForm(options.formOverrideId ?? null);
 
+            if (skipProviderStep.value && !selectedProvider.value) {
+                error.value = i18n.value.bookingError || 'Unable to resolve provider for general booking.';
+            }
         } finally {
             loading.value = false;
         }
@@ -99,62 +146,81 @@ export const useBookingStore = defineStore('booking', () => {
 
     async function loadProviders(departmentId = null) {
         const { data, error: err } = await api.getProviders(departmentId);
-        if (err) { error.value = err; return; }
+        if (err) {
+            error.value = err;
+            return;
+        }
+
         providers.value = data ?? [];
     }
 
     async function loadCalendar(providerId, year, month) {
-        const pad = (n) => String(n).padStart(2, '0');
+        const pad = (value) => String(value).padStart(2, '0');
         const from = `${year}-${pad(month)}-01`;
-        // To = last day of month.
         const lastDay = new Date(year, month, 0).getDate();
         const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
         const { data, error: err } = await api.getCalendar(providerId, from, to);
-        if (err) { error.value = err; return; }
+        if (err) {
+            error.value = err;
+            return;
+        }
+
         calendar.value = { ...calendar.value, ...(data?.availability ?? {}) };
+        bookingMeta.value = { ...bookingMeta.value, ...(data?.meta ?? {}) };
     }
 
     async function loadSlots(providerId, date) {
         loading.value = true;
-        slots.value   = [];
+        slots.value = [];
 
         const { data, error: err } = await api.getSlots(providerId, date);
 
         loading.value = false;
 
-        if (err) { error.value = err; return; }
+        if (err) {
+            error.value = err;
+            return;
+        }
+
         slots.value = data?.slots ?? [];
+        bookingMeta.value = { ...bookingMeta.value, ...(data?.meta ?? {}) };
     }
 
     async function loadForm(formIdOverride = null) {
         let result;
         if (formIdOverride) {
-            result = await api.getForm('global'); // simplified; extend to pass ID
-        } else if (selectedProvider.value) {
-            result = await api.getForm('provider', selectedProvider.value.id);
-        } else if (selectedDepartment.value) {
+            result = await api.getForm('global');
+        } else if (selectedDepartment.value?.id) {
             result = await api.getForm('department', selectedDepartment.value.id);
+        } else if (selectedProvider.value?.id) {
+            result = await api.getForm('provider', selectedProvider.value.id);
         } else {
             result = await api.getForm('global');
         }
-        const { data, error: err } = result;
-        if (!err && data) form.value = data;
+
+        if (result.error) {
+            error.value = result.error;
+            form.value = null;
+            return;
+        }
+
+        form.value = result.data;
     }
 
     async function submitBooking() {
         loading.value = true;
-        error.value   = null;
+        error.value = null;
 
         const payload = {
-            provider_id:    selectedProvider.value?.id,
-            department_id:  selectedDepartment.value?.id ?? null,
+            provider_id: selectedProvider.value?.id,
+            department_id: selectedDepartment.value?.id ?? null,
             start_datetime: selectedSlot.value?.datetime,
-            customer_name:  formData.value.customer_name,
+            customer_name: formData.value.customer_name,
             customer_email: formData.value.customer_email,
             customer_phone: formData.value.customer_phone ?? '',
-            notes:          formData.value.notes ?? '',
-            form_data:      formData.value,
+            notes: formData.value.notes ?? '',
+            form_data: formData.value,
         };
 
         const { data, error: err } = await api.bookAppointment(payload);
@@ -168,69 +234,111 @@ export const useBookingStore = defineStore('booking', () => {
 
         bookedAppointment.value = data;
 
-        // Pro: payment redirect.
         if (data?.payment_url) {
             paymentUrl.value = data.payment_url;
         }
 
-        currentStep.value = totalSteps.value + 1; // Success step.
+        currentStep.value = 6;
         return true;
     }
 
-    function selectDepartment(dept) {
-        selectedDepartment.value = dept;
-        selectedProvider.value   = null;
-        selectedDate.value       = '';
-        selectedSlot.value       = null;
-        currentStep.value        = 2;
-        loadProviders(dept?.id ?? null);
+    function selectDepartment(department) {
+        selectedDepartment.value = department;
+        selectedProvider.value = null;
+        selectedDate.value = '';
+        selectedSlot.value = null;
+        currentStep.value = 2;
+
+        loadProviders(department?.id ?? null);
     }
 
     function selectProvider(provider) {
         selectedProvider.value = provider;
-        selectedDate.value     = '';
-        selectedSlot.value     = null;
-        currentStep.value      = 3;
+        selectedDate.value = '';
+        selectedSlot.value = null;
+        currentStep.value = 3;
+
         loadForm();
     }
 
     function selectDate(date) {
         selectedDate.value = date;
         selectedSlot.value = null;
-        currentStep.value  = 4;
+        currentStep.value = 4;
+
         loadSlots(selectedProvider.value.id, date);
     }
 
     function selectSlot(slot) {
         selectedSlot.value = slot;
-        currentStep.value  = 5;
+        currentStep.value = 5;
     }
 
     function goBack() {
-        if (currentStep.value > 1) currentStep.value--;
+        if (currentStep.value <= 1) {
+            return;
+        }
+
+        let nextStep = currentStep.value - 1;
+
+        while (nextStep > 0) {
+            if (nextStep === 1 && skipDepartmentStep.value) {
+                nextStep -= 1;
+                continue;
+            }
+            if (nextStep === 2 && skipProviderStep.value) {
+                nextStep -= 1;
+                continue;
+            }
+            break;
+        }
+
+        if (nextStep > 0) {
+            currentStep.value = nextStep;
+        }
     }
 
-    function reset() {
-        currentStep.value       = departmentsEnabled.value ? 1 : 2;
-        selectedDepartment.value = null;
-        selectedProvider.value   = null;
-        selectedDate.value       = '';
-        selectedSlot.value       = null;
-        formData.value           = {};
-        bookedAppointment.value  = null;
-        paymentUrl.value         = null;
-        error.value              = null;
+    async function reset() {
+        await init(initOptions.value ?? {});
     }
 
     return {
-        // State
-        currentStep, totalSteps, departments, providers, slots, form,
-        calendar, selectedDepartment, selectedProvider, selectedDate,
-        selectedSlot, formData, loading, error, bookedAppointment, paymentUrl,
-        // Computed
-        i18n, departmentsEnabled, availableDates,
-        // Actions
-        init, loadProviders, loadCalendar, loadSlots, loadForm, submitBooking,
-        selectDepartment, selectProvider, selectDate, selectSlot, goBack, reset,
+        currentStep,
+        totalSteps,
+        stepOffset,
+        skipDepartmentStep,
+        skipProviderStep,
+        visualCurrentStep,
+        visualTotalSteps,
+        departments,
+        providers,
+        slots,
+        form,
+        calendar,
+        selectedDepartment,
+        selectedProvider,
+        selectedDate,
+        selectedSlot,
+        formData,
+        loading,
+        error,
+        bookedAppointment,
+        paymentUrl,
+        bookingMeta,
+        i18n,
+        departmentsEnabled,
+        availableDates,
+        init,
+        loadProviders,
+        loadCalendar,
+        loadSlots,
+        loadForm,
+        submitBooking,
+        selectDepartment,
+        selectProvider,
+        selectDate,
+        selectSlot,
+        goBack,
+        reset,
     };
 });
