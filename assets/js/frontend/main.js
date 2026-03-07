@@ -1,5 +1,5 @@
 /**
- * WP Appointment — Frontend Booking Widget
+ * ERT Appointment — Frontend Booking Widget
  * Vue 3 Composition API + Pinia stores
  *
  * Entry point. Mounts the booking app and customer appointment manager

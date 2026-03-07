@@ -1,9 +1,9 @@
-# Spanish translation for WP Appointment
+# Spanish translation for ERT Appointment
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Appointment 1.0.0\n"
-"PO-Revision-Date: 2025-06-01 00:00+0200\n"
-"Last-Translator: WP Appointment Team\n"
+"Project-Id-Version: ERT Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0000\n"
+"Last-Translator: ERT Appointment Team\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -11,362 +11,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: ert-appointment\n"
 
-msgid "dashboard"
-msgstr "Panel de control"
+msgid "Dashboard"
+msgstr ""
 
-msgid "appointments"
-msgstr "Citas"
+msgid "Appointments"
+msgstr ""
 
-msgid "departments"
-msgstr "Departamentos"
+msgid "Departments"
+msgstr ""
 
-msgid "providers"
-msgstr "Proveedores"
+msgid "Providers"
+msgstr "Personal"
 
-msgid "forms"
-msgstr "Formularios"
+msgid "Forms"
+msgstr ""
 
-msgid "workingHours"
-msgstr "Horario laboral"
+msgid "Working Hours"
+msgstr ""
 
-msgid "notifications"
-msgstr "Notificaciones"
+msgid "Notifications"
+msgstr ""
 
-msgid "reports"
-msgstr "Informes"
+msgid "Reports"
+msgstr ""
 
-msgid "settings"
-msgstr "Ajustes"
+msgid "Add Template"
+msgstr "Agregar plantilla"
 
-msgid "save"
-msgstr "Guardar"
+msgid "Quick Template Combos"
+msgstr "Combinaciones rápidas de plantillas"
 
-msgid "cancel"
+msgid "Create Customer + Admin Email"
+msgstr "Crear correo de cliente + admin"
+
+msgid "Template Group"
+msgstr "Grupo de plantilla"
+
+msgid "Template Channel"
+msgstr "Canal de plantilla"
+
+msgid "Template Recipient"
+msgstr "Destinatario de plantilla"
+
+msgid "New Booking (Pending)"
+msgstr ""
+
+msgid "Booking Confirmed"
+msgstr ""
+
+msgid "Booking Cancelled"
+msgstr ""
+
+msgid "Booking Rescheduled"
+msgstr ""
+
+msgid "No-Show Marked"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "24h Reminder"
+msgstr ""
+
+msgid "1h Reminder"
+msgstr ""
+
+msgid "Waitlist Slot Available"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
 msgstr "Cancelar"
 
-msgid "edit"
-msgstr "Editar"
+msgid "Edit"
+msgstr ""
 
-msgid "delete"
-msgstr "Eliminar"
+msgid "Delete"
+msgstr ""
 
-msgid "confirm"
-msgstr "Confirmar"
+msgid "Confirm"
+msgstr ""
 
-msgid "close"
-msgstr "Cerrar"
+msgid "Close"
+msgstr ""
 
-msgid "loading"
-msgstr "Cargando"
+msgid "Back"
+msgstr "Atrás"
 
-msgid "saved"
-msgstr "Guardado"
+msgid "Next"
+msgstr "Siguiente"
 
-msgid "error"
-msgstr "Error"
+msgid "Prev"
+msgstr ""
 
-msgid "name"
-msgstr "Nombre"
+msgid "Apply"
+msgstr ""
 
-msgid "email"
-msgstr "Correo electrónico"
+msgid "Select"
+msgstr ""
 
-msgid "phone"
-msgstr "Teléfono"
+msgid "Loading…"
+msgstr "Cargando…"
 
-msgid "status"
-msgstr "Estado"
+msgid "Saved."
+msgstr ""
 
-msgid "actions"
-msgstr "Acciones"
+msgid "An error occurred."
+msgstr ""
 
-msgid "date"
-msgstr "Fecha"
+msgid "Are you sure you want to delete this item?"
+msgstr ""
 
-msgid "time"
-msgstr "Hora"
+msgid "Are you sure you want to cancel this appointment?"
+msgstr ""
 
-msgid "notes"
-msgstr "Notas"
-
-msgid "general"
-msgstr "General"
-
-msgid "payment"
-msgstr "Pago"
-
-msgid "integrations"
-msgstr "Integraciones"
-
-msgid "slotDuration"
-msgstr "Duración del intervalo"
-
-msgid "bufferBefore"
-msgstr "Margen anterior"
-
-msgid "bufferAfter"
-msgstr "Margen posterior"
-
-msgid "minNotice"
-msgstr "Aviso mínimo"
-
-msgid "minNoticeDesc"
-msgstr "Cuántas horas de antelación se puede reservar una cita"
-
-msgid "maxAdvance"
-msgstr "Reserva máxima anticipada"
-
-msgid "autoConfirm"
-msgstr "Confirmación automática"
-
-msgid "currency"
-msgstr "Moneda"
-
-msgid "paymentRequired"
-msgstr "Pago requerido"
-
-msgid "pending"
-msgstr "Pendiente"
-
-msgid "confirmed"
-msgstr "Confirmado"
-
-msgid "cancelled"
-msgstr "Cancelado"
-
-msgid "completed"
-msgstr "Completado"
-
-msgid "newAppointment"
-msgstr "Nueva cita"
-
-msgid "noAppointments"
-msgstr "No se encontraron citas"
-
-msgid "customer"
-msgstr "Cliente"
-
-msgid "provider"
-msgstr "Proveedor"
-
-msgid "department"
-msgstr "Departamento"
-
-msgid "newDepartment"
-msgstr "Nuevo departamento"
-
-msgid "editDepartment"
-msgstr "Editar departamento"
-
-msgid "noDepartments"
-msgstr "No se encontraron departamentos"
-
-msgid "newProvider"
-msgstr "Nuevo proveedor"
-
-msgid "editProvider"
-msgstr "Editar proveedor"
-
-msgid "noProviders"
-msgstr "No se encontraron proveedores"
-
-msgid "newForm"
-msgstr "Nuevo formulario"
-
-msgid "editForm"
-msgstr "Editar formulario"
-
-msgid "noForms"
-msgstr "No se encontraron formularios"
-
-msgid "formName"
-msgstr "Nombre del formulario"
-
-msgid "fields"
-msgstr "Campos"
-
-msgid "addField"
-msgstr "Añadir campo"
-
-msgid "fieldLabel"
-msgstr "Etiqueta del campo"
-
-msgid "fieldId"
-msgstr "ID del campo"
-
-msgid "placeholder"
-msgstr "Marcador de posición"
-
-msgid "required"
-msgstr "Obligatorio"
-
-msgid "helpText"
-msgstr "Texto de ayuda"
-
-msgid "helpTextPlaceholder"
-msgstr "Descripción mostrada al usuario"
-
-msgid "options"
-msgstr "Opciones"
-
-msgid "optionLabel"
-msgstr "Etiqueta de opción"
-
-msgid "optionValue"
-msgstr "Valor de opción"
-
-msgid "addOption"
-msgstr "Añadir opción"
-
-msgid "preview"
-msgstr "Vista previa"
-
-msgid "noFieldsYet"
-msgstr "Aún no hay campos. Seleccione un tipo a la izquierda."
-
-msgid "untitledField"
-msgstr "Campo sin título"
-
-msgid "global"
-msgstr "Global"
-
-msgid "scope"
-msgstr "Ámbito"
-
-msgid "editScope"
-msgstr "Editar ámbito"
-
-msgid "globalScopeHint"
-msgstr "Estos ajustes se aplican a todos los departamentos y proveedores."
-
-msgid "departmentScopeHint"
-msgstr "Estos ajustes se aplican solo al departamento seleccionado."
-
-msgid "providerScopeHint"
-msgstr "Estos ajustes se aplican solo al proveedor seleccionado."
-
-msgid "workingHoursHint"
-msgstr "Configure el horario laboral para cada día de la semana."
-
-msgid "breaksHint"
-msgstr "Añada descansos recurrentes (almuerzo, etc.)."
-
-msgid "specialDaysHint"
-msgstr "Añada festivos o días con horario especial."
-
-msgid "breaks"
-msgstr "Descansos"
-
-msgid "specialDays"
-msgstr "Días especiales"
-
-msgid "closed"
-msgstr "Cerrado"
-
-msgid "everyDay"
-msgstr "Todos los días"
-
-msgid "breakName"
-msgstr "Nombre del descanso"
-
-msgid "newBreak"
-msgstr "Nuevo descanso"
-
-msgid "addBreak"
-msgstr "Añadir descanso"
-
-msgid "noBreaks"
-msgstr "No hay descansos definidos"
-
-msgid "specialDayName"
-msgstr "Nombre del día especial"
-
-msgid "addSpecialDay"
-msgstr "Añadir día especial"
-
-msgid "noSpecialDays"
-msgstr "No hay días especiales definidos"
-
-msgid "customHours"
-msgstr "Horario personalizado"
-
-msgid "callbackUrl"
-msgstr "URL de devolución de llamada"
-
-msgid "connected"
-msgstr "Conectado"
-
-msgid "notConnected"
-msgstr "No conectado"
-
-msgid "configured"
-msgstr "Configurado"
-
-msgid "notConfigured"
-msgstr "No configurado"
-
-msgid "connectGoogle"
-msgstr "Conectar con Google"
-
-msgid "disconnect"
-msgstr "Desconectar"
-
-msgid "testConnection"
-msgstr "Probar conexión"
-
-msgid "connectionOk"
-msgstr "Conexión exitosa"
-
-msgid "connectionFailed"
-msgstr "Error de conexión"
-
-msgid "autoCreateMeeting"
-msgstr "Crear reunión automáticamente"
-
-msgid "autoCreateMeetingDesc"
-msgstr "Crear reunión de Zoom automáticamente para citas confirmadas"
-
-msgid "testMode"
-msgstr "Modo de prueba"
-
-msgid "subject"
-msgstr "Asunto"
-
-msgid "body"
-msgstr "Contenido"
-
-msgid "active"
-msgstr "Activo"
-
-msgid "event"
-msgstr "Evento"
-
-msgid "channel"
-msgstr "Canal"
-
-msgid "recipient"
-msgstr "Destinatario"
-
-msgid "noTemplates"
-msgstr "No se encontraron plantillas"
-
-msgid "availablePlaceholders"
-msgstr "Variables disponibles"
-
-msgid "clickToInsert"
-msgstr "Haga clic para insertar"
-
-msgid "templateBodyHint"
-msgstr "Use variables en formato {{variable}}"
-
-msgid "deleteConfirm"
-msgstr "¿Está seguro de que desea eliminar?"
-
-msgid "Appointment: %s"
-msgstr "Cita: %s"
-
-msgid "Customer"
-msgstr "Cliente"
+msgid "Name"
+msgstr ""
 
 msgid "Email"
 msgstr "Correo electrónico"
@@ -374,8 +140,596 @@ msgstr "Correo electrónico"
 msgid "Phone"
 msgstr "Teléfono"
 
+msgid "Description"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Date & Time"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
 msgid "Notes"
 msgstr "Notas"
+
+msgid "Type"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Payment"
+msgstr ""
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Slot Duration (minutes)"
+msgstr ""
+
+msgid "Buffer Before (minutes)"
+msgstr ""
+
+msgid "Buffer After (minutes)"
+msgstr ""
+
+msgid "Minimum Notice (hours)"
+msgstr ""
+
+msgid "How many hours in advance a booking must be made."
+msgstr ""
+
+msgid "Maximum Advance (days)"
+msgstr ""
+
+msgid "Auto-confirm bookings"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Require payment to confirm"
+msgstr ""
+
+msgid "Payment Amount"
+msgstr ""
+
+msgid "Payment Gateway"
+msgstr ""
+
+msgid "Settings saved."
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Confirmed"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
+msgid "Appointment"
+msgstr ""
+
+msgid "New Appointment"
+msgstr ""
+
+msgid "No appointments found."
+msgstr ""
+
+msgid "All Statuses"
+msgstr ""
+
+msgid "Search customer…"
+msgstr ""
+
+msgid "Cancel Appointment"
+msgstr ""
+
+msgid "Reason for cancellation…"
+msgstr ""
+
+msgid "Today's Appointments"
+msgstr ""
+
+msgid "Upcoming Appointments"
+msgstr ""
+
+msgid "No upcoming appointments."
+msgstr ""
+
+msgid "This Month"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "New Department"
+msgstr ""
+
+msgid "Add Department"
+msgstr ""
+
+msgid "Edit Department"
+msgstr ""
+
+msgid "No departments found."
+msgstr ""
+
+msgid "Provider"
+msgstr "Especialista"
+
+msgid "Customer"
+msgstr "Cliente"
+
+msgid "New Provider"
+msgstr "Nuevo especialista"
+
+msgid "Add Provider"
+msgstr "Agregar especialista"
+
+msgid "Edit Provider"
+msgstr "Editar especialista"
+
+msgid "No providers found."
+msgstr "No se encontraron miembros del personal."
+
+msgid "Staff"
+msgstr "Personal"
+
+msgid "Staff Member"
+msgstr "Especialista"
+
+msgid "New Staff Member"
+msgstr "Nuevo especialista"
+
+msgid "Add Staff Member"
+msgstr "Agregar especialista"
+
+msgid "Edit Staff Member"
+msgstr "Editar especialista"
+
+msgid "No staff members found."
+msgstr "No se encontraron miembros del personal."
+
+msgid "Please select a department when type is Unit."
+msgstr "Seleccione un departamento cuando el tipo sea Unidad."
+
+msgid "Individual"
+msgstr "Individual"
+
+msgid "Unit"
+msgstr "Unidad"
+
+msgid "New Form"
+msgstr ""
+
+msgid "Edit Form"
+msgstr ""
+
+msgid "No forms found."
+msgstr ""
+
+msgid "Form Name"
+msgstr ""
+
+msgid "Fields"
+msgstr ""
+
+msgid "Add Field"
+msgstr ""
+
+msgid "Field Label"
+msgstr ""
+
+msgid "Field ID"
+msgstr ""
+
+msgid "Placeholder"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Help Text"
+msgstr ""
+
+msgid "Optional help text shown below the field…"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Option Label"
+msgstr ""
+
+msgid "Option Value"
+msgstr ""
+
+msgid "Add Option"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "No fields added yet."
+msgstr ""
+
+msgid "Untitled Field"
+msgstr ""
+
+msgid "Global"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Edit Scope"
+msgstr ""
+
+msgid "These hours apply to all providers by default."
+msgstr ""
+
+msgid "These hours override the global hours for this department."
+msgstr ""
+
+msgid "These hours override department and global hours for this provider."
+msgstr ""
+
+msgid "Set the days and hours when appointments can be booked."
+msgstr ""
+
+msgid "Breaks block off time within working hours (e.g. lunch)."
+msgstr ""
+
+msgid "Special days override regular hours for a specific date."
+msgstr ""
+
+msgid "Breaks"
+msgstr ""
+
+msgid "Special Days"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Every Day"
+msgstr ""
+
+msgid "Break Name"
+msgstr ""
+
+msgid "New Break"
+msgstr ""
+
+msgid "Add Break"
+msgstr ""
+
+msgid "No breaks defined."
+msgstr ""
+
+msgid "Special Day Name"
+msgstr ""
+
+msgid "Add Special Day"
+msgstr ""
+
+msgid "No special days defined."
+msgstr ""
+
+msgid "Custom Hours"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Callback URL"
+msgstr ""
+
+msgid "Connected"
+msgstr ""
+
+msgid "Not connected"
+msgstr ""
+
+msgid "Configured"
+msgstr ""
+
+msgid "Not configured"
+msgstr ""
+
+msgid "Connect Google Account"
+msgstr ""
+
+msgid "Google Calendar"
+msgstr ""
+
+msgid "Connected as"
+msgstr "Conectado como"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Sincronice automáticamente las citas con Google Calendar del proveedor."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "Cree credenciales OAuth 2.0 en Google Cloud Console."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Añada este URI a los URI de redirección permitidos en Google OAuth."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "No se pudo obtener la URL de autenticación de Google. Verifique las credenciales."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Cree reuniones de Zoom automáticamente para citas confirmadas."
+
+msgid "Accept online payments via PayTR."
+msgstr "Acepte pagos en línea a través de PayTR."
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Connection successful."
+msgstr ""
+
+msgid "Connection failed. Check your credentials."
+msgstr ""
+
+msgid "Auto-create Zoom meetings"
+msgstr ""
+
+msgid "Automatically create a Zoom meeting when an appointment is confirmed."
+msgstr ""
+
+msgid "Test / Sandbox Mode"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Body"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Recipient"
+msgstr ""
+
+msgid "No notification templates found."
+msgstr ""
+
+msgid "Available Placeholders"
+msgstr ""
+
+msgid "Click to insert"
+msgstr ""
+
+msgid "Use the placeholders above to personalise the message."
+msgstr ""
+
+msgid "Enter email subject…"
+msgstr "Introduzca el asunto del correo…"
+
+msgid "Total Appointments"
+msgstr ""
+
+msgid "Cancellation Rate"
+msgstr ""
+
+msgid "Revenue"
+msgstr ""
+
+msgid "Top Providers"
+msgstr ""
+
+msgid "Detailed analytics are available with ERT Appointment Pro."
+msgstr ""
+
+msgid "Pro Feature"
+msgstr ""
+
+msgid "Upgrade to Pro"
+msgstr ""
+
+msgid "Select a Department"
+msgstr "Seleccionar departamento"
+
+msgid "Select a Provider"
+msgstr "Seleccionar proveedor"
+
+msgid "Choose a Date"
+msgstr "Elegir fecha"
+
+msgid "Choose a Time"
+msgstr "Elegir hora"
+
+msgid "Your Details"
+msgstr "Sus datos"
+
+msgid "Book Now"
+msgstr "Reservar ahora"
+
+msgid "Submit"
+msgstr ""
+
+msgid "Your appointment has been booked!"
+msgstr "¡Su cita ha sido reservada!"
+
+msgid "A confirmation email has been sent to you."
+msgstr ""
+
+msgid "Book Another Appointment"
+msgstr ""
+
+msgid "Book Again"
+msgstr ""
+
+msgid "Go to Payment"
+msgstr ""
+
+msgid "Complete Payment"
+msgstr ""
+
+msgid "Redirecting to payment…"
+msgstr ""
+
+msgid "No available slots on this day."
+msgstr "No hay horarios disponibles este día."
+
+msgid "Something went wrong. Please try again."
+msgstr "Algo salió mal. Por favor, inténtelo de nuevo."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Este horario ya no está disponible. Por favor, elija otro."
+
+msgid "This field is required."
+msgstr "Este campo es obligatorio."
+
+msgid "Please enter a valid email address."
+msgstr "Introduzca una dirección de correo electrónico válida."
+
+msgid "My Appointments"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "You have no appointments."
+msgstr ""
+
+msgid "Reschedule"
+msgstr "Reprogramar"
+
+msgid "Reschedule Appointment"
+msgstr ""
+
+msgid "New Date & Time"
+msgstr ""
+
+msgid "ERT Appointment"
+msgstr ""
+
+msgid "Please enable JavaScript to use the appointment booking system."
+msgstr ""
+
+msgid "Loading booking form…"
+msgstr ""
+
+msgid "Please %s to view and manage your appointments."
+msgstr ""
+
+msgid "log in"
+msgstr ""
+
+msgid "Loading your appointments…"
+msgstr ""
+
+msgid "Appointment #%d not found."
+msgstr ""
+
+msgid "Field \"%s\" is required."
+msgstr ""
+
+msgid "Department not found."
+msgstr ""
+
+msgid "Cannot delete department with assigned providers. Reassign or delete providers first."
+msgstr ""
+
+msgid "Name is required."
+msgstr ""
+
+msgid "Invalid status."
+msgstr ""
+
+msgid "Provider not found."
+msgstr ""
+
+msgid "Invalid user_id."
+msgstr ""
+
+msgid "Invalid email address."
+msgstr ""
+
+msgid "Invalid event."
+msgstr ""
+
+msgid "Invalid channel."
+msgstr ""
+
+msgid "Invalid recipient."
+msgstr ""
+
+msgid "Invalid payload."
+msgstr ""
+
+msgid "settings must be an object."
+msgstr ""
+
+msgid "wp_mail failed to deliver email to \"%s\"."
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Select Date"
+msgstr ""
+
+msgid "Date and time selector – renders the booking calendar widget"
+msgstr ""
+
+msgid "This feature requires ERT Appointment Pro."
+msgstr "Esta función requiere ERT Appointment Pro."
+
+msgid "Appointment: %s"
+msgstr "Cita: %s"
 
 msgid "Join Zoom"
 msgstr "Unirse a Zoom"
@@ -409,84 +763,3 @@ msgstr "Nueva cita reservada – {{customer_name}}"
 
 msgid "Appointment cancelled – {{customer_name}}"
 msgstr "Cita cancelada – {{customer_name}}"
-
-msgid "Select a Department"
-msgstr "Seleccionar departamento"
-
-msgid "Select a Provider"
-msgstr "Seleccionar proveedor"
-
-msgid "Choose a Date"
-msgstr "Elegir fecha"
-
-msgid "Choose a Time"
-msgstr "Elegir hora"
-
-msgid "Your Details"
-msgstr "Sus datos"
-
-msgid "Confirm Appointment"
-msgstr "Confirmar cita"
-
-msgid "Book Now"
-msgstr "Reservar ahora"
-
-msgid "No available slots on this day."
-msgstr "No hay horarios disponibles este día."
-
-msgid "Loading…"
-msgstr "Cargando…"
-
-msgid "Your appointment has been booked!"
-msgstr "¡Su cita ha sido reservada!"
-
-msgid "Something went wrong. Please try again."
-msgstr "Algo salió mal. Por favor, inténtelo de nuevo."
-
-msgid "This slot is no longer available. Please choose another."
-msgstr "Este horario ya no está disponible. Por favor, elija otro."
-
-msgid "Reschedule"
-msgstr "Reprogramar"
-
-msgid "Back"
-msgstr "Atrás"
-
-msgid "Next"
-msgstr "Siguiente"
-
-msgid "This field is required."
-msgstr "Este campo es obligatorio."
-
-msgid "Please enter a valid email address."
-msgstr "Introduzca una dirección de correo electrónico válida."
-
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgid "Connected as"
-msgstr "Conectado como"
-
-msgid "Sync appointments to provider Google Calendars automatically."
-msgstr "Sincronice automáticamente las citas con Google Calendar del proveedor."
-
-msgid "Create OAuth 2.0 credentials in Google Cloud Console."
-msgstr "Cree credenciales OAuth 2.0 en Google Cloud Console."
-
-msgid "Add this URI to your Google OAuth allowed redirect URIs."
-msgstr "Añada este URI a los URI de redirección permitidos en Google OAuth."
-
-msgid "Could not get Google auth URL. Check credentials and try again."
-msgstr "No se pudo obtener la URL de autenticación de Google. Verifique las credenciales."
-
-msgid "Automatically create Zoom meetings for confirmed appointments."
-msgstr "Cree reuniones de Zoom automáticamente para citas confirmadas."
-
-msgid "Accept online payments via PayTR."
-msgstr "Acepte pagos en línea a través de PayTR."
-
-msgid "Enter email subject…"
-msgstr "Introduzca el asunto del correo…"
-
-msgid "This feature requires WP Appointment Pro."
-msgstr "Esta función requiere WP Appointment Pro."

@@ -45,6 +45,8 @@
 </template>
 
 <script setup>
+import { formatDateSafe, formatTimeSafe } from '../../utils/locale.js';
+
 const props = defineProps({
   appointment: { type: Object, default: null },
   paymentUrl:  { type: String, default: null },
@@ -55,13 +57,11 @@ defineEmits(['book-again']);
 const t = (k) => window.ertaData?.i18n?.[k] ?? k;
 
 function formatDate(dt) {
-  if (!dt) return '';
-  return new Date(dt).toLocaleDateString(window.ertaData?.locale ?? 'en');
+  return formatDateSafe(dt);
 }
 
 function formatTime(dt) {
-  if (!dt) return '';
-  return new Date(dt).toLocaleTimeString(window.ertaData?.locale ?? 'en', {
+  return formatTimeSafe(dt, undefined, {
     hour: '2-digit', minute: '2-digit',
   });
 }

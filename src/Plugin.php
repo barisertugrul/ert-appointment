@@ -32,285 +32,257 @@ use ERTAppointment\Settings\SettingsManager;
  * Central plugin class. Bootstraps the service container, registers all bindings,
  * and wires WordPress hooks. Only one instance exists (singleton).
  */
-final class Plugin
-{
-    private static ?Plugin $instance = null;
-    private Container $container;
+final class Plugin {
 
-    // -------------------------------------------------------------------------
-    // Construction
-    // -------------------------------------------------------------------------
+	private static ?Plugin $instance = null;
+	private Container $container;
 
-    private function __construct(private readonly string $file)
-    {
-        $this->container = new Container();
-        $this->registerBindings();
-        $this->registerLifecycleHooks();
-        $this->registerWordPressHooks();
+	// -------------------------------------------------------------------------
+	// Construction
+	// -------------------------------------------------------------------------
 
-        /**
-         * Fires after the lite plugin has been fully bootstrapped.
-         * Pro add-on (and other extensions) hook here to register their own
-         * bindings and extend core behaviour.
-         *
-         * @param Container $container The shared DI container.
-         */
-        do_action('erta_loaded', $this->container);
-    }
+	private function __construct( private readonly string $file ) {
+		$this->container = new Container();
+		$this->registerBindings();
+		$this->registerWordPressHooks();
 
-    /**
-     * Returns the singleton instance, creating it on first call.
-     */
-    public static function getInstance(string $file): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($file);
-        }
+		/**
+		 * Fires after the lite plugin has been fully bootstrapped.
+		 * Pro add-on (and other extensions) hook here to register their own
+		 * bindings and extend core behaviour.
+		 *
+		 * @param Container $container The shared DI container.
+		 */
+		do_action( 'erta_loaded', $this->container );
+	}
 
-        return self::$instance;
-    }
+	/**
+	 * Returns the singleton instance, creating it on first call.
+	 */
+	public static function getInstance( string $file ): self {
+		if ( self::$instance === null ) {
+			self::$instance = new self( $file );
+		}
 
-    // -------------------------------------------------------------------------
-    // Service container bindings
-    // -------------------------------------------------------------------------
+		return self::$instance;
+	}
 
-    /**
-     * Registers all service bindings into the container.
-     * Each bind/singleton call is lightweight — no objects are created here;
-     * they are resolved lazily on first use.
-     */
-    private function registerBindings(): void
-    {
-        // ----- Infrastructure ------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Service container bindings
+	// -------------------------------------------------------------------------
 
-        $this->container->singleton(
-            TransientCache::class,
-            fn() => new TransientCache()
-        );
+	/**
+	 * Registers all service bindings into the container.
+	 * Each bind/singleton call is lightweight — no objects are created here;
+	 * they are resolved lazily on first use.
+	 */
+	private function registerBindings(): void {
+		// ----- Infrastructure ------------------------------------------------
 
-        // ----- Repositories (interface → concrete) ---------------------------
+		$this->container->singleton(
+			TransientCache::class,
+			fn() => new TransientCache()
+		);
 
-        $this->container->bind(
-            AppointmentRepository::class,
-            ERTAppointmentRepository::class
-        );
+		// ----- Repositories (interface → concrete) ---------------------------
 
-        $this->container->bind(
-            DepartmentRepository::class,
-            ERTDepartmentRepository::class
-        );
+		$this->container->bind(
+			AppointmentRepository::class,
+			ERTAppointmentRepository::class
+		);
 
-        $this->container->bind(
-            ProviderRepository::class,
-            ERTProviderRepository::class
-        );
+		$this->container->bind(
+			DepartmentRepository::class,
+			ERTDepartmentRepository::class
+		);
 
-        $this->container->bind(
-            FormRepository::class,
-            ERTFormRepository::class
-        );
+		$this->container->bind(
+			ProviderRepository::class,
+			ERTProviderRepository::class
+		);
 
-        // ----- Settings ------------------------------------------------------
+		$this->container->bind(
+			FormRepository::class,
+			ERTFormRepository::class
+		);
 
-        $this->container->singleton(
-            SettingsManager::class,
-            fn(Container $c) => new SettingsManager(
-                $c->make(TransientCache::class)
-            )
-        );
+		// ----- Settings ------------------------------------------------------
 
-        // ----- Scheduling ----------------------------------------------------
+		$this->container->singleton(
+			SettingsManager::class,
+			fn( Container $c ) => new SettingsManager(
+				$c->make( TransientCache::class )
+			)
+		);
 
-        $this->container->singleton(
-            SlotGenerator::class,
-            fn() => new SlotGenerator()
-        );
+		// ----- Scheduling ----------------------------------------------------
 
-        $this->container->singleton(
-            AvailabilityService::class,
-            fn(Container $c) => new AvailabilityService(
-                $c->make(SlotGenerator::class),
-                $c->make(SettingsManager::class),
-                $c->make(AppointmentRepository::class),
-                $c->make(TransientCache::class)
-            )
-        );
+		$this->container->singleton(
+			SlotGenerator::class,
+			fn() => new SlotGenerator()
+		);
 
-        // ----- Notifications -------------------------------------------------
+		$this->container->singleton(
+			AvailabilityService::class,
+			fn( Container $c ) => new AvailabilityService(
+				$c->make( SlotGenerator::class ),
+				$c->make( SettingsManager::class ),
+				$c->make( AppointmentRepository::class ),
+				$c->make( TransientCache::class )
+			)
+		);
 
-        $this->container->singleton(
-            TemplateRenderer::class,
-            fn() => new TemplateRenderer()
-        );
+		// ----- Notifications -------------------------------------------------
 
-        $this->container->singleton(
-            EmailChannel::class,
-            fn() => new EmailChannel()
-        );
+		$this->container->singleton(
+			TemplateRenderer::class,
+			fn() => new TemplateRenderer()
+		);
 
-        $this->container->singleton(
-            NotificationService::class,
-            fn(Container $c) => new NotificationService(
-                // Channels array — Pro add-on can push additional channels (SMS etc.)
-                apply_filters('erta_notification_channels', [
-                    $c->make(EmailChannel::class),
-                ]),
-                $c->make(TemplateRenderer::class)
-            )
-        );
+		$this->container->singleton(
+			EmailChannel::class,
+			fn() => new EmailChannel()
+		);
 
-        // ----- Domain services -----------------------------------------------
+		$this->container->singleton(
+			NotificationService::class,
+			fn( Container $c ) => new NotificationService(
+				// Channels array — Pro add-on can push additional channels (SMS etc.)
+				apply_filters(
+					'erta_notification_channels',
+					array(
+						$c->make( EmailChannel::class ),
+					)
+				),
+				$c->make( TemplateRenderer::class )
+			)
+		);
 
-        $this->container->singleton(
-            AppointmentService::class,
-            fn(Container $c) => new AppointmentService(
-                $c->make(AppointmentRepository::class),
-                $c->make(AvailabilityService::class),
-                $c->make(NotificationService::class),
-                $c->make(SettingsManager::class),
-                $c->make(TransientCache::class)
-            )
-        );
+		// ----- Domain services -----------------------------------------------
 
-        // ----- Core ----------------------------------------------------------
+		$this->container->singleton(
+			AppointmentService::class,
+			fn( Container $c ) => new AppointmentService(
+				$c->make( AppointmentRepository::class ),
+				$c->make( AvailabilityService::class ),
+				$c->make( NotificationService::class ),
+				$c->make( SettingsManager::class ),
+				$c->make( TransientCache::class )
+			)
+		);
 
-        $this->container->singleton(
-            Installer::class,
-            fn(Container $c) => new Installer($c->make(SettingsManager::class))
-        );
+		// ----- Core ----------------------------------------------------------
 
-        $this->container->singleton(
-            Assets::class,
-            fn() => new Assets()
-        );
+		$this->container->singleton(
+			Installer::class,
+			fn( Container $c ) => new Installer( $c->make( SettingsManager::class ) )
+		);
 
-        $this->container->singleton(
-            Shortcodes::class,
-            fn(Container $c) => new Shortcodes(
-                $c->make(AvailabilityService::class),
-                $c->make(FormRepository::class),
-                $c->make(SettingsManager::class)
-            )
-        );
+		$this->container->singleton(
+			Assets::class,
+			fn() => new Assets()
+		);
 
-        $this->container->singleton(
-            RestApiRegistrar::class,
-            fn(Container $c) => new RestApiRegistrar($c)
-        );
+		$this->container->singleton(
+			Shortcodes::class,
+			fn( Container $c ) => new Shortcodes(
+				$c->make( AvailabilityService::class ),
+				$c->make( FormRepository::class ),
+				$c->make( SettingsManager::class )
+			)
+		);
 
-        // ----- Admin panels --------------------------------------------------
+		$this->container->singleton(
+			RestApiRegistrar::class,
+			fn( Container $c ) => new RestApiRegistrar( $c )
+		);
 
-        $this->container->singleton(
-            AdminMenu::class,
-            fn(Container $c) => new AdminMenu($c)
-        );
+		// ----- Admin panels --------------------------------------------------
 
-        $this->container->singleton(
-            ProviderMenu::class,
-            fn(Container $c) => new ProviderMenu($c)
-        );
+		$this->container->singleton(
+			AdminMenu::class,
+			fn( Container $c ) => new AdminMenu( $c )
+		);
 
-        // ----- Admin REST API controllers ------------------------------------
+		$this->container->singleton(
+			ProviderMenu::class,
+			fn( Container $c ) => new ProviderMenu( $c )
+		);
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\SettingsApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\SettingsApiController(
-                $c->make(\ERTAppointment\Settings\SettingsManager::class)
-            )
-        );
+		// ----- Admin REST API controllers ------------------------------------
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\AdminDepartmentApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\AdminDepartmentApiController(
-                $c->make(DepartmentRepository::class)
-            )
-        );
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\SettingsApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\SettingsApiController(
+				$c->make( \ERTAppointment\Settings\SettingsManager::class ),
+				$c->make( Installer::class )
+			)
+		);
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\AdminProviderApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\AdminProviderApiController(
-                $c->make(ProviderRepository::class)
-            )
-        );
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\AdminDepartmentApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\AdminDepartmentApiController(
+				$c->make( DepartmentRepository::class )
+			)
+		);
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\AdminFormApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\AdminFormApiController(
-                $c->make(FormRepository::class)
-            )
-        );
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\AdminProviderApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\AdminProviderApiController(
+				$c->make( ProviderRepository::class )
+			)
+		);
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\NotificationTemplateApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\NotificationTemplateApiController(
-                $c->make(\ERTAppointment\Domain\Notification\TemplateRenderer::class)
-            )
-        );
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\AdminFormApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\AdminFormApiController(
+				$c->make( FormRepository::class )
+			)
+		);
 
-        $this->container->singleton(
-            \ERTAppointment\Api\Controllers\WorkingHoursApiController::class,
-            fn(Container $c) => new \ERTAppointment\Api\Controllers\WorkingHoursApiController()
-        );
-    }
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\NotificationTemplateApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\NotificationTemplateApiController(
+				$c->make( \ERTAppointment\Domain\Notification\TemplateRenderer::class )
+			)
+		);
 
-    // -------------------------------------------------------------------------
-    // Lifecycle hooks (activation / deactivation)
-    // -------------------------------------------------------------------------
+		$this->container->singleton(
+			\ERTAppointment\Api\Controllers\WorkingHoursApiController::class,
+			fn( Container $c ) => new \ERTAppointment\Api\Controllers\WorkingHoursApiController()
+		);
+	}
 
-    private function registerLifecycleHooks(): void
-    {
-        register_activation_hook(
-            $this->file,
-            [$this->container->make(Installer::class), 'activate']
-        );
+	// -------------------------------------------------------------------------
+	// WordPress action / filter hooks
+	// -------------------------------------------------------------------------
 
-        register_deactivation_hook(
-            $this->file,
-            [$this->container->make(Installer::class), 'deactivate']
-        );
-    }
+	private function registerWordPressHooks(): void {
+		$hooks = new HookManager();
 
-    // -------------------------------------------------------------------------
-    // WordPress action / filter hooks
-    // -------------------------------------------------------------------------
+		$hooks->add( 'init', array( $this->container->make( RestApiRegistrar::class ), 'register' ) );
+		$hooks->add( 'init', array( $this->container->make( Shortcodes::class ), 'register' ) );
+		$hooks->add( 'init', array( $this->container->make( Installer::class ), 'maybeRepairInstallation' ), 1 );
 
-    private function registerWordPressHooks(): void
-    {
-        $hooks = new HookManager();
+		$hooks->add( 'admin_menu', array( $this->container->make( AdminMenu::class ), 'register' ) );
+		$hooks->add( 'admin_menu', array( $this->container->make( ProviderMenu::class ), 'register' ) );
 
-        $hooks->add('init', [$this->container->make(RestApiRegistrar::class), 'register']);
-        $hooks->add('init', [$this->container->make(Shortcodes::class), 'register']);
-        $hooks->add('init', [$this, 'loadTextDomain']);
+		$assets = $this->container->make( Assets::class );
 
-        $hooks->add('admin_menu', [$this->container->make(AdminMenu::class), 'register']);
-        $hooks->add('admin_menu', [$this->container->make(ProviderMenu::class), 'register']);
+		$hooks->add( 'wp_enqueue_scripts', array( $assets, 'enqueueFrontend' ) );
+		$hooks->add( 'admin_enqueue_scripts', array( $assets, 'enqueueAdmin' ) );
 
-        $assets = $this->container->make(Assets::class);
+		// Script tag'lerine type="module" ekle (Vite ES module output'u için).
+		$hooks->filter( 'script_loader_tag', array( $assets, 'filterScriptTag' ), 10, 3 );
 
-        $hooks->add('wp_enqueue_scripts', [$assets, 'enqueueFrontend']);
-        $hooks->add('admin_enqueue_scripts', [$assets, 'enqueueAdmin']);
+		$hooks->register();
+	}
 
-        // Script tag'lerine type="module" ekle (Vite ES module output'u için).
-        $hooks->filter('script_loader_tag', [$assets, 'filterScriptTag'], 10, 3);
+	// -------------------------------------------------------------------------
+	// Helpers
+	// -------------------------------------------------------------------------
 
-        $hooks->register();
-    }
-
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
-
-    public function loadTextDomain(): void
-    {
-        load_plugin_textdomain(
-            'ert-appointment',
-            false,
-            dirname(ERTA_BASENAME) . '/languages'
-        );
-    }
-
-    public function getContainer(): Container
-    {
-        return $this->container;
-    }
+	public function getContainer(): Container {
+		return $this->container;
+	}
 }

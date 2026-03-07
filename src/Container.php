@@ -22,172 +22,177 @@ use ReflectionNamedType;
  * This avoids pulling in a full framework while still enabling clean
  * constructor injection throughout the codebase.
  */
-final class Container
-{
-    /** @var array<string, Closure> Transient factory closures. */
-    private array $bindings = [];
+final class Container {
 
-    /** @var array<string, Closure> Singleton factory closures. */
-    private array $singletons = [];
+	/** @var array<string, Closure> Transient factory closures. */
+	private array $bindings = array();
 
-    /** @var array<string, object> Already-resolved singleton instances. */
-    private array $resolved = [];
+	/** @var array<string, Closure> Singleton factory closures. */
+	private array $singletons = array();
 
-    // -------------------------------------------------------------------------
-    // Registration
-    // -------------------------------------------------------------------------
+	/** @var array<string, object> Already-resolved singleton instances. */
+	private array $resolved = array();
 
-    /**
-     * Registers a transient binding. Each call to make() returns a new instance.
-     *
-     * @param string               $abstract  Interface or class name.
-     * @param string|Closure|null  $concrete  Concrete class name, factory closure, or null to use $abstract.
-     */
-    public function bind(string $abstract, string|Closure|null $concrete = null): void
-    {
-        $concrete ??= $abstract;
+	// -------------------------------------------------------------------------
+	// Registration
+	// -------------------------------------------------------------------------
 
-        if (is_string($concrete)) {
-            $concreteClass = $concrete;
-            $concrete      = fn(Container $c) => $c->build($concreteClass);
-        }
+	/**
+	 * Registers a transient binding. Each call to make() returns a new instance.
+	 *
+	 * @param string              $abstract  Interface or class name.
+	 * @param string|Closure|null $concrete  Concrete class name, factory closure, or null to use $abstract.
+	 */
+	public function bind( string $abstract, string|Closure|null $concrete = null ): void {
+		$concrete ??= $abstract;
 
-        $this->bindings[$abstract] = $concrete;
-    }
+		if ( is_string( $concrete ) ) {
+			$concreteClass = $concrete;
+			$concrete      = fn( Container $c ) => $c->build( $concreteClass );
+		}
 
-    /**
-     * Registers a singleton. Only the first call to make() creates the object;
-     * subsequent calls return the cached instance.
-     *
-     * @param string               $abstract
-     * @param string|Closure|null  $concrete
-     */
-    public function singleton(string $abstract, string|Closure|null $concrete = null): void
-    {
-        $concrete ??= $abstract;
+		$this->bindings[ $abstract ] = $concrete;
+	}
 
-        if (is_string($concrete)) {
-            $concreteClass = $concrete;
-            $concrete      = fn(Container $c) => $c->build($concreteClass);
-        }
+	/**
+	 * Registers a singleton. Only the first call to make() creates the object;
+	 * subsequent calls return the cached instance.
+	 *
+	 * @param string              $abstract
+	 * @param string|Closure|null $concrete
+	 */
+	public function singleton( string $abstract, string|Closure|null $concrete = null ): void {
+		$concrete ??= $abstract;
 
-        $this->singletons[$abstract] = $concrete;
-    }
+		if ( is_string( $concrete ) ) {
+			$concreteClass = $concrete;
+			$concrete      = fn( Container $c ) => $c->build( $concreteClass );
+		}
 
-    /**
-     * Registers an already-constructed object as a singleton.
-     */
-    public function instance(string $abstract, object $instance): void
-    {
-        $this->resolved[$abstract] = $instance;
-    }
+		$this->singletons[ $abstract ] = $concrete;
+	}
 
-    // -------------------------------------------------------------------------
-    // Resolution
-    // -------------------------------------------------------------------------
+	/**
+	 * Registers an already-constructed object as a singleton.
+	 */
+	public function instance( string $abstract, object $instance ): void {
+		$this->resolved[ $abstract ] = $instance;
+	}
 
-    /**
-     * Resolves a binding from the container.
-     * Resolution order: resolved cache → singleton factory → transient factory → auto-wire.
-     *
-     * @template T of object
-     * @param class-string<T> $abstract
-     * @return T
-     */
-    public function make(string $abstract): object
-    {
-        // 1. Already resolved singleton.
-        if (isset($this->resolved[$abstract])) {
-            /** @var T */
-            return $this->resolved[$abstract];
-        }
+	// -------------------------------------------------------------------------
+	// Resolution
+	// -------------------------------------------------------------------------
 
-        // 2. Singleton factory — resolve and cache.
-        if (isset($this->singletons[$abstract])) {
-            $instance                   = ($this->singletons[$abstract])($this);
-            $this->resolved[$abstract]  = $instance;
+	/**
+	 * Resolves a binding from the container.
+	 * Resolution order: resolved cache → singleton factory → transient factory → auto-wire.
+	 *
+	 * @template T of object
+	 * @param class-string<T> $abstract
+	 * @return T
+	 */
+	public function make( string $abstract ): object {
+		// 1. Already resolved singleton.
+		if ( isset( $this->resolved[ $abstract ] ) ) {
+			/** @var T */
+			return $this->resolved[ $abstract ];
+		}
 
-            /** @var T */
-            return $instance;
-        }
+		// 2. Singleton factory — resolve and cache.
+		if ( isset( $this->singletons[ $abstract ] ) ) {
+			$instance                    = ( $this->singletons[ $abstract ] )( $this );
+			$this->resolved[ $abstract ] = $instance;
 
-        // 3. Transient factory.
-        if (isset($this->bindings[$abstract])) {
-            /** @var T */
-            return ($this->bindings[$abstract])($this);
-        }
+			/** @var T */
+			return $instance;
+		}
 
-        // 4. Attempt auto-wiring for concrete classes.
-        /** @var T */
-        return $this->build($abstract);
-    }
+		// 3. Transient factory.
+		if ( isset( $this->bindings[ $abstract ] ) ) {
+			/** @var T */
+			return ( $this->bindings[ $abstract ] )( $this );
+		}
 
-    /**
-     * Returns true if the container has a registration for the given abstract.
-     */
-    public function has(string $abstract): bool
-    {
-        return isset($this->resolved[$abstract])
-            || isset($this->singletons[$abstract])
-            || isset($this->bindings[$abstract]);
-    }
+		// 4. Attempt auto-wiring for concrete classes.
+		/** @var T */
+		return $this->build( $abstract );
+	}
 
-    // -------------------------------------------------------------------------
-    // Auto-wiring
-    // -------------------------------------------------------------------------
+	/**
+	 * Returns true if the container has a registration for the given abstract.
+	 */
+	public function has( string $abstract ): bool {
+		return isset( $this->resolved[ $abstract ] )
+			|| isset( $this->singletons[ $abstract ] )
+			|| isset( $this->bindings[ $abstract ] );
+	}
 
-    /**
-     * Instantiates a concrete class, recursively resolving constructor dependencies.
-     *
-     * @throws RuntimeException When the class cannot be instantiated.
-     */
-    public function build(string $class): object
-    {
-        try {
-            $reflector = new ReflectionClass($class);
-        } catch (\ReflectionException $e) {
-            throw new RuntimeException("Cannot reflect class [{$class}]: {$e->getMessage()}", 0, $e);
-        }
+	// -------------------------------------------------------------------------
+	// Auto-wiring
+	// -------------------------------------------------------------------------
 
-        if (! $reflector->isInstantiable()) {
-            throw new RuntimeException(
-                "Class [{$class}] is not instantiable. "
-                . "Did you forget to register a concrete binding for an interface?"
-            );
-        }
+	/**
+	 * Instantiates a concrete class, recursively resolving constructor dependencies.
+	 *
+	 * @throws RuntimeException When the class cannot be instantiated.
+	 */
+	public function build( string $class ): object {
+		try {
+			$reflector = new ReflectionClass( $class );
+		} catch ( \ReflectionException $e ) {
+			$class_name = sanitize_text_field( $class );
+			$error_text = sanitize_text_field( $e->getMessage() );
+			throw new RuntimeException(
+				sprintf( 'Cannot reflect class [%s]: %s', $class_name, $error_text ),
+				0,
+				$e
+			);
+		}
 
-        $constructor = $reflector->getConstructor();
+		if ( ! $reflector->isInstantiable() ) {
+			$class_name = sanitize_text_field( $class );
+			throw new RuntimeException(
+				sprintf( 'Class [%s] is not instantiable. ', $class_name )
+				. 'Did you forget to register a concrete binding for an interface?'
+			);
+		}
 
-        if ($constructor === null) {
-            return new $class();
-        }
+		$constructor = $reflector->getConstructor();
 
-        $dependencies = array_map(
-            fn(ReflectionParameter $param) => $this->resolveDependency($param, $class),
-            $constructor->getParameters()
-        );
+		if ( $constructor === null ) {
+			return new $class();
+		}
 
-        return $reflector->newInstanceArgs($dependencies);
-    }
+		$dependencies = array_map(
+			fn( ReflectionParameter $param ) => $this->resolveDependency( $param, $class ),
+			$constructor->getParameters()
+		);
 
-    /**
-     * Resolves a single constructor parameter.
-     */
-    private function resolveDependency(ReflectionParameter $param, string $class): mixed
-    {
-        $type = $param->getType();
+		return $reflector->newInstanceArgs( $dependencies );
+	}
 
-        if ($type instanceof ReflectionNamedType && ! $type->isBuiltin()) {
-            return $this->make($type->getName());
-        }
+	/**
+	 * Resolves a single constructor parameter.
+	 */
+	private function resolveDependency( ReflectionParameter $param, string $class ): mixed {
+		$type = $param->getType();
 
-        if ($param->isDefaultValueAvailable()) {
-            return $param->getDefaultValue();
-        }
+		if ( $type instanceof ReflectionNamedType && ! $type->isBuiltin() ) {
+			return $this->make( $type->getName() );
+		}
 
-        throw new RuntimeException(
-            "Cannot resolve primitive parameter [\${$param->getName()}] "
-            . "in class [{$class}]. Please use a factory closure for this binding."
-        );
-    }
+		if ( $param->isDefaultValueAvailable() ) {
+			return $param->getDefaultValue();
+		}
+
+		$param_name = sanitize_text_field( $param->getName() );
+		$class_name = sanitize_text_field( $class );
+		throw new RuntimeException(
+			sprintf(
+				'Cannot resolve primitive parameter [$%s] in class [%s]. Please use a factory closure for this binding.',
+				$param_name,
+				$class_name
+			)
+		);
+	}
 }

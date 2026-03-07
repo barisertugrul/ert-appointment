@@ -85,6 +85,11 @@ EXCLUDES=(
     ".env"
     ".env.*"
     "*.map"
+    "scripts"
+    "WPORG_PRECHECK.md"
+    "repomix-output.xml"
+    "*.docx"
+    "*.html"
 )
 
 # ── Sürüm ────────────────────────────────────────────────────────────────────
@@ -167,17 +172,40 @@ fi
 # ── PO → MO derleme ──────────────────────────────────────────────────────────
 title "Çeviri derleme"
 
+MSGFMT_BIN=""
 if command -v msgfmt &>/dev/null; then
+    MSGFMT_BIN="$(command -v msgfmt)"
+elif command -v msgfmt.exe &>/dev/null; then
+    MSGFMT_BIN="$(command -v msgfmt.exe)"
+else
+    # Windows / Git Bash yaygın konumlar
+    CANDIDATES=(
+        "/c/ProgramData/chocolatey/bin/msgfmt.exe"
+        "/c/msys64/usr/bin/msgfmt.exe"
+        "/c/msys64/mingw64/bin/msgfmt.exe"
+        "/mingw64/bin/msgfmt.exe"
+    )
+    for cand in "${CANDIDATES[@]}"; do
+        if [[ -x "$cand" ]]; then
+            MSGFMT_BIN="$cand"
+            break
+        fi
+    done
+fi
+
+if [[ -n "$MSGFMT_BIN" ]]; then
+    step "msgfmt bulundu: ${MSGFMT_BIN}"
     compiled=0
     while IFS= read -r -d '' po; do
         mo="${po%.po}.mo"
-        msgfmt "$po" -o "$mo"
+        "$MSGFMT_BIN" "$po" -o "$mo"
         ok "$(basename "$po") → $(basename "$mo")"
         ((compiled++)) || true
     done < <(find "${ROOT_DIR}/languages" -name "*.po" -print0 2>/dev/null)
     [[ $compiled -eq 0 ]] && warn "languages/ içinde .po bulunamadı"
 else
     warn "msgfmt bulunamadı — mevcut .mo dosyaları kullanılacak"
+    warn "Windows için kurulum: 'choco install gettext' veya 'scoop install gettext'"
 fi
 
 # ── Dosyaları hazırla ────────────────────────────────────────────────────────
@@ -201,6 +229,13 @@ else
     rm -rf "${STAGE}/dist"
 fi
 
+# Güvenlik ağı: dağıtımda asla bulunmaması gereken geliştirme/artık dosyaları kaldır.
+rm -rf "${STAGE}/scripts" 2>/dev/null || true
+rm -f "${STAGE}/.cursorrules" 2>/dev/null || true
+rm -f "${STAGE}/WPORG_PRECHECK.md" 2>/dev/null || true
+rm -f "${STAGE}/repomix-output.xml" 2>/dev/null || true
+find "${STAGE}" -maxdepth 1 -type f \( -name "*.docx" -o -name "*.html" \) -delete 2>/dev/null || true
+
 [[ -f "${STAGE}/${MAIN_FILE}" ]] || die "Hazırlama başarısız — ${MAIN_FILE} stage'de yok"
 ok "Dosyalar hazırlandı"
 
@@ -208,6 +243,7 @@ ok "Dosyalar hazırlandı"
 title "ZIP oluşturuluyor"
 
 mkdir -p "$DIST_DIR"
+rm -f "$ARCHIVE"
 if [[ "$ZIP_CMD" == "zip" ]]; then
     (cd "$TMP_DIR" && zip -r "$ARCHIVE" "${PLUGIN_SLUG}/" -x "*/.DS_Store" -x "*/__MACOSX/*" -q)
 else

@@ -25,7 +25,7 @@ if (! defined('ABSPATH')) {
 if (version_compare(PHP_VERSION, '8.1', '<')) {
     add_action('admin_notices', function () {
         echo '<div class="notice notice-error"><p>'
-            . esc_html__('WP Appointment requires PHP 8.1 or higher.', 'ert-appointment')
+            . esc_html__('ERT Appointment requires PHP 8.1 or higher.', 'ert-appointment')
             . '</p></div>';
     });
     return;
@@ -35,7 +35,7 @@ if (version_compare(PHP_VERSION, '8.1', '<')) {
 if (version_compare(get_bloginfo('version'), '6.0', '<')) {
     add_action('admin_notices', function () {
         echo '<div class="notice notice-error"><p>'
-            . esc_html__('WP Appointment requires WordPress 6.0 or higher.', 'ert-appointment')
+            . esc_html__('ERT Appointment requires WordPress 6.0 or higher.', 'ert-appointment')
             . '</p></div>';
     });
     return;
@@ -70,6 +70,19 @@ if (file_exists(ERTA_PATH . 'vendor/autoload.php')) {
         }
     });
 }
+
+// Lifecycle hooks must be registered in the main plugin file scope.
+register_activation_hook(__FILE__, static function (): void {
+    $settings  = new \ERTAppointment\Settings\SettingsManager(new \ERTAppointment\Infrastructure\Cache\TransientCache());
+    $installer = new \ERTAppointment\Core\Installer($settings);
+    $installer->activate();
+});
+
+register_deactivation_hook(__FILE__, static function (): void {
+    $settings  = new \ERTAppointment\Settings\SettingsManager(new \ERTAppointment\Infrastructure\Cache\TransientCache());
+    $installer = new \ERTAppointment\Core\Installer($settings);
+    $installer->deactivate();
+});
 
 // Boot the plugin.
 add_action('plugins_loaded', function (): void {

@@ -7,7 +7,7 @@
     <div v-if="!isPro" class="erta-pro-upgrade-card">
       <h3>{{ t('proFeature') }}</h3>
       <p>{{ t('reportsProDesc') }}</p>
-      <a href="https://ertappointment.com/pro" target="_blank" class="erta-btn erta-btn--primary">{{ t('upgradeToPro') }}</a>
+      <a href="https://www.ertyazilim.com/ert-appointment-pro" target="_blank" class="erta-btn erta-btn--primary">{{ t('upgradeToPro') }}</a>
     </div>
     <template v-else>
       <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">

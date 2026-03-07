@@ -70,6 +70,12 @@ export const useBookingStore = defineStore('booking', () => {
                 if (dept) selectedDepartment.value = dept;
             }
 
+            if (!departmentsEnabled.value) {
+                currentStep.value = 2;
+            } else if (selectedDepartment.value) {
+                currentStep.value = 2;
+            }
+
             // If no departments or one pre-selected, jump straight to providers.
             if (!departmentsEnabled.value || selectedDepartment.value) {
                 await loadProviders(selectedDepartment.value?.id ?? null);

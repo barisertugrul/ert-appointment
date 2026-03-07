@@ -15,6 +15,7 @@
 
     <div v-if="saved"  class="erta-alert erta-alert--success">{{ t('saved') }}</div>
     <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
+    <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
 
     <!-- Scope selector -->
     <div class="erta-scope-bar">
@@ -22,16 +23,19 @@
         <label class="erta-form-label">{{ t('editScope') }}</label>
         <select class="erta-input erta-input--narrow" v-model="scope" @change="loadScope">
           <option value="global">{{ t('global') }}</option>
-          <option value="department">{{ t('department') }}</option>
+          <option value="department" :disabled="!isPro">{{ t('department') }} ({{ t('proBadge') }})</option>
           <option value="provider">{{ t('provider') }}</option>
         </select>
+        <label v-if="scope !== 'global'" class="erta-form-label">{{ t('selectScopeItem') }}</label>
         <select
           v-if="scope !== 'global'"
           class="erta-input erta-input--narrow"
           v-model="scopeId"
+          :disabled="loadingScopeItems || !scopeItems.length"
           @change="loadScope"
         >
-          <option v-if="!scopeItems.length" value="">— {{ t('loading') }} —</option>
+          <option v-if="loadingScopeItems" value="">— {{ t('loading') }} —</option>
+          <option v-else-if="!scopeItems.length" value="">— Kayıt yok —</option>
           <option v-for="item in scopeItems" :key="item.id" :value="item.id">
             {{ item.name }}
           </option>
@@ -187,11 +191,13 @@ import { useAdminApi } from '../../composables/useAdminApi.js';
 
 const api = useAdminApi();
 const t   = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
+const isPro = window.ertaAdminData?.isPro ?? false;
 
 // ── State ──────────────────────────────────────────────────────────────────
 const scope      = ref('global');
 const scopeId    = ref(null);
 const scopeItems = ref([]);
+const loadingScopeItems = ref(false);
 const loading    = ref(true);
 const saving     = ref(false);
 const saved      = ref(false);
@@ -216,18 +222,11 @@ const scopeHint = computed(() => {
 });
 
 // ── Day names (ISO: 1=Mon … 7=Sun) ────────────────────────────────────────
-function dayName(n) {
-  const names = {
-    1: t('Monday'),
-    2: t('Tuesday'),
-    3: t('Wednesday'),
-    4: t('Thursday'),
-    5: t('Friday'),
-    6: t('Saturday'),
-    7: t('Sunday'),
-  };
-  return names[n] ?? `Day ${n}`;
-}
+const DAY_NAMES = {
+  1: 'Monday', 2: 'Tuesday', 3: 'Wednesday',
+  4: 'Thursday', 5: 'Friday', 6: 'Saturday', 7: 'Sunday',
+};
+function dayName(n) { return DAY_NAMES[n] ?? `Day ${n}`; }
 
 // ── Lifecycle ──────────────────────────────────────────────────────────────
 onMounted(async () => {
@@ -236,6 +235,10 @@ onMounted(async () => {
 });
 
 watch(scope, async () => {
+  if (!isPro && scope.value === 'department') {
+    scope.value = 'global';
+    return;
+  }
   scopeId.value = null;
   await loadScopeItems();
   await loadScope();
@@ -243,7 +246,17 @@ watch(scope, async () => {
 
 // ── Load helpers ───────────────────────────────────────────────────────────
 async function loadScopeItems() {
-  if (scope.value === 'global') { scopeItems.value = []; return; }
+  loadingScopeItems.value = true;
+
+  if (!isPro && scope.value === 'department') {
+    scope.value = 'global';
+  }
+
+  if (scope.value === 'global') {
+    scopeItems.value = [];
+    loadingScopeItems.value = false;
+    return;
+  }
 
   if (scope.value === 'department') {
     const { data } = await api.listDepartments();
@@ -256,6 +269,8 @@ async function loadScopeItems() {
   if (scopeItems.value.length && !scopeId.value) {
     scopeId.value = scopeItems.value[0].id;
   }
+
+  loadingScopeItems.value = false;
 }
 
 async function loadScope() {
@@ -270,7 +285,8 @@ async function loadScope() {
     api.getSpecialDays(scope.value, sid),
   ]);
 
-  workingHours.value = hoursRes.data ?? buildDefaultHours();
+  const incomingHours = Array.isArray(hoursRes.data) ? hoursRes.data : [];
+  workingHours.value = incomingHours.length ? incomingHours : buildDefaultHours();
   breaks.value       = breaksRes.data ?? [];
   specialDays.value  = specialRes.data ?? [];
   loading.value      = false;

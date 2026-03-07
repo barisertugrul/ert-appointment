@@ -2,7 +2,7 @@
 Contributors: ert
 Tags: appointment, booking, calendar, reservation, schedule
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.9
 Stable tag: 1.0.0
 Requires PHP: 8.1
 License: GPLv2 or later
@@ -14,9 +14,9 @@ A powerful, extensible appointment booking system. Manage departments, providers
 
 **Appointment Booking by ERT** lets you add a full-featured appointment booking system to any WordPress site.
 
+
 = Core Features =
 
-* **Multi-department support** — Organise providers into departments (clinics, teams, services, etc.)
 * **Provider management** — Individual providers with their own working hours and breaks
 * **Smart availability** — Slot generation respects working hours, breaks, buffer times and existing bookings
 * **Custom booking forms** — Drag-and-drop form builder with text, email, phone, select, checkbox and date fields
@@ -31,6 +31,7 @@ A powerful, extensible appointment booking system. Manage departments, providers
 
 The free plugin is fully functional. A separate **Pro add-on** (sold on our website) adds:
 
+* Department management
 * Google Calendar sync (OAuth 2.0)
 * Zoom meeting auto-creation
 * Online payments (PayTR, Stripe, PayPal, İyzico)
@@ -45,7 +46,7 @@ The Pro add-on is available at [ert.com.tr](https://ert.com.tr/).
 1. Upload the `ert-appointment` folder to `/wp-content/plugins/`
 2. Activate the plugin from **Plugins → Installed Plugins**
 3. Go to **Appointment Booking** in the WordPress admin menu
-4. Create your first department and provider, then add `[erta_booking]` to any page
+4. Create your first provider, then add `[erta_booking]` to any page
 
 == Frequently Asked Questions ==
 
@@ -86,7 +87,7 @@ Yes. The plugin ships with translations for Turkish, German, French, Spanish, Ar
 
 = 1.0.0 — 2025-02-27 =
 * Initial public release
-* Multi-department and multi-provider support with hierarchical settings (global → department → provider)
+* Multi-provider support with hierarchical settings (global → provider)
 * Smart slot generation: working hours, breaks, buffer times, minimum notice, maximum advance days
 * Drag-and-drop custom booking form builder (text, email, phone, select, checkbox, date fields)
 * Email notifications with fully customisable templates and placeholder tokens

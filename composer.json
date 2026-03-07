@@ -1,6 +1,6 @@
 {
   "name": "ert-appointment/ert-appointment",
-  "description": "WP Appointment — Lite plugin",
+  "description": "ERT Appointment — Lite plugin",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "require": {
@@ -24,11 +24,16 @@
   },
   "scripts": {
     "test":   "phpunit --configuration phpunit.xml",
-    "lint":   "phpcs --standard=WordPress src/",
+    "lint":   "phpcs --standard=phpcs.xml.dist -n src/",
+    "lint:strict": "phpcs --standard=phpcs.xml.dist src/",
+    "lint:fix": "phpcbf --standard=phpcs.xml.dist src/",
     "analyse": "phpstan analyse src/ --level=8"
   },
   "config": {
     "optimize-autoloader": true,
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

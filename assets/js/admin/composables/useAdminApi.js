@@ -26,9 +26,10 @@ export function useAdminApi() {
         const qs = new URLSearchParams(params).toString();
         return req(`admin/appointments${qs ? '?' + qs : ''}`);
     };
-    const confirmAppointment   = (id)         => req(`appointments/${id}/confirm`,   { method: 'PUT' });
-    const cancelAppointment    = (id, reason) => req(`appointments/${id}/cancel`,    { method: 'PUT', body: JSON.stringify({ reason }) });
-    const rescheduleAppointment = (id, dt)    => req(`appointments/${id}/reschedule`,{ method: 'PUT', body: JSON.stringify({ new_start_datetime: dt }) });
+    const confirmAppointment   = (id)         => req(`appointments/${id}/confirm`,   { method: 'POST' });
+    const unconfirmAppointment = (id)         => req(`appointments/${id}/unconfirm`, { method: 'POST' });
+    const cancelAppointment    = (id, reason) => req(`appointments/${id}/cancel`,    { method: 'POST', body: JSON.stringify({ reason }) });
+    const rescheduleAppointment = (id, dt)    => req(`appointments/${id}/reschedule`,{ method: 'POST', body: JSON.stringify({ new_start_datetime: dt }) });
 
     // ── Departments ───────────────────────────────────────────────────────
     const listDepartments  = ()           => req('admin/departments');
@@ -40,7 +41,7 @@ export function useAdminApi() {
     // ── Providers ─────────────────────────────────────────────────────────
     const listProviders  = (params = {}) => {
         const qs = new URLSearchParams(params).toString();
-        return req(`providers${qs ? '?' + qs : ''}`);
+        return req(`admin/providers${qs ? '?' + qs : ''}`);
     };
     const saveProvider   = (data)  => req('admin/providers' + (data.id ? `/${data.id}` : ''), {
         method: data.id ? 'PUT' : 'POST', body: JSON.stringify(data),
@@ -55,6 +56,7 @@ export function useAdminApi() {
     const saveSettings   = (scope, scopeId, data) => req('admin/settings', {
         method: 'POST', body: JSON.stringify({ scope, scope_id: scopeId, settings: data }),
     });
+    const repairInstallation = () => req('admin/settings/repair', { method: 'POST' });
 
     // ── Forms ─────────────────────────────────────────────────────────────
     const getForms    = ()     => req('admin/forms');
@@ -107,10 +109,10 @@ export function useAdminApi() {
     });
 
     return {
-        listAppointments, confirmAppointment, cancelAppointment, rescheduleAppointment,
+        listAppointments, confirmAppointment, unconfirmAppointment, cancelAppointment, rescheduleAppointment,
         listDepartments, saveDepartment, deleteDepartment,
         listProviders, saveProvider, deleteProvider,
-        getSettings, saveSettings,
+        getSettings, saveSettings, repairInstallation,
         getForms, saveForm, deleteForm,
         getTemplates, getPlaceholders, saveTemplate,
         getReports,

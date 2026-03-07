@@ -42,6 +42,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
+import { formatMonthYearSafe } from '../../utils/locale.js';
 
 const props = defineProps({
   provider:      { type: Object, required: true },
@@ -61,7 +62,7 @@ const dayHeaders = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 const monthLabel = computed(() => {
   const d = new Date(currentYear.value, currentMonth.value - 1, 1);
-  return d.toLocaleString(window.ertaData?.locale ?? 'en', { month: 'long', year: 'numeric' });
+  return formatMonthYearSafe(d);
 });
 
 const canGoPrev = computed(() => {

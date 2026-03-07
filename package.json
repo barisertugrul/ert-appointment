@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:watch": "vite build --watch",
-    "preview": "vite preview",
-    "lint": "eslint assets/js --ext .js,.vue"
+    "dev":        "vite",
+    "build":      "vite build",
+    "build:watch":"vite build --watch",
+    "preview":    "vite preview",
+    "lint":       "eslint assets/js --ext .js,.vue"
   },
   "dependencies": {
     "pinia": "^2.1.7",
-    "vue": "^3.4.0"
+    "vue":   "^3.4.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
-    "vite": "^6.4.1"
+    "vite": "^5.0.0"
   }
 }

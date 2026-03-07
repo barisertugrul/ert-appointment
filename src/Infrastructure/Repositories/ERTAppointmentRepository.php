@@ -13,273 +13,277 @@ use ERTAppointment\Domain\Appointment\AppointmentStatus;
 /**
  * WordPress / wpdb implementation of AppointmentRepository.
  */
-final class ERTAppointmentRepository implements AppointmentRepository
-{
-    private function table(): string
-    {
-        global $wpdb;
-        return $wpdb->prefix . 'erta_appointments';
-    }
+final class ERTAppointmentRepository implements AppointmentRepository {
 
-    // -------------------------------------------------------------------------
-    // Reads
-    // -------------------------------------------------------------------------
+	private function table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'erta_appointments';
+	}
 
-    public function findById(int $id): ?Appointment
-    {
-        global $wpdb;
+	private function tableSql(): string {
+		return esc_sql( $this->table() );
+	}
 
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->table()} WHERE id = %d", $id),
-            ARRAY_A
-        );
+	// -------------------------------------------------------------------------
+	// Reads
+	// -------------------------------------------------------------------------
 
-        return $row ? Appointment::fromRow($row) : null;
-    }
+	public function findById( int $id ): ?Appointment {
+		global $wpdb;
+		$table = $this->tableSql();
 
-    public function findOrFail(int $id): Appointment
-    {
-        $appointment = $this->findById($id);
+		$row = $wpdb->get_row(
+			$wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE id = %d', $id ),
+			ARRAY_A
+		);
 
-        if ($appointment === null) {
-            throw new RuntimeException(
-                sprintf(__('Appointment #%d not found.', 'ert-appointment'), $id)
-            );
-        }
+		return $row ? Appointment::fromRow( $row ) : null;
+	}
 
-        return $appointment;
-    }
+	public function findOrFail( int $id ): Appointment {
+		$appointment = $this->findById( $id );
 
-    public function findByProvider(
-        int $providerId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to
-    ): array {
-        global $wpdb;
+		if ( $appointment === null ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+			throw new RuntimeException(
+				/* translators: %d appointment ID */
+				sprintf( esc_html__( 'Appointment #%d not found.', 'ert-appointment' ), $id )
+			);
+		}
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$this->table()}
+		return $appointment;
+	}
+
+	public function findByProvider(
+		int $providerId,
+		DateTimeImmutable $from,
+		DateTimeImmutable $to
+	): array {
+		global $wpdb;
+		$table = $this->tableSql();
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM ' . $table . '
                  WHERE provider_id = %d
                    AND start_datetime BETWEEN %s AND %s
-                 ORDER BY start_datetime ASC",
-                $providerId,
-                $from->format('Y-m-d H:i:s'),
-                $to->format('Y-m-d H:i:s')
-            ),
-            ARRAY_A
-        );
+                 ORDER BY start_datetime ASC',
+				$providerId,
+				$from->format( 'Y-m-d H:i:s' ),
+				$to->format( 'Y-m-d H:i:s' )
+			),
+			ARRAY_A
+		);
 
-        return array_map(fn($row) => Appointment::fromRow($row), $rows);
-    }
+		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
+	}
 
-    public function findBookedBlocks(int $providerId, DateTimeImmutable $date): array
-    {
-        global $wpdb;
+	public function findBookedBlocks( int $providerId, DateTimeImmutable $date ): array {
+		global $wpdb;
 
-        $dateStr = $date->format('Y-m-d');
+		$table   = $this->tableSql();
+		$dateStr = $date->format( 'Y-m-d' );
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT start_datetime, end_datetime FROM {$this->table()}
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT start_datetime, end_datetime FROM ' . $table . '
                  WHERE provider_id = %d
                    AND DATE(start_datetime) = %s
-                   AND status NOT IN ('cancelled', 'rescheduled', 'no_show')
-                 ORDER BY start_datetime ASC",
-                $providerId,
-                $dateStr
-            ),
-            ARRAY_A
-        );
+                   AND status NOT IN (\'cancelled\', \'rescheduled\', \'no_show\')
+                 ORDER BY start_datetime ASC',
+				$providerId,
+				$dateStr
+			),
+			ARRAY_A
+		);
 
-        return array_map(
-            fn($row) => [
-                'start' => new DateTimeImmutable($row['start_datetime']),
-                'end'   => new DateTimeImmutable($row['end_datetime']),
-            ],
-            $rows
-        );
-    }
+		return array_map(
+			fn( $row ) => array(
+				'start' => new DateTimeImmutable( $row['start_datetime'] ),
+				'end'   => new DateTimeImmutable( $row['end_datetime'] ),
+			),
+			$rows
+		);
+	}
 
-    public function findByCustomerEmail(string $email, ?array $statuses = null): array
-    {
-        global $wpdb;
+	public function findByCustomerEmail( string $email, ?array $statuses = null ): array {
+		global $wpdb;
 
-        $sql = "SELECT * FROM {$this->table()} WHERE customer_email = %s";
-        $params = [$email];
+		$table  = $this->tableSql();
+		$sql    = 'SELECT * FROM ' . $table . ' WHERE customer_email = %s';
+		$params = array( $email );
 
-        if ($statuses !== null && count($statuses) > 0) {
-            $placeholders = implode(',', array_fill(0, count($statuses), '%s'));
-            $sql .= " AND status IN ({$placeholders})";
-            $params = array_merge($params, array_map(fn($s) => $s->value, $statuses));
-        }
+		if ( $statuses !== null && count( $statuses ) > 0 ) {
+			$placeholders = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+			$sql         .= ' AND status IN (' . $placeholders . ')';
+			$params       = array_merge(
+				$params,
+				array_map(
+					fn( $status ) => $status instanceof AppointmentStatus ? $status->value : sanitize_key( (string) $status ),
+					$statuses
+				)
+			);
+		}
 
-        $sql .= ' ORDER BY start_datetime DESC';
+		$sql .= ' ORDER BY start_datetime DESC';
 
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $rows = $wpdb->get_results($wpdb->prepare($sql, ...$params), ARRAY_A);
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
 
-        return array_map(fn($row) => Appointment::fromRow($row), $rows);
-    }
+		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
+	}
 
-    public function findUpcoming(int $limit = 50): array
-    {
-        global $wpdb;
+	public function findUpcoming( int $limit = 50 ): array {
+		global $wpdb;
+		$table = $this->tableSql();
 
-        $now = current_time('mysql');
+		$now = current_time( 'mysql' );
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$this->table()}
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM ' . $table . '
                  WHERE start_datetime > %s
-                   AND status IN ('pending', 'confirmed')
+                   AND status IN (\'pending\', \'confirmed\')
                  ORDER BY start_datetime ASC
-                 LIMIT %d",
-                $now,
-                $limit
-            ),
-            ARRAY_A
-        );
+                 LIMIT %d',
+				$now,
+				$limit
+			),
+			ARRAY_A
+		);
 
-        return array_map(fn($row) => Appointment::fromRow($row), $rows);
-    }
+		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
+	}
 
-    public function countByStatus(DateTimeImmutable $from, DateTimeImmutable $to): array
-    {
-        global $wpdb;
+	public function countByStatus( DateTimeImmutable $from, DateTimeImmutable $to ): array {
+		global $wpdb;
+		$table = $this->tableSql();
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT status, COUNT(*) AS cnt
-                 FROM {$this->table()}
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT status, COUNT(*) AS cnt
+                 FROM ' . $table . '
                  WHERE start_datetime BETWEEN %s AND %s
-                 GROUP BY status",
-                $from->format('Y-m-d H:i:s'),
-                $to->format('Y-m-d H:i:s')
-            ),
-            ARRAY_A
-        );
+                 GROUP BY status',
+				$from->format( 'Y-m-d H:i:s' ),
+				$to->format( 'Y-m-d H:i:s' )
+			),
+			ARRAY_A
+		);
 
-        $result = [];
-        foreach ($rows as $row) {
-            $result[$row['status']] = (int) $row['cnt'];
-        }
+		$result = array();
+		foreach ( $rows as $row ) {
+			$result[ $row['status'] ] = (int) $row['cnt'];
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public function paginate(int $page, int $perPage, array $filters = []): array
-    {
-        global $wpdb;
-        $table  = $this->table();
-        $offset = ($page - 1) * $perPage;
+	public function paginate( int $page, int $perPage, array $filters = array() ): array {
+		global $wpdb;
+		$table  = $this->tableSql();
+		$offset = ( $page - 1 ) * $perPage;
 
-        [$where, $params] = $this->buildWhere($filters);
+		list( $where, $params ) = $this->buildWhere( $filters );
+		$countSql = 'SELECT COUNT(*) FROM ' . $table . ' ' . $where;
+		$listSql  = 'SELECT * FROM ' . $table . ' ' . $where . ' ORDER BY start_datetime DESC LIMIT %d OFFSET %d';
 
-        $total = (int) $wpdb->get_var(
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $wpdb->prepare("SELECT COUNT(*) FROM {$table} {$where}", ...$params)
-        );
+		if ( count( $params ) > 0 ) {
+			$total = (int) $wpdb->get_var( $wpdb->prepare( $countSql, $params ) );
+		} else {
+			$total = (int) $wpdb->get_var( $countSql );
+		}
 
-        $rows = $wpdb->get_results(
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $wpdb->prepare(
-                "SELECT * FROM {$table} {$where} ORDER BY start_datetime DESC LIMIT %d OFFSET %d",
-                ...[...$params, $perPage, $offset]
-            ),
-            ARRAY_A
-        );
+		$rows = $wpdb->get_results( $wpdb->prepare( $listSql, array_merge( $params, array( $perPage, $offset ) ) ), ARRAY_A );
 
-        return [
-            'items' => array_map(fn($row) => Appointment::fromRow($row), $rows),
-            'total' => $total,
-        ];
-    }
+		return array(
+			'items' => array_map( fn( $row ) => Appointment::fromRow( $row ), $rows ),
+			'total' => $total,
+		);
+	}
 
-    // -------------------------------------------------------------------------
-    // Writes
-    // -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Writes
+	// -------------------------------------------------------------------------
 
-    public function save(Appointment $appointment): Appointment
-    {
-        global $wpdb;
-        $data = $appointment->toArray();
+	public function save( Appointment $appointment ): Appointment {
+		global $wpdb;
+		$data = $appointment->toArray();
 
-        if ($appointment->id === null) {
-            $wpdb->insert($this->table(), $data);
-            $id = (int) $wpdb->insert_id;
+		if ( $appointment->id === null ) {
+			$wpdb->insert( $this->table(), $data );
+			$id = (int) $wpdb->insert_id;
 
-            if ($id === 0) {
-                throw new RuntimeException(
-                    __('Failed to save appointment to database.', 'ert-appointment')
-                );
-            }
+			if ( $id === 0 ) {
+				throw new RuntimeException(
+					esc_html__( 'Failed to save appointment to database.', 'ert-appointment' )
+				);
+			}
 
-            return $this->findOrFail($id);
-        }
+			return $this->findOrFail( $id );
+		}
 
-        $wpdb->update($this->table(), $data, ['id' => $appointment->id]);
+		$wpdb->update( $this->table(), $data, array( 'id' => $appointment->id ) );
 
-        return $this->findOrFail($appointment->id);
-    }
+		return $this->findOrFail( $appointment->id );
+	}
 
-    public function delete(int $id): bool
-    {
-        global $wpdb;
-        return (bool) $wpdb->delete($this->table(), ['id' => $id]);
-    }
+	public function delete( int $id ): bool {
+		global $wpdb;
+		return (bool) $wpdb->delete( $this->table(), array( 'id' => $id ) );
+	}
 
-    // -------------------------------------------------------------------------
-    // Query builder helpers
-    // -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Query builder helpers
+	// -------------------------------------------------------------------------
 
-    /**
-     * Builds a WHERE clause from a filter map.
-     *
-     * @param array<string, mixed> $filters
-     * @return array{string, list<mixed>}
-     */
-    private function buildWhere(array $filters): array
-    {
-        $conditions = ['1=1'];
-        $params     = [];
+	/**
+	 * Builds a WHERE clause from a filter map.
+	 *
+	 * @param array<string, mixed> $filters
+	 * @return array{string, list<mixed>}
+	 */
+	private function buildWhere( array $filters ): array {
+		global $wpdb;
 
-        if (! empty($filters['provider_id'])) {
-            $conditions[] = 'provider_id = %d';
-            $params[]     = (int) $filters['provider_id'];
-        }
+		$conditions = array( '1=1' );
+		$params     = array();
 
-        if (! empty($filters['department_id'])) {
-            $conditions[] = 'department_id = %d';
-            $params[]     = (int) $filters['department_id'];
-        }
+		if ( ! empty( $filters['provider_id'] ) ) {
+			$conditions[] = 'provider_id = %d';
+			$params[]     = (int) $filters['provider_id'];
+		}
 
-        if (! empty($filters['status'])) {
-            $statuses = (array) $filters['status'];
-            $pls      = implode(',', array_fill(0, count($statuses), '%s'));
-            $conditions[] = "status IN ({$pls})";
-            $params = array_merge($params, $statuses);
-        }
+		if ( ! empty( $filters['department_id'] ) ) {
+			$conditions[] = 'department_id = %d';
+			$params[]     = (int) $filters['department_id'];
+		}
 
-        if (! empty($filters['date_from'])) {
-            $conditions[] = 'start_datetime >= %s';
-            $params[]     = $filters['date_from'];
-        }
+		if ( ! empty( $filters['status'] ) ) {
+			$statuses     = (array) $filters['status'];
+			$pls          = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+			$conditions[] = 'status IN (' . $pls . ')';
+			$params       = array_merge( $params, array_map( fn( $status ) => sanitize_key( (string) $status ), $statuses ) );
+		}
 
-        if (! empty($filters['date_to'])) {
-            $conditions[] = 'start_datetime <= %s';
-            $params[]     = $filters['date_to'];
-        }
+		if ( ! empty( $filters['date_from'] ) ) {
+			$conditions[] = 'start_datetime >= %s';
+			$params[]     = $filters['date_from'];
+		}
 
-        if (! empty($filters['search'])) {
-            $conditions[] = '(customer_name LIKE %s OR customer_email LIKE %s)';
-            $like         = '%' . $GLOBALS['wpdb']->esc_like($filters['search']) . '%';
-            $params[]     = $like;
-            $params[]     = $like;
-        }
+		if ( ! empty( $filters['date_to'] ) ) {
+			$conditions[] = 'start_datetime <= %s';
+			$params[]     = $filters['date_to'];
+		}
 
-        $where = 'WHERE ' . implode(' AND ', $conditions);
+		if ( ! empty( $filters['search'] ) ) {
+			$conditions[] = '(customer_name LIKE %s OR customer_email LIKE %s)';
+			$like         = '%' . $wpdb->esc_like( (string) $filters['search'] ) . '%';
+			$params[]     = $like;
+			$params[]     = $like;
+		}
 
-        return [$where, $params];
-    }
+		$where = 'WHERE ' . implode( ' AND ', $conditions );
+
+		return array( $where, $params );
+	}
 }

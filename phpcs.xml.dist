@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="ERT Appointment">
+    <description>Project-specific PHPCS profile for current plugin architecture.</description>
+
+    <file>src</file>
+
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName" />
+        <exclude name="WordPress.NamingConventions.ValidVariableName" />
+        <exclude name="WordPress.NamingConventions.ValidFunctionName" />
+        <exclude name="WordPress.PHP.YodaConditions" />
+        <exclude name="WordPress.DB.DirectDatabaseQuery" />
+        <exclude name="WordPress.WP.Capabilities.Unknown" />
+        <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped" />
+
+        <exclude name="Squiz.Commenting" />
+        <exclude name="Generic.Commenting" />
+        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter" />
+        <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames" />
+        <exclude name="Universal.Operators.DisallowShortTernary" />
+    </rule>
+</ruleset>

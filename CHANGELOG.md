@@ -1,7 +1,7 @@
 # Changelog — Appointment Booking by ERT (Lite)
 
-All notable changes to this plugin are documented here.  
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).  
+All notable changes to this plugin are documented here.
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
@@ -26,7 +26,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Fully customisable email templates for: booking confirmation, cancellation, rescheduling, 24-hour reminder, 1-hour reminder, admin new-booking alert
 - `{{placeholder}}` token system with 15+ built-in tokens (customer name, date, time, provider, department, etc.)
 - Template preview in the admin editor
-- Extension point via `wpa_template_placeholders` filter for custom tokens
+- Extension point via `erta_template_placeholders` filter for custom tokens
 
 **Appointment lifecycle**
 - Statuses: `pending` → `confirmed` → `completed` / `cancelled` / `no_show` / `rescheduled`
@@ -49,17 +49,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `[erta_my_appointments]` — customer's appointment history
 
 **REST API**
-- 14 endpoints across public and admin namespaces (`/wp-json/wpa/v1/`)
+- 14 endpoints across public and admin namespaces (`/wp-json/erta/v1/`)
 - Public: department list, provider list, available slots, calendar view, create/view/cancel booking
-- Admin (requires `wpa_manage_all` capability): settings, departments, providers, forms, notification templates, working hours, breaks, special days
+- Admin (requires `erta_manage_all` capability): settings, departments, providers, forms, notification templates, working hours, breaks, special days
 - Full WP REST API nonce and permission callback security
 
 **Developer extension points**
-- `wpa_appointment_created`, `wpa_appointment_confirmed`, `wpa_appointment_cancelled`, `wpa_appointment_rescheduled` action hooks
-- `wpa_after_booking_saved` filter — Pro add-on injects payment logic here
-- `wpa_before_cancel_notifications` filter — Pro add-on injects refund logic here
-- `wpa_is_pro_active` filter — feature-gate check
-- `wpa_rest_api_init` action — Pro add-on registers its own endpoints here
+- `ert_appointment_created`, `ert_appointment_confirmed`, `ert_appointment_cancelled`, `ert_appointment_rescheduled` action hooks
+- `erta_after_booking_saved` filter — Pro add-on injects payment logic here
+- `erta_before_cancel_notifications` filter — Pro add-on injects refund logic here
+- `erta_is_pro_active` filter — feature-gate check
+- `erta_rest_api_init` action — Pro add-on registers its own endpoints here
 
 **Internationalisation**
 - Full i18n with `load_plugin_textdomain()`
@@ -73,7 +73,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `TransientCache` wrapper for slot caching (bust on booking/cancel/reschedule)
 - Immutable `Appointment` value object with fluent status-transition methods
 - `ResolvedConfig` value object — domain code reads settings without touching WP options directly
-- WP-Cron scheduled events: `wpa_send_reminders` (hourly)
+- WP-Cron scheduled events: `erta_send_reminders` (hourly)
 - PHPUnit test suite: 7 test classes, ~85 assertions, no WP install required
 - Vite + Vue 3 frontend build pipeline (`npm run build`)
 

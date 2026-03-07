@@ -1,9 +1,9 @@
-# Russian translation for WP Appointment
+# Russian translation for ERT Appointment
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Appointment 1.0.0\n"
-"PO-Revision-Date: 2025-06-01 00:00+0300\n"
-"Last-Translator: WP Appointment Team\n"
+"Project-Id-Version: ERT Appointment 1.0.0\n"
+"PO-Revision-Date: 2025-06-01 00:00+0000\n"
+"Last-Translator: ERT Appointment Team\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
@@ -11,362 +11,128 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: ert-appointment\n"
 
-msgid "dashboard"
-msgstr "Панель управления"
+msgid "Dashboard"
+msgstr ""
 
-msgid "appointments"
-msgstr "Записи"
+msgid "Appointments"
+msgstr ""
 
-msgid "departments"
-msgstr "Отделы"
+msgid "Departments"
+msgstr ""
 
-msgid "providers"
-msgstr "Специалисты"
+msgid "Providers"
+msgstr "Персонал"
 
-msgid "forms"
-msgstr "Формы"
+msgid "Forms"
+msgstr ""
 
-msgid "workingHours"
-msgstr "Рабочие часы"
+msgid "Working Hours"
+msgstr ""
 
-msgid "notifications"
-msgstr "Уведомления"
+msgid "Notifications"
+msgstr ""
 
-msgid "reports"
-msgstr "Отчёты"
+msgid "Reports"
+msgstr ""
 
-msgid "settings"
-msgstr "Настройки"
+msgid "Add Template"
+msgstr "Добавить шаблон"
 
-msgid "save"
-msgstr "Сохранить"
+msgid "Quick Template Combos"
+msgstr "Быстрые комбинации шаблонов"
 
-msgid "cancel"
+msgid "Create Customer + Admin Email"
+msgstr "Создать письмо клиенту + админу"
+
+msgid "Template Group"
+msgstr "Группа шаблона"
+
+msgid "Template Channel"
+msgstr "Канал шаблона"
+
+msgid "Template Recipient"
+msgstr "Получатель шаблона"
+
+msgid "New Booking (Pending)"
+msgstr ""
+
+msgid "Booking Confirmed"
+msgstr ""
+
+msgid "Booking Cancelled"
+msgstr ""
+
+msgid "Booking Rescheduled"
+msgstr ""
+
+msgid "No-Show Marked"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "24h Reminder"
+msgstr ""
+
+msgid "1h Reminder"
+msgstr ""
+
+msgid "Waitlist Slot Available"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
 msgstr "Отмена"
 
-msgid "edit"
-msgstr "Изменить"
+msgid "Edit"
+msgstr ""
 
-msgid "delete"
-msgstr "Удалить"
+msgid "Delete"
+msgstr ""
 
-msgid "confirm"
-msgstr "Подтвердить"
+msgid "Confirm"
+msgstr ""
 
-msgid "close"
-msgstr "Закрыть"
+msgid "Close"
+msgstr ""
 
-msgid "loading"
-msgstr "Загрузка"
+msgid "Back"
+msgstr "Назад"
 
-msgid "saved"
-msgstr "Сохранено"
+msgid "Next"
+msgstr "Далее"
 
-msgid "error"
-msgstr "Ошибка"
+msgid "Prev"
+msgstr ""
 
-msgid "name"
-msgstr "Имя"
+msgid "Apply"
+msgstr ""
 
-msgid "email"
-msgstr "Электронная почта"
+msgid "Select"
+msgstr ""
 
-msgid "phone"
-msgstr "Телефон"
+msgid "Loading…"
+msgstr "Загрузка…"
 
-msgid "status"
-msgstr "Статус"
+msgid "Saved."
+msgstr ""
 
-msgid "actions"
-msgstr "Действия"
+msgid "An error occurred."
+msgstr ""
 
-msgid "date"
-msgstr "Дата"
+msgid "Are you sure you want to delete this item?"
+msgstr ""
 
-msgid "time"
-msgstr "Время"
+msgid "Are you sure you want to cancel this appointment?"
+msgstr ""
 
-msgid "notes"
-msgstr "Заметки"
-
-msgid "general"
-msgstr "Общие"
-
-msgid "payment"
-msgstr "Оплата"
-
-msgid "integrations"
-msgstr "Интеграции"
-
-msgid "slotDuration"
-msgstr "Длительность слота"
-
-msgid "bufferBefore"
-msgstr "Буфер до"
-
-msgid "bufferAfter"
-msgstr "Буфер после"
-
-msgid "minNotice"
-msgstr "Мин. срок уведомления"
-
-msgid "minNoticeDesc"
-msgstr "За сколько часов можно записаться на приём"
-
-msgid "maxAdvance"
-msgstr "Макс. срок записи"
-
-msgid "autoConfirm"
-msgstr "Автоподтверждение"
-
-msgid "currency"
-msgstr "Валюта"
-
-msgid "paymentRequired"
-msgstr "Требуется оплата"
-
-msgid "pending"
-msgstr "Ожидает"
-
-msgid "confirmed"
-msgstr "Подтверждено"
-
-msgid "cancelled"
-msgstr "Отменено"
-
-msgid "completed"
-msgstr "Завершено"
-
-msgid "newAppointment"
-msgstr "Новая запись"
-
-msgid "noAppointments"
-msgstr "Записей не найдено"
-
-msgid "customer"
-msgstr "Клиент"
-
-msgid "provider"
-msgstr "Специалист"
-
-msgid "department"
-msgstr "Отдел"
-
-msgid "newDepartment"
-msgstr "Новый отдел"
-
-msgid "editDepartment"
-msgstr "Редактировать отдел"
-
-msgid "noDepartments"
-msgstr "Отделов не найдено"
-
-msgid "newProvider"
-msgstr "Новый специалист"
-
-msgid "editProvider"
-msgstr "Редактировать специалиста"
-
-msgid "noProviders"
-msgstr "Специалистов не найдено"
-
-msgid "newForm"
-msgstr "Новая форма"
-
-msgid "editForm"
-msgstr "Редактировать форму"
-
-msgid "noForms"
-msgstr "Форм не найдено"
-
-msgid "formName"
-msgstr "Название формы"
-
-msgid "fields"
-msgstr "Поля"
-
-msgid "addField"
-msgstr "Добавить поле"
-
-msgid "fieldLabel"
-msgstr "Метка поля"
-
-msgid "fieldId"
-msgstr "ID поля"
-
-msgid "placeholder"
-msgstr "Подсказка"
-
-msgid "required"
-msgstr "Обязательное"
-
-msgid "helpText"
-msgstr "Текст подсказки"
-
-msgid "helpTextPlaceholder"
-msgstr "Описание для пользователя"
-
-msgid "options"
-msgstr "Варианты"
-
-msgid "optionLabel"
-msgstr "Метка варианта"
-
-msgid "optionValue"
-msgstr "Значение варианта"
-
-msgid "addOption"
-msgstr "Добавить вариант"
-
-msgid "preview"
-msgstr "Предпросмотр"
-
-msgid "noFieldsYet"
-msgstr "Полей пока нет. Выберите тип слева."
-
-msgid "untitledField"
-msgstr "Безымянное поле"
-
-msgid "global"
-msgstr "Глобальные"
-
-msgid "scope"
-msgstr "Область"
-
-msgid "editScope"
-msgstr "Изменить область"
-
-msgid "globalScopeHint"
-msgstr "Эти настройки применяются ко всем отделам и специалистам."
-
-msgid "departmentScopeHint"
-msgstr "Эти настройки применяются только к выбранному отделу."
-
-msgid "providerScopeHint"
-msgstr "Эти настройки применяются только к выбранному специалисту."
-
-msgid "workingHoursHint"
-msgstr "Укажите рабочие часы для каждого дня недели."
-
-msgid "breaksHint"
-msgstr "Добавьте повторяющиеся перерывы (обед и т.д.)."
-
-msgid "specialDaysHint"
-msgstr "Добавьте праздники или дни с особым расписанием."
-
-msgid "breaks"
-msgstr "Перерывы"
-
-msgid "specialDays"
-msgstr "Особые дни"
-
-msgid "closed"
-msgstr "Закрыто"
-
-msgid "everyDay"
-msgstr "Каждый день"
-
-msgid "breakName"
-msgstr "Название перерыва"
-
-msgid "newBreak"
-msgstr "Новый перерыв"
-
-msgid "addBreak"
-msgstr "Добавить перерыв"
-
-msgid "noBreaks"
-msgstr "Перерывы не заданы"
-
-msgid "specialDayName"
-msgstr "Название особого дня"
-
-msgid "addSpecialDay"
-msgstr "Добавить особый день"
-
-msgid "noSpecialDays"
-msgstr "Особые дни не заданы"
-
-msgid "customHours"
-msgstr "Особые часы"
-
-msgid "callbackUrl"
-msgstr "URL обратного вызова"
-
-msgid "connected"
-msgstr "Подключено"
-
-msgid "notConnected"
-msgstr "Не подключено"
-
-msgid "configured"
-msgstr "Настроено"
-
-msgid "notConfigured"
-msgstr "Не настроено"
-
-msgid "connectGoogle"
-msgstr "Подключить Google"
-
-msgid "disconnect"
-msgstr "Отключить"
-
-msgid "testConnection"
-msgstr "Проверить подключение"
-
-msgid "connectionOk"
-msgstr "Подключение успешно"
-
-msgid "connectionFailed"
-msgstr "Ошибка подключения"
-
-msgid "autoCreateMeeting"
-msgstr "Автосоздание встречи"
-
-msgid "autoCreateMeetingDesc"
-msgstr "Автоматически создавать встречу Zoom для подтверждённых записей"
-
-msgid "testMode"
-msgstr "Тестовый режим"
-
-msgid "subject"
-msgstr "Тема"
-
-msgid "body"
-msgstr "Содержание"
-
-msgid "active"
-msgstr "Активно"
-
-msgid "event"
-msgstr "Событие"
-
-msgid "channel"
-msgstr "Канал"
-
-msgid "recipient"
-msgstr "Получатель"
-
-msgid "noTemplates"
-msgstr "Шаблонов не найдено"
-
-msgid "availablePlaceholders"
-msgstr "Доступные переменные"
-
-msgid "clickToInsert"
-msgstr "Нажмите для вставки"
-
-msgid "templateBodyHint"
-msgstr "Используйте переменные в формате {{переменная}}"
-
-msgid "deleteConfirm"
-msgstr "Вы уверены, что хотите удалить?"
-
-msgid "Appointment: %s"
-msgstr "Запись: %s"
-
-msgid "Customer"
-msgstr "Клиент"
+msgid "Name"
+msgstr ""
 
 msgid "Email"
 msgstr "Электронная почта"
@@ -374,8 +140,596 @@ msgstr "Электронная почта"
 msgid "Phone"
 msgstr "Телефон"
 
+msgid "Description"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Date & Time"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
 msgid "Notes"
 msgstr "Заметки"
+
+msgid "Type"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Payment"
+msgstr ""
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Slot Duration (minutes)"
+msgstr ""
+
+msgid "Buffer Before (minutes)"
+msgstr ""
+
+msgid "Buffer After (minutes)"
+msgstr ""
+
+msgid "Minimum Notice (hours)"
+msgstr ""
+
+msgid "How many hours in advance a booking must be made."
+msgstr ""
+
+msgid "Maximum Advance (days)"
+msgstr ""
+
+msgid "Auto-confirm bookings"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Require payment to confirm"
+msgstr ""
+
+msgid "Payment Amount"
+msgstr ""
+
+msgid "Payment Gateway"
+msgstr ""
+
+msgid "Settings saved."
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Confirmed"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
+msgid "Appointment"
+msgstr ""
+
+msgid "New Appointment"
+msgstr ""
+
+msgid "No appointments found."
+msgstr ""
+
+msgid "All Statuses"
+msgstr ""
+
+msgid "Search customer…"
+msgstr ""
+
+msgid "Cancel Appointment"
+msgstr ""
+
+msgid "Reason for cancellation…"
+msgstr ""
+
+msgid "Today's Appointments"
+msgstr ""
+
+msgid "Upcoming Appointments"
+msgstr ""
+
+msgid "No upcoming appointments."
+msgstr ""
+
+msgid "This Month"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "New Department"
+msgstr ""
+
+msgid "Add Department"
+msgstr ""
+
+msgid "Edit Department"
+msgstr ""
+
+msgid "No departments found."
+msgstr ""
+
+msgid "Provider"
+msgstr "Специалист"
+
+msgid "Customer"
+msgstr "Клиент"
+
+msgid "New Provider"
+msgstr "Новый специалист"
+
+msgid "Add Provider"
+msgstr "Добавить специалиста"
+
+msgid "Edit Provider"
+msgstr "Изменить специалиста"
+
+msgid "No providers found."
+msgstr "Сотрудники не найдены."
+
+msgid "Staff"
+msgstr "Персонал"
+
+msgid "Staff Member"
+msgstr "Специалист"
+
+msgid "New Staff Member"
+msgstr "Новый специалист"
+
+msgid "Add Staff Member"
+msgstr "Добавить специалиста"
+
+msgid "Edit Staff Member"
+msgstr "Изменить специалиста"
+
+msgid "No staff members found."
+msgstr "Сотрудники не найдены."
+
+msgid "Please select a department when type is Unit."
+msgstr "Пожалуйста, выберите отдел, если тип — Подразделение."
+
+msgid "Individual"
+msgstr "Индивидуальный"
+
+msgid "Unit"
+msgstr "Подразделение"
+
+msgid "New Form"
+msgstr ""
+
+msgid "Edit Form"
+msgstr ""
+
+msgid "No forms found."
+msgstr ""
+
+msgid "Form Name"
+msgstr ""
+
+msgid "Fields"
+msgstr ""
+
+msgid "Add Field"
+msgstr ""
+
+msgid "Field Label"
+msgstr ""
+
+msgid "Field ID"
+msgstr ""
+
+msgid "Placeholder"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Help Text"
+msgstr ""
+
+msgid "Optional help text shown below the field…"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Option Label"
+msgstr ""
+
+msgid "Option Value"
+msgstr ""
+
+msgid "Add Option"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "No fields added yet."
+msgstr ""
+
+msgid "Untitled Field"
+msgstr ""
+
+msgid "Global"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Edit Scope"
+msgstr ""
+
+msgid "These hours apply to all providers by default."
+msgstr ""
+
+msgid "These hours override the global hours for this department."
+msgstr ""
+
+msgid "These hours override department and global hours for this provider."
+msgstr ""
+
+msgid "Set the days and hours when appointments can be booked."
+msgstr ""
+
+msgid "Breaks block off time within working hours (e.g. lunch)."
+msgstr ""
+
+msgid "Special days override regular hours for a specific date."
+msgstr ""
+
+msgid "Breaks"
+msgstr ""
+
+msgid "Special Days"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Every Day"
+msgstr ""
+
+msgid "Break Name"
+msgstr ""
+
+msgid "New Break"
+msgstr ""
+
+msgid "Add Break"
+msgstr ""
+
+msgid "No breaks defined."
+msgstr ""
+
+msgid "Special Day Name"
+msgstr ""
+
+msgid "Add Special Day"
+msgstr ""
+
+msgid "No special days defined."
+msgstr ""
+
+msgid "Custom Hours"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Callback URL"
+msgstr ""
+
+msgid "Connected"
+msgstr ""
+
+msgid "Not connected"
+msgstr ""
+
+msgid "Configured"
+msgstr ""
+
+msgid "Not configured"
+msgstr ""
+
+msgid "Connect Google Account"
+msgstr ""
+
+msgid "Google Calendar"
+msgstr ""
+
+msgid "Connected as"
+msgstr "Подключено как"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Автоматически синхронизируйте записи с Google Календарём специалиста."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "Создайте учётные данные OAuth 2.0 в Google Cloud Console."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Добавьте этот URI в разрешённые URI перенаправления Google OAuth."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "Не удалось получить URL авторизации Google. Проверьте учётные данные."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Автоматически создавайте встречи Zoom для подтверждённых записей."
+
+msgid "Accept online payments via PayTR."
+msgstr "Принимайте онлайн-платежи через PayTR."
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Connection successful."
+msgstr ""
+
+msgid "Connection failed. Check your credentials."
+msgstr ""
+
+msgid "Auto-create Zoom meetings"
+msgstr ""
+
+msgid "Automatically create a Zoom meeting when an appointment is confirmed."
+msgstr ""
+
+msgid "Test / Sandbox Mode"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Body"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Recipient"
+msgstr ""
+
+msgid "No notification templates found."
+msgstr ""
+
+msgid "Available Placeholders"
+msgstr ""
+
+msgid "Click to insert"
+msgstr ""
+
+msgid "Use the placeholders above to personalise the message."
+msgstr ""
+
+msgid "Enter email subject…"
+msgstr "Введите тему письма…"
+
+msgid "Total Appointments"
+msgstr ""
+
+msgid "Cancellation Rate"
+msgstr ""
+
+msgid "Revenue"
+msgstr ""
+
+msgid "Top Providers"
+msgstr ""
+
+msgid "Detailed analytics are available with ERT Appointment Pro."
+msgstr ""
+
+msgid "Pro Feature"
+msgstr ""
+
+msgid "Upgrade to Pro"
+msgstr ""
+
+msgid "Select a Department"
+msgstr "Выберите отдел"
+
+msgid "Select a Provider"
+msgstr "Выберите специалиста"
+
+msgid "Choose a Date"
+msgstr "Выберите дату"
+
+msgid "Choose a Time"
+msgstr "Выберите время"
+
+msgid "Your Details"
+msgstr "Ваши данные"
+
+msgid "Book Now"
+msgstr "Записаться"
+
+msgid "Submit"
+msgstr ""
+
+msgid "Your appointment has been booked!"
+msgstr "Вы успешно записались!"
+
+msgid "A confirmation email has been sent to you."
+msgstr ""
+
+msgid "Book Another Appointment"
+msgstr ""
+
+msgid "Book Again"
+msgstr ""
+
+msgid "Go to Payment"
+msgstr ""
+
+msgid "Complete Payment"
+msgstr ""
+
+msgid "Redirecting to payment…"
+msgstr ""
+
+msgid "No available slots on this day."
+msgstr "В этот день нет доступных слотов."
+
+msgid "Something went wrong. Please try again."
+msgstr "Что-то пошло не так. Попробуйте снова."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Этот слот больше недоступен. Выберите другой."
+
+msgid "This field is required."
+msgstr "Это поле обязательно."
+
+msgid "Please enter a valid email address."
+msgstr "Введите корректный адрес электронной почты."
+
+msgid "My Appointments"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "You have no appointments."
+msgstr ""
+
+msgid "Reschedule"
+msgstr "Перенести"
+
+msgid "Reschedule Appointment"
+msgstr ""
+
+msgid "New Date & Time"
+msgstr ""
+
+msgid "ERT Appointment"
+msgstr ""
+
+msgid "Please enable JavaScript to use the appointment booking system."
+msgstr ""
+
+msgid "Loading booking form…"
+msgstr ""
+
+msgid "Please %s to view and manage your appointments."
+msgstr ""
+
+msgid "log in"
+msgstr ""
+
+msgid "Loading your appointments…"
+msgstr ""
+
+msgid "Appointment #%d not found."
+msgstr ""
+
+msgid "Field \"%s\" is required."
+msgstr ""
+
+msgid "Department not found."
+msgstr ""
+
+msgid "Cannot delete department with assigned providers. Reassign or delete providers first."
+msgstr ""
+
+msgid "Name is required."
+msgstr ""
+
+msgid "Invalid status."
+msgstr ""
+
+msgid "Provider not found."
+msgstr ""
+
+msgid "Invalid user_id."
+msgstr ""
+
+msgid "Invalid email address."
+msgstr ""
+
+msgid "Invalid event."
+msgstr ""
+
+msgid "Invalid channel."
+msgstr ""
+
+msgid "Invalid recipient."
+msgstr ""
+
+msgid "Invalid payload."
+msgstr ""
+
+msgid "settings must be an object."
+msgstr ""
+
+msgid "wp_mail failed to deliver email to \"%s\"."
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Select Date"
+msgstr ""
+
+msgid "Date and time selector – renders the booking calendar widget"
+msgstr ""
+
+msgid "This feature requires ERT Appointment Pro."
+msgstr "Эта функция требует ERT Appointment Pro."
+
+msgid "Appointment: %s"
+msgstr "Запись: %s"
 
 msgid "Join Zoom"
 msgstr "Присоединиться к Zoom"
@@ -409,84 +763,3 @@ msgstr "Новая запись – {{customer_name}}"
 
 msgid "Appointment cancelled – {{customer_name}}"
 msgstr "Запись отменена – {{customer_name}}"
-
-msgid "Select a Department"
-msgstr "Выберите отдел"
-
-msgid "Select a Provider"
-msgstr "Выберите специалиста"
-
-msgid "Choose a Date"
-msgstr "Выберите дату"
-
-msgid "Choose a Time"
-msgstr "Выберите время"
-
-msgid "Your Details"
-msgstr "Ваши данные"
-
-msgid "Confirm Appointment"
-msgstr "Подтвердить запись"
-
-msgid "Book Now"
-msgstr "Записаться"
-
-msgid "No available slots on this day."
-msgstr "В этот день нет доступных слотов."
-
-msgid "Loading…"
-msgstr "Загрузка…"
-
-msgid "Your appointment has been booked!"
-msgstr "Вы успешно записались!"
-
-msgid "Something went wrong. Please try again."
-msgstr "Что-то пошло не так. Попробуйте снова."
-
-msgid "This slot is no longer available. Please choose another."
-msgstr "Этот слот больше недоступен. Выберите другой."
-
-msgid "Reschedule"
-msgstr "Перенести"
-
-msgid "Back"
-msgstr "Назад"
-
-msgid "Next"
-msgstr "Далее"
-
-msgid "This field is required."
-msgstr "Это поле обязательно."
-
-msgid "Please enter a valid email address."
-msgstr "Введите корректный адрес электронной почты."
-
-msgid "Cancel"
-msgstr "Отмена"
-
-msgid "Connected as"
-msgstr "Подключено как"
-
-msgid "Sync appointments to provider Google Calendars automatically."
-msgstr "Автоматически синхронизируйте записи с Google Календарём специалиста."
-
-msgid "Create OAuth 2.0 credentials in Google Cloud Console."
-msgstr "Создайте учётные данные OAuth 2.0 в Google Cloud Console."
-
-msgid "Add this URI to your Google OAuth allowed redirect URIs."
-msgstr "Добавьте этот URI в разрешённые URI перенаправления Google OAuth."
-
-msgid "Could not get Google auth URL. Check credentials and try again."
-msgstr "Не удалось получить URL авторизации Google. Проверьте учётные данные."
-
-msgid "Automatically create Zoom meetings for confirmed appointments."
-msgstr "Автоматически создавайте встречи Zoom для подтверждённых записей."
-
-msgid "Accept online payments via PayTR."
-msgstr "Принимайте онлайн-платежи через PayTR."
-
-msgid "Enter email subject…"
-msgstr "Введите тему письма…"
-
-msgid "This feature requires WP Appointment Pro."
-msgstr "Эта функция требует WP Appointment Pro."

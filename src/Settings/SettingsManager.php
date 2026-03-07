@@ -18,270 +18,323 @@ use ERTAppointment\Infrastructure\Cache\TransientCache;
  * All reads are cached in-process (and in the WP transient layer) to avoid
  * repeated database queries on pages that render many provider slots.
  */
-final class SettingsManager
-{
-    /** In-process cache keyed by "scope:scope_id". */
-    private array $rawCache = [];
+final class SettingsManager {
 
-    /** Resolved config objects keyed by provider ID. */
-    private array $resolvedCache = [];
+	/** In-process cache keyed by "scope:scope_id". */
+	private array $rawCache = array();
 
-    public function __construct(
-        private readonly TransientCache $cache
-    ) {}
+	/** Resolved config objects keyed by provider ID. */
+	private array $resolvedCache = array();
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
+	public function __construct(
+		private readonly TransientCache $cache
+	) {}
 
-    /**
-     * Reads a single global setting.
-     *
-     * @param mixed $default
-     */
-    public function getGlobal(string $key, mixed $default = null): mixed
-    {
-        $settings = $this->loadScope('global', null);
+	// -------------------------------------------------------------------------
+	// Public API
+	// -------------------------------------------------------------------------
 
-        return $settings[$key] ?? $default;
-    }
+	/**
+	 * Reads a single global setting.
+	 *
+	 * @param mixed $default
+	 */
+	public function getGlobal( string $key, mixed $default = null ): mixed {
+		$settings = $this->loadScope( 'global', null );
 
-    /**
-     * Reads a single department-level setting (falls back to global).
-     *
-     * @param mixed $default
-     */
-    public function getDepartment(int $departmentId, string $key, mixed $default = null): mixed
-    {
-        $settings = array_merge(
-            $this->loadScope('global', null),
-            $this->loadScope('department', $departmentId)
-        );
+		return $settings[ $key ] ?? $default;
+	}
 
-        return $settings[$key] ?? $default;
-    }
+	/**
+	 * Reads a single department-level setting (falls back to global).
+	 *
+	 * @param mixed $default
+	 */
+	public function getDepartment( int $departmentId, string $key, mixed $default = null ): mixed {
+		$settings = array_merge(
+			$this->loadScope( 'global', null ),
+			$this->loadScope( 'department', $departmentId )
+		);
 
-    /**
-     * Returns a fully resolved ResolvedConfig for a provider,
-     * merging global → department → provider in priority order.
-     */
-    public function resolveForProvider(int $providerId): ResolvedConfig
-    {
-        if (isset($this->resolvedCache[$providerId])) {
-            return $this->resolvedCache[$providerId];
-        }
+		return $settings[ $key ] ?? $default;
+	}
 
-        $global   = $this->loadScope('global', null);
-        $provider = $this->loadProviderMeta($providerId);
+	/**
+	 * Returns a fully resolved ResolvedConfig for a provider,
+	 * merging global → department → provider in priority order.
+	 */
+	public function resolveForProvider( int $providerId ): ResolvedConfig {
+		if ( isset( $this->resolvedCache[ $providerId ] ) ) {
+			return $this->resolvedCache[ $providerId ];
+		}
 
-        $departmentSettings = [];
-        if ($provider['department_id'] !== null) {
-            $departmentSettings = $this->loadScope('department', (int) $provider['department_id']);
-        }
+		$global   = $this->loadScope( 'global', null );
+		$provider = $this->loadProviderMeta( $providerId );
 
-        $providerSettings = $this->loadScope('provider', $providerId);
+		$departmentSettings = array();
+		if ( $provider['department_id'] !== null ) {
+			$departmentSettings = $this->loadScope( 'department', (int) $provider['department_id'] );
+		}
 
-        // Merge — right side wins.
-        $merged = array_merge($global, $departmentSettings, $providerSettings);
+		$providerSettings = $this->loadScope( 'provider', $providerId );
 
-        $config = new ResolvedConfig($merged, $provider['department_id']);
+		// Merge — right side wins.
+		$merged = array_merge( $global, $departmentSettings, $providerSettings );
 
-        $this->resolvedCache[$providerId] = $config;
+		$config = new ResolvedConfig( $merged, $provider['department_id'] );
 
-        return $config;
-    }
+		$this->resolvedCache[ $providerId ] = $config;
 
-    /**
-     * Writes a setting to the database (upsert).
-     *
-     * @param mixed $value  Scalar or array; will be JSON-encoded if array.
-     */
-    public function set(string $scope, ?int $scopeId, string $key, mixed $value): void
-    {
-        global $wpdb;
+		return $config;
+	}
 
-        $encoded = is_array($value) || is_object($value)
-            ? wp_json_encode($value)
-            : (string) $value;
+	/**
+	 * Writes a setting to the database (upsert).
+	 *
+	 * @param mixed $value  Scalar or array; will be JSON-encoded if array.
+	 */
+	public function set( string $scope, ?int $scopeId, string $key, mixed $value ): void {
+		global $wpdb;
 
-        $table = $wpdb->prefix . 'erta_settings';
+		$scopeId = $this->normalizeScopeId( $scope, $scopeId );
+		if ( $scope !== 'global' && $scopeId <= 0 ) {
+			return;
+		}
 
-        $existing = $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$table} WHERE scope = %s AND scope_id <=> %d AND setting_key = %s",
-            $scope,
-            $scopeId,
-            $key
-        ));
+		$encoded = is_array( $value ) || is_object( $value )
+			? wp_json_encode( $value )
+			: (string) $value;
 
-        if ($existing) {
-            $wpdb->update(
-                $table,
-                ['setting_value' => $encoded],
-                ['id' => $existing]
-            );
-        } else {
-            $wpdb->insert($table, [
-                'scope'         => $scope,
-                'scope_id'      => $scopeId,
-                'setting_key'   => $key,
-                'setting_value' => $encoded,
-            ]);
-        }
+		$table = $wpdb->prefix . 'erta_settings';
 
-        // Invalidate caches for this scope.
-        $this->invalidate($scope, $scopeId);
-    }
+		$ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM {$table}
+				 WHERE scope = %s
+				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
+				   AND setting_key = %s
+				 ORDER BY id DESC",
+				$scope,
+				$scopeId,
+				$scopeId,
+				$key
+			)
+		);
 
-    /**
-     * Bulk-saves an associative array of settings for a given scope.
-     *
-     * @param array<string, mixed> $settings
-     */
-    public function bulkSet(string $scope, ?int $scopeId, array $settings): void
-    {
-        foreach ($settings as $key => $value) {
-            $this->set($scope, $scopeId, $key, $value);
-        }
-    }
+		if ( ! empty( $ids ) ) {
+			$primaryId = (int) $ids[0];
 
-    /**
-     * Retrieves all settings for a scope as an associative array.
-     *
-     * @return array<string, mixed>
-     */
-    public function getAll(string $scope, ?int $scopeId): array
-    {
-        return $this->loadScope($scope, $scopeId);
-    }
+			$wpdb->update(
+				$table,
+				array(
+					'scope_id'      => $scopeId,
+					'setting_value' => $encoded,
+				),
+				array( 'id' => $primaryId )
+			);
 
-    /**
-     * Deletes a single setting.
-     */
-    public function delete(string $scope, ?int $scopeId, string $key): void
-    {
-        global $wpdb;
+			if ( count( $ids ) > 1 ) {
+				$extraIds = array_map( 'intval', array_slice( $ids, 1 ) );
+				$in       = implode( ',', $extraIds );
 
-        $wpdb->delete(
-            $wpdb->prefix . 'erta_settings',
-            [
-                'scope'       => $scope,
-                'scope_id'    => $scopeId,
-                'setting_key' => $key,
-            ]
-        );
+				if ( $in !== '' ) {
+					$wpdb->query( "DELETE FROM {$table} WHERE id IN ({$in})" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				}
+			}
+		} else {
+			$wpdb->insert(
+				$table,
+				array(
+					'scope'         => $scope,
+					'scope_id'      => $scopeId,
+					'setting_key'   => $key,
+					'setting_value' => $encoded,
+				)
+			);
+		}
 
-        $this->invalidate($scope, $scopeId);
-    }
+		// Invalidate caches for this scope.
+		$this->invalidate( $scope, $scopeId );
+	}
 
-    // -------------------------------------------------------------------------
-    // Internal helpers
-    // -------------------------------------------------------------------------
+	/**
+	 * Bulk-saves an associative array of settings for a given scope.
+	 *
+	 * @param array<string, mixed> $settings
+	 */
+	public function bulkSet( string $scope, ?int $scopeId, array $settings ): void {
+		foreach ( $settings as $key => $value ) {
+			$this->set( $scope, $scopeId, $key, $value );
+		}
+	}
 
-    /**
-     * Loads all settings for a scope from the database (or in-process cache).
-     *
-     * @return array<string, mixed>
-     */
-    private function loadScope(string $scope, ?int $scopeId): array
-    {
-        $cacheKey = "{$scope}:" . ($scopeId ?? 'null');
+	/**
+	 * Retrieves all settings for a scope as an associative array.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function getAll( string $scope, ?int $scopeId ): array {
+		return $this->loadScope( $scope, $scopeId );
+	}
 
-        if (isset($this->rawCache[$cacheKey])) {
-            return $this->rawCache[$cacheKey];
-        }
+	/**
+	 * Deletes a single setting.
+	 */
+	public function delete( string $scope, ?int $scopeId, string $key ): void {
+		global $wpdb;
 
-        // Try transient cache first.
-        $transientKey = "erta_settings_{$scope}_" . ($scopeId ?? 'global');
-        $cached       = $this->cache->get($transientKey);
+		$scopeId = $this->normalizeScopeId( $scope, $scopeId );
+		if ( $scope !== 'global' && $scopeId <= 0 ) {
+			return;
+		}
+		$table   = $wpdb->prefix . 'erta_settings';
 
-        if ($cached !== false) {
-            $this->rawCache[$cacheKey] = $cached;
-            return $cached;
-        }
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$table}
+				 WHERE scope = %s
+				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
+				   AND setting_key = %s",
+				$scope,
+				$scopeId,
+				$scopeId,
+				$key
+			)
+		);
 
-        // Query database.
-        global $wpdb;
-        $table = $wpdb->prefix . 'erta_settings';
+		$this->invalidate( $scope, $scopeId );
+	}
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT setting_key, setting_value FROM {$table}
-                 WHERE scope = %s AND scope_id <=> %d",
-                $scope,
-                $scopeId
-            ),
-            ARRAY_A
-        );
+	// -------------------------------------------------------------------------
+	// Internal helpers
+	// -------------------------------------------------------------------------
 
-        $result = [];
-        foreach ($rows as $row) {
-            $result[$row['setting_key']] = $this->decode($row['setting_value']);
-        }
+	/**
+	 * Loads all settings for a scope from the database (or in-process cache).
+	 *
+	 * @return array<string, mixed>
+	 */
+	private function loadScope( string $scope, ?int $scopeId ): array {
+		$scopeId  = $this->normalizeScopeId( $scope, $scopeId );
+		if ( $scope !== 'global' && $scopeId <= 0 ) {
+			return array();
+		}
+		$cacheKey = "{$scope}:{$scopeId}";
 
-        $this->cache->set($transientKey, $result, 300);
-        $this->rawCache[$cacheKey] = $result;
+		if ( isset( $this->rawCache[ $cacheKey ] ) ) {
+			return $this->rawCache[ $cacheKey ];
+		}
 
-        return $result;
-    }
+		// Try transient cache first.
+		$transientKey = "erta_settings_{$scope}_" . ( $scopeId === 0 ? 'global' : (string) $scopeId );
+		$cached       = $this->cache->get( $transientKey );
 
-    /**
-     * Loads minimal provider metadata (department_id) needed for scope resolution.
-     *
-     * @return array{department_id: int|null}
-     */
-    private function loadProviderMeta(int $providerId): array
-    {
-        global $wpdb;
+		if ( $cached !== false ) {
+			$this->rawCache[ $cacheKey ] = $cached;
+			return $cached;
+		}
 
-        $row = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT department_id FROM {$wpdb->prefix}erta_providers WHERE id = %d",
-                $providerId
-            ),
-            ARRAY_A
-        );
+		// Query database.
+		global $wpdb;
+		$table = $wpdb->prefix . 'erta_settings';
 
-        return ['department_id' => $row ? ($row['department_id'] ? (int) $row['department_id'] : null) : null];
-    }
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT setting_key, setting_value FROM {$table}
+				 WHERE scope = %s
+				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
+				 ORDER BY id ASC",
+				$scope,
+				$scopeId,
+				$scopeId
+			),
+			\ARRAY_A
+		);
 
-    /**
-     * Decodes a stored setting value. JSON arrays/objects are decoded; scalars returned as-is.
-     */
-    private function decode(string|null $value): mixed
-    {
-        if ($value === null) {
-            return null;
-        }
+		$result = array();
+		foreach ( $rows as $row ) {
+			$result[ $row['setting_key'] ] = $this->decode( $row['setting_value'] );
+		}
 
-        $trimmed = trim($value);
+		$this->cache->set( $transientKey, $result, 300 );
+		$this->rawCache[ $cacheKey ] = $result;
 
-        if (in_array($trimmed[0] ?? '', ['{', '['], true)) {
-            $decoded = json_decode($trimmed, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $decoded;
-            }
-        }
+		return $result;
+	}
 
-        // Boolean-like strings.
-        if ($trimmed === 'true')  return true;
-        if ($trimmed === 'false') return false;
-        if (is_numeric($trimmed)) return $trimmed + 0;
+	/**
+	 * Loads minimal provider metadata (department_id) needed for scope resolution.
+	 *
+	 * @return array{department_id: int|null}
+	 */
+	private function loadProviderMeta( int $providerId ): array {
+		global $wpdb;
 
-        return $trimmed;
-    }
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT department_id FROM {$wpdb->prefix}erta_providers WHERE id = %d",
+				$providerId
+			),
+			\ARRAY_A
+		);
 
-    /**
-     * Invalidates all caches for a given scope.
-     */
-    private function invalidate(string $scope, ?int $scopeId): void
-    {
-        $cacheKey     = "{$scope}:" . ($scopeId ?? 'null');
-        $transientKey = "erta_settings_{$scope}_" . ($scopeId ?? 'global');
+		return array( 'department_id' => $row ? ( $row['department_id'] ? (int) $row['department_id'] : null ) : null );
+	}
 
-        unset($this->rawCache[$cacheKey]);
-        $this->cache->delete($transientKey);
+	/**
+	 * Decodes a stored setting value. JSON arrays/objects are decoded; scalars returned as-is.
+	 */
+	private function decode( string|null $value ): mixed {
+		if ( $value === null ) {
+			return null;
+		}
 
-        // Also clear any resolved provider configs (they depend on all scopes).
-        $this->resolvedCache = [];
-    }
+		$trimmed = trim( $value );
+
+		if ( in_array( $trimmed[0] ?? '', array( '{', '[' ), true ) ) {
+			$decoded = json_decode( $trimmed, true );
+			if ( json_last_error() === JSON_ERROR_NONE ) {
+				return $decoded;
+			}
+		}
+
+		// Boolean-like strings.
+		if ( $trimmed === 'true' ) {
+			return true;
+		}
+		if ( $trimmed === 'false' ) {
+			return false;
+		}
+		if ( is_numeric( $trimmed ) ) {
+			return $trimmed + 0;
+		}
+
+		return $trimmed;
+	}
+
+	/**
+	 * Invalidates all caches for a given scope.
+	 */
+	private function invalidate( string $scope, ?int $scopeId ): void {
+		$scopeId      = $this->normalizeScopeId( $scope, $scopeId );
+		$cacheKey     = "{$scope}:{$scopeId}";
+		$transientKey = "erta_settings_{$scope}_" . ( $scopeId === 0 ? 'global' : (string) $scopeId );
+
+		unset( $this->rawCache[ $cacheKey ] );
+		$this->cache->delete( $transientKey );
+
+		// Also clear any resolved provider configs (they depend on all scopes).
+		$this->resolvedCache = array();
+	}
+
+	/**
+	 * Normalizes nullable scope IDs for reliable comparisons and unique behavior.
+	 */
+	private function normalizeScopeId( string $scope, ?int $scopeId ): int {
+		if ( $scope === 'global' ) {
+			return 0;
+		}
+
+		return max( 0, (int) ( $scopeId ?? 0 ) );
+	}
 }

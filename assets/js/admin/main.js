@@ -1,5 +1,5 @@
 /**
- * WP Appointment — Admin SPA Entry Point
+ * ERT Appointment — Admin SPA Entry Point
  * Vue 3 + Pinia. Mounts on #erta-admin-app and #erta-provider-app.
  */
 

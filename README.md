@@ -1,4 +1,4 @@
-# WP Appointment — Lite
+# ERT Appointment — Lite
 
 WordPress için randevu rezervasyon eklentisi. Bölümler (departmanlar), sağlayıcılar (doktor, uzman, birim vb.) ve özelleştirilebilir formlarla tam özellikli rezervasyon sistemi.
 
@@ -8,7 +8,7 @@ WordPress için randevu rezervasyon eklentisi. Bölümler (departmanlar), sağla
 
 | Gereksinim | Minimum |
 |---|---|
-| WordPress | 6.3+ |
+| WordPress | 6.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 
@@ -19,21 +19,21 @@ WordPress için randevu rezervasyon eklentisi. Bölümler (departmanlar), sağla
 ### 1. Dosyaları yükle
 
 ```bash
-# wp-appointment/ klasörünü şuraya koy:
-wp-content/plugins/wp-appointment/
+# ert-appointment/ klasörünü şuraya koy:
+wp-content/plugins/ert-appointment/
 ```
 
 ### 2. Bağımlılıkları yükle
 
 ```bash
-cd wp-content/plugins/wp-appointment
+cd wp-content/plugins/ert-appointment
 composer install --no-dev
 npm install && npm run build
 ```
 
 ### 3. WordPress'ten aktive et
 
-**Eklentiler → WP Appointment → Aktive Et**
+**Eklentiler → ERT Appointment → Aktive Et**
 
 Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 
@@ -43,7 +43,7 @@ Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 
 ### Genel Ayarlar
 
-**WP Appointment → Ayarlar → Genel**
+**ERT Appointment → Ayarlar → Genel**
 
 | Ayar | Açıklama | Varsayılan |
 |---|---|---|
@@ -56,7 +56,7 @@ Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 
 ### Çalışma Saatleri
 
-**WP Appointment → Çalışma Saatleri**
+**ERT Appointment → Çalışma Saatleri**
 
 - **Global**: Tüm sağlayıcılara uygulanan varsayılan saatler
 - **Bölüm bazlı**: Belirli bir departmana özel saatler
@@ -71,36 +71,36 @@ Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 ### Rezervasyon Formu
 
 ```
-[ertaa_booking]
-[ertaa_booking department="klinik" provider="5"]
-[ertaa_booking form="3"]
+[erta_booking]
+[erta_booking department="klinik" provider="5"]
+[erta_booking form="3"]
 ```
 
 ### Bölüm Listesi
 
 ```
-[ertaa_departments]
-[ertaa_departments columns="3"]
+[erta_departments]
+[erta_departments columns="3"]
 ```
 
 ### Sağlayıcı Listesi
 
 ```
-[ertaa_providers]
-[ertaa_providers department="5" show_avatar="true"]
+[erta_providers]
+[erta_providers department="5" show_avatar="true"]
 ```
 
 ### Müşteri Randevularım
 
 ```
-[ertaa_my_appointments]
+[erta_my_appointments]
 ```
 
 ---
 
 ## REST API
 
-Tüm endpointler `https://siteniz.com/wp-json/ertaa/v1/` prefix'ini kullanır.
+Tüm endpointler `https://siteniz.com/wp-json/erta/v1/` prefix'ini kullanır.
 
 ### Public Endpointler
 
@@ -114,7 +114,7 @@ Tüm endpointler `https://siteniz.com/wp-json/ertaa/v1/` prefix'ini kullanır.
 | GET | `/appointments/{id}` | Rezervasyon detayı |
 | PUT | `/appointments/{id}/cancel` | İptal et |
 
-### Admin Endpointler (`ertaa_manage_all` yetkisi gerekli)
+### Admin Endpointler (`erta_manage_all` yetkisi gerekli)
 
 | Method | Endpoint | Açıklama |
 |---|---|---|
@@ -135,41 +135,41 @@ Tüm endpointler `https://siteniz.com/wp-json/ertaa/v1/` prefix'ini kullanır.
 
 ```php
 // Rezervasyon oluşturulduğunda
-do_action('ertaa_appointment_created', Appointment $appointment);
+do_action('erta_appointment_created', Appointment $appointment);
 
 // Onaylandığında
-do_action('ertaa_appointment_confirmed', Appointment $appointment);
+do_action('erta_appointment_confirmed', Appointment $appointment);
 
 // İptal edildiğinde
-do_action('ertaa_appointment_cancelled', Appointment $appointment);
+do_action('erta_appointment_cancelled', Appointment $appointment);
 
 // Yeniden planlandığında
-do_action('ertaa_appointment_rescheduled', Appointment $new, Appointment $old);
+do_action('erta_appointment_rescheduled', Appointment $new, Appointment $old);
 
 // Ödemeyle onaylandığında (Pro)
-do_action('ertaa_appointment_confirmed_by_payment', int $appointmentId);
+do_action('erta_appointment_confirmed_by_payment', int $appointmentId);
 ```
 
 ### Filtreler
 
 ```php
 // Bildirim şablonu placeholder değerleri
-add_filter('ertaa_template_placeholders', function(array $context, Appointment $appt): array {
+add_filter('erta_template_placeholders', function(array $context, Appointment $appt): array {
     $context['my_key'] = 'değer';
     return $context;
 }, 10, 2);
 
 // Bildirim editörü placeholder ipuçları
-add_filter('ertaa_available_placeholder_hints', function(array $hints): array {
+add_filter('erta_available_placeholder_hints', function(array $hints): array {
     $hints[] = ['token' => '{{my_key}}', 'description' => 'Açıklama'];
     return $hints;
 });
 
 // Pro aktif mi?
-$isPro = apply_filters('ertaa_is_pro_active', false);
+$isPro = apply_filters('erta_is_pro_active', false);
 
 // REST API init (Pro eklentisi buraya hook atar)
-do_action('ertaa_rest_api_init', Container $container);
+do_action('erta_rest_api_init', Container $container);
 ```
 
 ---
@@ -204,7 +204,7 @@ class MyGateway implements PaymentGatewayInterface {
 }
 
 // ProPlugin'de kayıt et
-add_filter('ertaa_payment_gateways', function(array $gateways): array {
+add_filter('erta_payment_gateways', function(array $gateways): array {
     $gateways['my_gateway'] = MyGateway::class;
     return $gateways;
 });

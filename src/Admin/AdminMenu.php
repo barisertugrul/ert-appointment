@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use ERTAppointment\Container;
 
 /**
@@ -13,119 +17,92 @@ use ERTAppointment\Container;
  * All admin pages are single-page-application shells that mount
  * the Vue admin bundle. The Vue router handles sub-navigation.
  */
-final class AdminMenu
-{
-    public function __construct(private readonly Container $container) {}
+final class AdminMenu {
 
-    public function register(): void
-    {
-        // Only administrators (or users who can manage options) can access the admin panel.
-        if (! current_user_can('manage_options')) {
-            return;
-        }
+	public function __construct( private readonly Container $container ) {}
 
-        add_menu_page(
-            page_title: __('WP Appointment', 'ert-appointment'),
-            menu_title: __('Appointments', 'ert-appointment'),
-            capability: 'manage_options',
-            menu_slug:  'erta-dashboard',
-            callback:   [$this, 'renderAdminShell'],
-            icon_url:   'dashicons-calendar-alt',
-            position:   30
-        );
+	public function register(): void {
+		// Only administrators can access the admin panel.
+		if ( ! current_user_can( 'erta_manage_all' ) ) {
+			return;
+		}
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Dashboard', 'ert-appointment'),
-            menu_title:   __('Dashboard', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-dashboard',
-            callback:     [$this, 'renderAdminShell']
-        );
+		$pages = array(
+			'erta-appointments'  => __( 'Appointments', 'ert-appointment' ),
+			'erta-departments'   => __( 'Departments', 'ert-appointment' ),
+			'erta-providers'     => __( 'Providers', 'ert-appointment' ),
+			'erta-forms'         => __( 'Forms', 'ert-appointment' ),
+			'erta-working-hours' => __( 'Working Hours', 'ert-appointment' ),
+			'erta-notifications' => __( 'Notifications', 'ert-appointment' ),
+			'erta-reports'       => __( 'Reports', 'ert-appointment' ),
+			'erta-settings'      => __( 'Settings', 'ert-appointment' ),
+		);
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Appointments', 'ert-appointment'),
-            menu_title:   __('Appointments', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-appointments',
-            callback:     [$this, 'renderAdminShell']
-        );
+		add_menu_page(
+			page_title: __( 'ERT Appointment', 'ert-appointment' ),
+			menu_title: __( 'ERT Appointments', 'ert-appointment' ),
+			capability: 'erta_manage_all',
+			menu_slug:  'erta-dashboard',
+			callback:   array( $this, 'renderAdminShell' ),
+			icon_url:   'dashicons-calendar-alt',
+			position:   30
+		);
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Departments', 'ert-appointment'),
-            menu_title:   __('Departments', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-departments',
-            callback:     [$this, 'renderAdminShell']
-        );
+		// Keep routes registered under the real parent, then hide them from WP submenu UI.
+		// This prevents "access denied" on page refresh while avoiding null parent_slug deprecations.
+		foreach ( $pages as $slug => $label ) {
+			$this->registerHiddenSpaPage( $slug, $label, 'erta_manage_all', array( $this, 'renderAdminShell' ) );
+		}
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Providers', 'ert-appointment'),
-            menu_title:   __('Providers', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-providers',
-            callback:     [$this, 'renderAdminShell']
-        );
+		/**
+		 * Fires after core admin menu pages are registered.
+		 * Pro add-on adds its own submenu pages here.
+		 *
+		 * @param Container $container Shared DI container.
+		 * @param string|null $hiddenParentSlug Use this as parent slug for hidden routes (default null).
+		 * @param callable $spaRenderer SPA shell callback for hidden pages.
+		 */
+		do_action( 'erta_admin_menu_registered', $this->container, $this->getHiddenParentSlug(), array( $this, 'renderAdminShell' ) );
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Forms', 'ert-appointment'),
-            menu_title:   __('Forms', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-forms',
-            callback:     [$this, 'renderAdminShell']
-        );
+		// Hide submenu UI only (do not remove submenu registrations, to keep refresh access working).
+		add_action( 'admin_head', array( $this, 'printHideSubmenuCss' ) );
+	}
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Notifications', 'ert-appointment'),
-            menu_title:   __('Notifications', 'ert-appointment'),
-            capability:   'manage_options',
-            menu_slug:    'erta-notifications',
-            callback:     [$this, 'renderAdminShell']
-        );
+	public function getHiddenParentSlug(): string {
+		return 'erta-dashboard';
+	}
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Reports', 'ert-appointment'),
-            menu_title:   __('Reports', 'ert-appointment'),
-            capability:   'erta_view_reports',
-            menu_slug:    'erta-reports',
-            callback:     [$this, 'renderAdminShell']
-        );
+	private function registerHiddenSpaPage( string $slug, string $label, string $capability, callable $callback ): void {
+		add_submenu_page(
+			$this->getHiddenParentSlug(),
+			$label,
+			$label,
+			$capability,
+			$slug,
+			$callback
+		);
+	}
 
-        add_submenu_page(
-            parent_slug:  'erta-dashboard',
-            page_title:   __('Settings', 'ert-appointment'),
-            menu_title:   __('Settings', 'ert-appointment'),
-            capability:   'erta_manage_settings',
-            menu_slug:    'erta-settings',
-            callback:     [$this, 'renderAdminShell']
-        );
+	public function printHideSubmenuCss(): void {
+		echo '<style>#toplevel_page_erta-dashboard .wp-submenu{display:none !important;}</style>';
+	}
 
-        /**
-         * Fires after core admin menu pages are registered.
-         * Pro add-on adds its own submenu pages here.
-         */
-        do_action('erta_admin_menu_registered', $this->container);
-    }
-
-    /**
-     * Renders the single HTML shell that mounts the Vue admin SPA.
-     * The Vue router reads the ?page= query param to determine which view to show.
-     */
-    public function renderAdminShell(): void
-    {
-        ?>
-        <div id="erta-admin-app" data-page="<?php echo esc_attr($_GET['page'] ?? 'erta-dashboard'); ?>">
-            <div class="erta-admin-loading">
-                <span class="spinner is-active"></span>
-                <?php esc_html_e('Loading…', 'ert-appointment'); ?>
-            </div>
-        </div>
-        <?php
-    }
+	/**
+	 * Renders the single HTML shell that mounts the Vue admin SPA.
+	 * The Vue router reads the ?page= query param to determine which view to show.
+	 */
+	public function renderAdminShell(): void {
+		$page = 'erta-dashboard';
+		if ( isset( $_GET['page'] ) ) {
+			$page = sanitize_key( wp_unslash( (string) $_GET['page'] ) );
+		}
+		?>
+		<div id="erta-admin-app" data-page="<?php echo esc_attr( $page ); ?>">
+			<div class="erta-admin-loading">
+				<span class="spinner is-active"></span>
+				<?php esc_html_e( 'Loading…', 'ert-appointment' ); ?>
+			</div>
+		</div>
+		<?php
+	}
 }

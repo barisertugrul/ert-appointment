@@ -1,5 +1,5 @@
 /**
- * WP Appointment — Admin Panel Stylesheet
+ * ERT Appointment — Admin Panel Stylesheet
  * Applied only on plugin admin pages.
  */
 
@@ -121,6 +121,8 @@
 .erta-badge--cancelled   { background: #fee2e2; color: #991b1b; }
 .erta-badge--completed   { background: #e0e7ff; color: #3730a3; }
 .erta-badge--rescheduled { background: #fce7f3; color: #9d174d; }
+.erta-badge--active      { background: #dcfce7; color: #166534; }
+.erta-badge--inactive    { background: #f3f4f6; color: #4b5563; }
 
 /* ── Forms (admin settings) ──────────────────────────────────────────────── */
 .erta-settings-form { max-width: 640px; }
@@ -158,6 +160,55 @@
 }
 
 .erta-input:focus { outline: none; border-color: var(--erta-primary); box-shadow: 0 0 0 2px #dbeafe; }
+
+select.erta-input { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M6%208L0%200h12z%22/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; background-size: 12px 8px; }
+
+/* Keep all form controls visually consistent inside plugin admin shells. */
+#erta-admin-app .erta-input,
+#erta-provider-app .erta-input {
+  min-height: 40px;
+  line-height: 1.35;
+  color: var(--erta-gray-800);
+  background-color: #fff;
+}
+
+#erta-admin-app textarea.erta-input,
+#erta-provider-app textarea.erta-input {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Override WordPress core select rules (.wp-core-ui select) safely in plugin scope. */
+.wp-core-ui #erta-admin-app select.erta-input,
+.wp-core-ui #erta-provider-app select.erta-input,
+#erta-admin-app select.erta-input,
+#erta-provider-app select.erta-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  height: 40px;
+  min-height: 40px;
+  line-height: 1.35;
+  padding: 0 34px 0 12px;
+  border: 1.5px solid var(--erta-gray-200);
+  border-radius: 6px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M6%208L0%200h12z%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 8px;
+  box-shadow: none;
+}
+
+.wp-core-ui #erta-admin-app select.erta-input:focus,
+.wp-core-ui #erta-provider-app select.erta-input:focus,
+#erta-admin-app select.erta-input:focus,
+#erta-provider-app select.erta-input:focus {
+  border-color: var(--erta-primary);
+  box-shadow: 0 0 0 2px #dbeafe;
+}
+
+
 
 /* ── Tabs ────────────────────────────────────────────────────────────────── */
 .erta-admin-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--erta-gray-200); margin-bottom: 24px; }
@@ -251,6 +302,54 @@
 .erta-alert--success { background: #d1fae5; color: #065f46; }
 .erta-alert--info    { background: #dbeafe; color: #1e40af; }
 
+/* ── Installation checklist (settings) ──────────────────────────────────── */
+.erta-install-checklist-wrap {
+  margin-bottom: 20px;
+}
+
+.erta-install-checklist__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--erta-gray-200);
+  background: #fff;
+  border-radius: var(--erta-radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.erta-install-checklist__panel {
+  margin-top: 10px;
+}
+
+.erta-install-checklist {
+  background: #fff;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+}
+
+.erta-install-checklist__actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.erta-install-checklist__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--erta-gray-200);
+}
+
+.erta-install-checklist__item:last-child {
+  border-bottom: none;
+}
+
 /* ── Working hours grid ──────────────────────────────────────────────────── */
 .erta-hours-grid { display: flex; flex-direction: column; gap: 10px; }
 .erta-hours-row  { display: flex; align-items: center; gap: 12px; }
@@ -280,6 +379,58 @@
 
 /* ── Pagination ───────────────────────────────────────────────────────────── */
 .erta-pagination { display: flex; align-items: center; gap: 12px; justify-content: center; margin-top: 20px; color: var(--erta-gray-500); }
+
+/* ── Admin modals ─────────────────────────────────────────────────────────── */
+.erta-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100000;
+}
+
+.erta-modal {
+  width: min(560px, 100%);
+  background: #fff;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  padding: 18px;
+  box-shadow: var(--erta-shadow-md);
+}
+
+.erta-modal h4 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  color: var(--erta-gray-800);
+}
+
+.erta-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.erta-form-field:last-of-type {
+  margin-bottom: 0;
+}
+
+.erta-form-field .erta-form-label {
+  margin: 0;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--erta-gray-600);
+}
+
+.erta-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
 
 /* ── Action buttons ───────────────────────────────────────────────────────── */
 .erta-action-btns { display: flex; gap: 4px; }
@@ -527,7 +678,19 @@
 .erta-input--time { width: 110px; }
 .erta-input--date { width: 150px; }
 .erta-input--narrow { width: 180px; }
-.erta-form-row--inline { flex-direction: row; align-items: center; }
+.erta-form-row.erta-form-row--inline {
+  display: flex;
+  grid-template-columns: none;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border-bottom: none;
+}
+
+.erta-form-row.erta-form-row--inline .erta-form-label {
+  padding-top: 0;
+  white-space: nowrap;
+}
 
 /* Breaks */
 .erta-break-list, .erta-special-list { display: flex; flex-direction: column; gap: 10px; max-width: 700px; }
@@ -683,6 +846,83 @@
   color: var(--erta-gray-500);
 }
 
+.erta-quick-combos {
+  margin-bottom: 16px;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  background: #fff;
+  overflow: hidden;
+}
+
+.erta-quick-combos__summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: var(--erta-gray-800);
+  cursor: pointer;
+  background: var(--erta-gray-50);
+  border-bottom: 1px solid var(--erta-gray-200);
+}
+
+.erta-quick-combos__summary::-webkit-details-marker { display: none; }
+
+.erta-quick-combos__hint {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--erta-gray-500);
+}
+
+.erta-quick-combos__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  padding: 12px;
+}
+
+.erta-quick-combos__btn {
+  min-height: 58px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  text-align: left;
+  padding: 10px 12px;
+  border: 1.5px solid var(--erta-gray-200);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--erta-gray-800);
+  cursor: pointer;
+  transition: all var(--erta-transition);
+}
+
+.erta-quick-combos__btn:hover:not(:disabled) {
+  border-color: var(--erta-primary);
+  background: #eff6ff;
+}
+
+.erta-quick-combos__btn:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.erta-quick-combos__btn-event {
+  font-size: .85rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.erta-quick-combos__btn-action {
+  font-size: .76rem;
+  color: var(--erta-gray-500);
+  line-height: 1.2;
+}
+
 /* Editor layout */
 .erta-editor-layout {
   display: grid;
@@ -737,6 +977,13 @@
 .erta-placeholder-chip:hover {
   border-color: var(--erta-primary);
   background: #eff6ff;
+}
+
+.erta-fieldset-reset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
 }
 
 /* Live preview */

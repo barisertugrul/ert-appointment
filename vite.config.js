@@ -5,6 +5,9 @@ import { resolve } from 'path';
 export default defineConfig(({ mode }) => ({
   plugins: [vue()],
 
+  // Ensure dynamic chunk URLs are relative to admin.js/frontend.js location.
+  base: './',
+
   resolve: {
     alias: {
       '@': resolve(__dirname, 'assets/js'),

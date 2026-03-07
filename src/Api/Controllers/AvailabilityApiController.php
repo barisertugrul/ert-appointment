@@ -14,76 +14,79 @@ use ERTAppointment\Domain\Schedule\AvailabilityService;
  * REST controller for slot and calendar availability queries.
  * These endpoints are called by the Vue.js booking widget.
  */
-final class AvailabilityApiController
-{
-    public function __construct(
-        private readonly AvailabilityService $availabilityService
-    ) {}
+final class AvailabilityApiController {
 
-    /**
-     * GET /erta/v1/providers/{id}/slots?date=YYYY-MM-DD
-     *
-     * Returns available time slots for a provider on a specific date.
-     */
-    public function getSlots(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $providerId = (int) $request->get_param('id');
-        $dateStr    = $request->get_param('date');
+	public function __construct(
+		private readonly AvailabilityService $availabilityService
+	) {}
 
-        try {
-            $date  = new DateTimeImmutable($dateStr);
-        } catch (\Throwable) {
-            return new WP_Error(
-                'erta_invalid_date',
-                __('Invalid date format. Use YYYY-MM-DD.', 'ert-appointment'),
-                ['status' => 400]
-            );
-        }
+	/**
+	 * GET /erta/v1/providers/{id}/slots?date=YYYY-MM-DD
+	 *
+	 * Returns available time slots for a provider on a specific date.
+	 */
+	public function getSlots( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$providerId = (int) $request->get_param( 'id' );
+		$dateStr    = $request->get_param( 'date' );
 
-        $slots = $this->availabilityService->getAvailableSlots($providerId, $date);
+		try {
+			$date = new DateTimeImmutable( $dateStr );
+		} catch ( \Throwable ) {
+			return new WP_Error(
+				'erta_invalid_date',
+				__( 'Invalid date format. Use YYYY-MM-DD.', 'ert-appointment' ),
+				array( 'status' => 400 )
+			);
+		}
 
-        return new WP_REST_Response([
-            'date'  => $dateStr,
-            'slots' => array_map(fn($slot) => $slot->toArray(), $slots),
-        ]);
-    }
+		$slots = $this->availabilityService->getAvailableSlots( $providerId, $date );
 
-    /**
-     * GET /erta/v1/providers/{id}/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD
-     *
-     * Returns a date-keyed map of available slot counts for a date range.
-     * Used to mark available / unavailable days on the calendar widget.
-     *
-     * Maximum range: 90 days (to limit server load).
-     */
-    public function getCalendar(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $providerId = (int) $request->get_param('id');
+		return new WP_REST_Response(
+			array(
+				'date'  => $dateStr,
+				'slots' => array_map( fn( $slot ) => $slot->toArray(), $slots ),
+			)
+		);
+	}
 
-        try {
-            $from = new DateTimeImmutable($request->get_param('from'));
-            $to   = new DateTimeImmutable($request->get_param('to'));
-        } catch (\Throwable) {
-            return new WP_Error(
-                'erta_invalid_date',
-                __('Invalid date format. Use YYYY-MM-DD.', 'ert-appointment'),
-                ['status' => 400]
-            );
-        }
+	/**
+	 * GET /erta/v1/providers/{id}/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD
+	 *
+	 * Returns a date-keyed map of available slot counts for a date range.
+	 * Used to mark available / unavailable days on the calendar widget.
+	 *
+	 * Maximum range: 90 days (to limit server load).
+	 */
+	public function getCalendar( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$providerId = (int) $request->get_param( 'id' );
 
-        // Safety cap.
-        $daysDiff = $from->diff($to)->days;
-        if ($daysDiff > 90) {
-            $to = $from->modify('+90 days');
-        }
+		try {
+			$from = new DateTimeImmutable( $request->get_param( 'from' ) );
+			$to   = new DateTimeImmutable( $request->get_param( 'to' ) );
+		} catch ( \Throwable ) {
+			return new WP_Error(
+				'erta_invalid_date',
+				__( 'Invalid date format. Use YYYY-MM-DD.', 'ert-appointment' ),
+				array( 'status' => 400 )
+			);
+		}
 
-        $calendar = $this->availabilityService->getAvailabilityCalendar($providerId, $from, $to);
+		// Safety cap.
+		$daysDiff = $from->diff( $to )->days;
+		if ( $daysDiff > 90 ) {
+			$to = $from->modify( '+90 days' );
+		}
 
-        return new WP_REST_Response([
-            'provider_id' => $providerId,
-            'from'        => $from->format('Y-m-d'),
-            'to'          => $to->format('Y-m-d'),
-            'availability' => $calendar,  // ['2024-04-01' => 8, '2024-04-02' => 0, ...]
-        ]);
-    }
+		$calendar = $this->availabilityService->getAvailabilityCalendar( $providerId, $from, $to );
+
+		return new WP_REST_Response(
+			array(
+				'provider_id'  => $providerId,
+				'from'         => $from->format( 'Y-m-d' ),
+				'to'           => $to->format( 'Y-m-d' ),
+				// Availability map of date => available slot count.
+				'availability' => $calendar,
+			)
+		);
+	}
 }

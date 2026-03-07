@@ -93,6 +93,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useApi } from '../composables/useApi.js';
+import { formatDateSafe, formatTimeSafe } from '../utils/locale.js';
 
 defineProps({ userId: Number });
 
@@ -125,11 +126,11 @@ onMounted(async () => {
 });
 
 function formatDate(dt) {
-  return new Date(dt).toLocaleDateString(window.ertaData?.locale ?? 'en');
+  return formatDateSafe(dt);
 }
 
 function formatTime(dt) {
-  return new Date(dt).toLocaleTimeString(window.ertaData?.locale ?? 'en', {
+  return formatTimeSafe(dt, undefined, {
     hour: '2-digit', minute: '2-digit',
   });
 }

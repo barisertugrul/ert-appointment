@@ -9,10 +9,10 @@ use DateTimeImmutable;
 /**
  * Data Transfer Object for rescheduling an existing appointment.
  */
-final class RescheduleDTO
-{
-    public function __construct(
-        public readonly DateTimeImmutable $newStartDatetime,
-        public readonly ?string           $notes = null,
-    ) {}
+final class RescheduleDTO {
+
+	public function __construct(
+		public readonly DateTimeImmutable $newStartDatetime,
+		public readonly ?string $notes = null,
+	) {}
 }

@@ -1,5 +1,5 @@
 /**
- * WP Appointment — Frontend Stylesheet
+ * ERT Appointment — Frontend Stylesheet
  * BEM-like naming: .erta-{block}___{element}--{modifier}
  */
 
@@ -206,6 +206,18 @@
 
 .erta-form-field { display: flex; flex-direction: column; gap: 4px; }
 
+/*
+ * Shortcode form baseline (theme-safe, editable)
+ * Scope all strong rules to shortcode hosts so global theme styles remain untouched.
+ */
+#erta-booking-app.erta-booking-host,
+#erta-my-appointments-app.erta-my-appointments-host {
+  --erta-form-control-height: 42px;
+  --erta-form-control-border: 1.5px solid var(--erta-gray-200);
+  --erta-form-control-radius: 8px;
+  --erta-form-control-bg: #fff;
+}
+
 .erta-form-label {
   font-size: .875rem;
   font-weight: 500;
@@ -222,6 +234,56 @@
   width: 100%;
   box-sizing: border-box;
   transition: border-color var(--erta-transition);
+}
+
+#erta-booking-app.erta-booking-host .erta-form .erta-input,
+#erta-my-appointments-app.erta-my-appointments-host .erta-form .erta-input {
+  min-height: var(--erta-form-control-height);
+  height: var(--erta-form-control-height);
+  border: var(--erta-form-control-border) !important;
+  border-radius: var(--erta-form-control-radius) !important;
+  background: var(--erta-form-control-bg) !important;
+  color: var(--erta-gray-800);
+  box-shadow: none !important;
+  font: inherit;
+  line-height: 1.35;
+}
+
+#erta-booking-app.erta-booking-host .erta-form textarea.erta-input,
+#erta-my-appointments-app.erta-my-appointments-host .erta-form textarea.erta-input {
+  min-height: 120px;
+  height: auto;
+  resize: vertical;
+}
+
+#erta-booking-app.erta-booking-host .erta-form input.erta-input[type="text"],
+#erta-booking-app.erta-booking-host .erta-form input.erta-input[type="email"],
+#erta-booking-app.erta-booking-host .erta-form input.erta-input[type="tel"],
+#erta-booking-app.erta-booking-host .erta-form input.erta-input[type="number"],
+#erta-my-appointments-app.erta-my-appointments-host .erta-form input.erta-input[type="text"],
+#erta-my-appointments-app.erta-my-appointments-host .erta-form input.erta-input[type="email"],
+#erta-my-appointments-app.erta-my-appointments-host .erta-form input.erta-input[type="tel"],
+#erta-my-appointments-app.erta-my-appointments-host .erta-form input.erta-input[type="number"] {
+  padding: 0 12px !important;
+}
+
+#erta-booking-app.erta-booking-host .erta-form select.erta-input,
+#erta-my-appointments-app.erta-my-appointments-host .erta-form select.erta-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0 36px 0 12px !important;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20fill%3D%22%236b7280%22%20d%3D%22M6%208L0%200h12z%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center !important;
+  background-size: 12px 8px;
+}
+
+#erta-booking-app.erta-booking-host .erta-form .erta-input:focus,
+#erta-my-appointments-app.erta-my-appointments-host .erta-form .erta-input:focus {
+  outline: none;
+  border-color: var(--erta-primary);
+  box-shadow: 0 0 0 2px #dbeafe;
 }
 
 .erta-input:focus { outline: none; border-color: var(--erta-primary); }
@@ -260,6 +322,18 @@
   justify-content: space-between;
   gap: 12px;
   margin-top: 24px;
+}
+
+.erta-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.erta-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .erta-btn {

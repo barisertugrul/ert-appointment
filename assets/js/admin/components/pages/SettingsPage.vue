@@ -2,7 +2,7 @@
   <div class="erta-page">
     <div class="erta-page-header">
       <h1 class="erta-page-title">{{ t('settings') }}</h1>
-      <button class="erta-btn erta-btn--primary" :disabled="saving" @click="save">
+      <button class="erta-btn erta-btn--primary" :disabled="saving || isActiveProTabLocked" @click="save">
         <span v-if="saving" class="erta-spinner erta-spinner--sm"></span>
         {{ t('save') }}
       </button>
@@ -11,11 +11,71 @@
     <div v-if="saved" class="erta-alert erta-alert--success">{{ t('settingsSaved') }}</div>
     <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
 
+    <div v-if="installation" class="erta-install-checklist-wrap">
+      <button
+        type="button"
+        class="erta-install-checklist__toggle"
+        @click="checklistOpen = !checklistOpen"
+      >
+        <span>
+          Kurulum Kontrolü
+          <span class="erta-badge" :class="installation.all_ok ? 'erta-badge--confirmed' : 'erta-badge--cancelled'">
+            {{ installation.all_ok ? 'Hazır' : 'Eksik Var' }}
+          </span>
+        </span>
+        <span>{{ checklistOpen ? '▾' : '▸' }}</span>
+      </button>
+
+      <div v-show="checklistOpen" class="erta-install-checklist__panel">
+        <div
+          class="erta-alert"
+          :class="installation.all_ok ? 'erta-alert--success' : 'erta-alert--error'"
+        >
+          {{ installation.all_ok
+            ? 'Kurulum kontrolü başarılı: tablolar, roller ve yetkiler hazır.'
+            : 'Kurulum eksikleri tespit edildi: bazı tablo/rol/yetkiler oluşturulmamış.' }}
+        </div>
+
+        <div class="erta-install-checklist__actions">
+          <button
+            class="erta-btn erta-btn--ghost erta-btn--sm"
+            :disabled="checkingInstallation || repairingInstallation"
+            @click="refreshInstallationChecklist"
+          >
+            <span v-if="checkingInstallation" class="erta-spinner erta-spinner--sm"></span>
+            Yeniden Kontrol Et
+          </button>
+
+          <button
+            v-if="!installation.all_ok"
+            class="erta-btn erta-btn--primary erta-btn--sm"
+            :disabled="repairingInstallation || checkingInstallation"
+            @click="repairInstallationNow"
+          >
+            <span v-if="repairingInstallation" class="erta-spinner erta-spinner--sm"></span>
+            Şimdi Onar
+          </button>
+        </div>
+
+        <div class="erta-install-checklist">
+          <div v-for="item in installation.items" :key="item.key" class="erta-install-checklist__item">
+            <span>{{ item.label }}</span>
+            <span class="erta-badge" :class="item.ok ? 'erta-badge--confirmed' : 'erta-badge--cancelled'">
+              {{ item.ok ? 'OK' : 'Eksik' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Tabs -->
     <div class="erta-admin-tabs">
       <button v-for="tab in tabs" :key="tab.key"
         class="erta-admin-tab" :class="{ 'erta-admin-tab--active': activeTab === tab.key }"
-        @click="activeTab = tab.key">{{ tab.label }}</button>
+        @click="activeTab = tab.key">
+        {{ tab.label }}
+        <span v-if="tab.pro && !isPro" class="erta-pro-badge">PRO</span>
+      </button>
     </div>
 
     <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
@@ -73,6 +133,8 @@
 
       <!-- Payment -->
       <template v-if="activeTab === 'payment'">
+        <div v-if="!isPro" class="erta-alert erta-alert--info">Bu alan Pro sürümde aktiftir.</div>
+        <fieldset :disabled="!isPro" class="erta-fieldset-reset" :class="{ 'erta-pro-gate': !isPro }">
         <div class="erta-form-row">
           <label>{{ t('paymentRequired') }}</label>
           <label class="erta-toggle">
@@ -147,10 +209,13 @@
             </label>
           </div>
         </template>
+        </fieldset>
       </template>
 
       <!-- Integrations (Google Calendar + Zoom + PayTR) -->
       <template v-if="activeTab === 'integrations'">
+        <div v-if="!isPro" class="erta-alert erta-alert--info">Bu alan Pro sürümde aktiftir.</div>
+        <fieldset :disabled="!isPro" class="erta-fieldset-reset" :class="{ 'erta-pro-gate': !isPro }">
 
         <!-- ── Google Calendar ──────────────────────────────────────────── -->
         <div class="erta-integration-card">
@@ -291,6 +356,8 @@
           </div>
         </div>
 
+        </fieldset>
+
       </template>
 
     </form>
@@ -307,6 +374,10 @@ const loading   = ref(true);
 const saving    = ref(false);
 const saved     = ref(false);
 const error     = ref(null);
+const installation = ref(null);
+const checklistOpen = ref(false);
+const checkingInstallation = ref(false);
+const repairingInstallation = ref(false);
 const activeTab = ref('general');
 
 // Integration state
@@ -316,11 +387,15 @@ const zoomTesting      = ref(false);
 const zoomTestResult   = ref(null);  // null | 'ok' | 'fail'
 const restUrl          = window.ertaAdminData?.restUrl ?? '/wp-json/erta/v1/';
 const nonce            = window.ertaAdminData?.nonce   ?? '';
+const isPro            = Boolean(window.ertaAdminData?.isPro);
+const isActiveProTabLocked = computed(
+  () => !isPro && (activeTab.value === 'payment' || activeTab.value === 'integrations')
+);
 
 const tabs = [
   { key: 'general',      label: t('general')      },
-  { key: 'payment',      label: t('payment')       },
-  { key: 'integrations', label: t('integrations')  },
+  { key: 'payment',      label: t('payment'), pro: true },
+  { key: 'integrations', label: t('integrations'), pro: true },
 ];
 
 const form = ref({
@@ -352,12 +427,12 @@ const form = ref({
 });
 
 onMounted(async () => {
-  // Load saved settings.
-  const { data } = await api.getSettings('global', null);
-  if (data) Object.assign(form.value, data.settings ?? data ?? {});
+  await loadSettings();
 
-  // Check Google Calendar connection status.
-  await refreshGoogleStatus();
+  // Check Google Calendar connection status only when integration routes exist.
+  if (isPro) {
+    await refreshGoogleStatus();
+  }
 
   // Check URL params: redirect back from Google OAuth callback.
   const urlParams = new URLSearchParams(window.location.search);
@@ -375,8 +450,53 @@ onMounted(async () => {
   loading.value = false;
 });
 
+async function loadSettings() {
+  const { data } = await api.getSettings('global', null);
+  if (data) {
+    Object.assign(form.value, data.settings ?? data ?? {});
+    installation.value = data.installation ?? null;
+  }
+}
+
+async function refreshInstallationChecklist() {
+  checkingInstallation.value = true;
+  const { data, error: err } = await api.getSettings('global', null);
+  checkingInstallation.value = false;
+
+  if (err) {
+    error.value = err;
+    return;
+  }
+
+  installation.value = data?.installation ?? null;
+}
+
+async function repairInstallationNow() {
+  repairingInstallation.value = true;
+  error.value = null;
+
+  const { data, error: err } = await api.repairInstallation();
+  repairingInstallation.value = false;
+
+  if (err) {
+    error.value = err;
+    return;
+  }
+
+  installation.value = data?.installation ?? null;
+  if (installation.value?.all_ok) {
+    saved.value = true;
+    setTimeout(() => (saved.value = false), 3000);
+  }
+}
+
 // ── Save ───────────────────────────────────────────────────────────────────
 async function save() {
+  if (isActiveProTabLocked.value) {
+    error.value = 'Bu sekme Pro sürümde düzenlenebilir.';
+    return;
+  }
+
   saving.value = true;
   error.value  = null;
   const { error: err } = await api.saveSettings('global', null, form.value);
@@ -388,6 +508,7 @@ async function save() {
 
 // ── Google Calendar ────────────────────────────────────────────────────────
 async function refreshGoogleStatus() {
+  if (!isPro) return;
   try {
     const res  = await fetch(`${restUrl}integrations/google/status`, {
       headers: { 'X-WP-Nonce': nonce },
@@ -399,6 +520,7 @@ async function refreshGoogleStatus() {
 }
 
 async function connectGoogle() {
+  if (!isPro) return;
   // First save credentials so the backend can use them for the OAuth URL.
   await save();
   // Fetch the auth URL from the backend (it includes the signed state parameter).
@@ -414,6 +536,7 @@ async function connectGoogle() {
 }
 
 async function disconnectGoogle() {
+  if (!isPro) return;
   await fetch(`${restUrl}integrations/google/disconnect`, {
     method: 'DELETE',
     headers: { 'X-WP-Nonce': nonce },
@@ -424,6 +547,7 @@ async function disconnectGoogle() {
 
 // ── Zoom ───────────────────────────────────────────────────────────────────
 async function testZoom() {
+  if (!isPro) return;
   zoomTesting.value   = true;
   zoomTestResult.value = null;
   try {

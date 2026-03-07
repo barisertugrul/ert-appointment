@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointment Booking by ERT — Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;
+  --border:#30363D;--border2:#21262D;
+  --text:#E6EDF3;--text2:#8B949E;--text3:#6E7681;
+  --accent:#2F81F7;--gold:#D29922;--green:#3FB950;
+  --red:#F85149;--purple:#A371F7;
+  --sw:280px;--cw:860px;
+  --mono:'DM Mono','Fira Code',monospace;
+  --body:'Plus Jakarta Sans',sans-serif;
+  --head:'Fraunces',Georgia,serif;
+  --r:6px;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.7;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden}
+::selection{background:rgba(47,129,247,.35)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* Topbar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:rgba(13,17,23,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.brand-logo{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:700;color:#fff;font-size:13px;letter-spacing:-.5px}
+.brand-name{font-family:var(--head);font-weight:600;font-size:15px;color:var(--text);letter-spacing:-.3px}
+.brand-name span{color:var(--text2);font-weight:300}
+.search-wrap{flex:1;max-width:400px;position:relative}
+.search-box{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:7px 12px 7px 36px;color:var(--text);font-family:var(--body);font-size:13.5px;outline:none;transition:border-color .2s,box-shadow .2s}
+.search-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,129,247,.15)}
+.search-box::placeholder{color:var(--text3)}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lbtn{padding:5px 12px;border-radius:var(--r);font-size:12.5px;font-weight:500;cursor:pointer;border:1px solid var(--border);transition:all .18s;font-family:var(--body);background:transparent;color:var(--text2)}
+.lbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lbtn:not(.active):hover{border-color:var(--accent);color:var(--accent)}
+.vbadge{padding:4px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;font-size:11.5px;color:var(--text3);font-family:var(--mono)}
+.mtoggle{display:none;background:none;border:none;color:var(--text2);cursor:pointer;font-size:18px;padding:4px}
+
+/* Layout */
+.layout{display:flex;margin-top:56px;min-height:calc(100vh - 56px)}
+
+/* Sidebar */
+.sidebar{width:var(--sw);flex-shrink:0;position:fixed;top:56px;bottom:0;left:0;overflow-y:auto;background:var(--bg2);border-right:1px solid var(--border);padding:24px 0 40px;transition:transform .25s;z-index:80}
+.shd{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);padding:8px 20px 4px;font-family:var(--mono)}
+.slink{display:flex;align-items:center;gap:8px;padding:6px 20px;font-size:13.5px;color:var(--text2);text-decoration:none;border-left:2px solid transparent;transition:all .15s;cursor:pointer}
+.slink:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.slink.active{color:var(--accent);border-left-color:var(--accent);background:rgba(47,129,247,.08);font-weight:500}
+.snum{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:18px}
+.slink.active .snum{color:var(--accent)}
+.sdiv{height:1px;background:var(--border2);margin:8px 20px 12px}
+
+/* Main */
+.main{margin-left:var(--sw);flex:1;padding:56px 48px 80px;max-width:calc(var(--sw) + var(--cw) + 96px)}
+.inner{max-width:var(--cw)}
+
+/* Sections */
+.sec{padding-top:64px;border-top:1px solid var(--border2);margin-top:64px;opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
+.sec:first-of-type{margin-top:0;border-top:none;padding-top:0}
+.sec.vis{opacity:1;transform:none}
+
+/* Typography */
+.slabel{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px}
+.slabel::before{content:'';display:block;width:16px;height:1px;background:var(--accent)}
+h1.h1{font-family:var(--head);font-size:2.6rem;font-weight:700;color:var(--text);letter-spacing:-1.2px;line-height:1.18;margin-bottom:16px}
+h2.h2{font-family:var(--head);font-size:1.45rem;font-weight:600;color:var(--text);letter-spacing:-.4px;margin:40px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border2)}
+h3.h3{font-size:.93rem;font-weight:600;color:var(--text2);margin:28px 0 8px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+p.p{color:var(--text2);font-size:.9375rem;line-height:1.75;margin-bottom:12px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Hero card */
+.hero{background:linear-gradient(135deg,#0d1f3c 0%,#0D1117 60%);border:1px solid rgba(47,129,247,.3);border-radius:12px;padding:40px 44px;margin-bottom:40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(47,129,247,.2) 0%,transparent 70%);pointer-events:none}
+.hmeta{display:flex;flex-wrap:wrap;gap:20px;margin-top:24px}
+.mi{display:flex;flex-direction:column;gap:2px}
+.ml{font-size:10.5px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);font-family:var(--mono);margin-bottom:2px}
+.mv{font-size:13.5px;color:var(--text);font-weight:500}
+.badges{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--mono)}
+.bf{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.25)}
+.bp{background:rgba(210,153,34,.12);color:var(--gold);border:1px solid rgba(210,153,34,.3)}
+.bv{background:rgba(47,129,247,.1);color:var(--accent);border:1px solid rgba(47,129,247,.25)}
+
+/* Feature grid */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;margin:20px 0}
+.fcard{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px 20px;transition:border-color .2s,transform .2s}
+.fcard:hover{border-color:rgba(47,129,247,.5);transform:translateY(-2px)}
+.ficon{font-size:20px;margin-bottom:8px}
+.ftitle{font-weight:600;font-size:13.5px;color:var(--text);margin-bottom:4px}
+.fdesc{font-size:12.5px;color:var(--text2);line-height:1.55}
+
+/* Requirements */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:16px 0}
+.ritem{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.rl{font-size:10.5px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;font-family:var(--mono);margin-bottom:4px}
+.rv{font-size:13.5px;color:var(--text);font-weight:600}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0 24px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.tbl thead th{background:var(--bg3);color:var(--text2);font-weight:600;padding:10px 16px;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);border-bottom:1px solid var(--border)}
+.tbl tbody td{padding:10px 16px;border-bottom:1px solid var(--border2);color:var(--text2);vertical-align:top;line-height:1.55}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl tbody tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.tbl tbody tr:hover td{background:rgba(47,129,247,.05)}
+.tbl .key{font-weight:600;color:var(--text)}
+.mono{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(47,129,247,.08);padding:2px 6px;border-radius:4px}
+.tag-a{color:var(--green);font-family:var(--mono);font-size:11.5px;font-weight:600}
+.tag-f{color:var(--gold);font-family:var(--mono);font-size:11.5px;font-weight:600}
+.mget{color:var(--green);font-family:var(--mono);font-size:12px;font-weight:600}
+.mpost{color:var(--gold);font-family:var(--mono);font-size:12px;font-weight:600}
+.mpatch{color:var(--purple);font-family:var(--mono);font-size:12px;font-weight:600}
+.mdel{color:var(--red);font-family:var(--mono);font-size:12px;font-weight:600}
+
+/* Steps & bullets */
+.steps{counter-reset:step;list-style:none;margin:16px 0}
+.steps li{display:flex;gap:14px;align-items:flex-start;padding:10px 0;counter-increment:step;font-size:.9rem;color:var(--text2);border-bottom:1px solid var(--border2)}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);flex-shrink:0;width:22px;height:22px;background:rgba(47,129,247,.15);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--mono);margin-top:2px}
+.blist{list-style:none;margin:12px 0}
+.blist li{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:.9rem;color:var(--text2)}
+.blist li::before{content:'›';color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* Callouts */
+.call{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:8px;margin:16px 0;font-size:.875rem;line-height:1.6;border-left:3px solid}
+.call-icon{flex-shrink:0;font-size:15px;margin-top:1px}
+.call-body{color:var(--text2)}
+.call-info{background:rgba(47,129,247,.08);border-color:var(--accent)}
+.call-warn{background:rgba(210,153,34,.08);border-color:var(--gold)}
+.call-tip{background:rgba(63,185,80,.08);border-color:var(--green)}
+.ci{font-family:var(--mono);font-size:.82em;color:var(--accent);background:rgba(47,129,247,.1);padding:2px 7px;border-radius:4px;border:1px solid rgba(47,129,247,.2)}
+.vt{font-family:var(--mono);font-size:12px;color:#50fa7b;background:rgba(80,250,123,.1);border:1px solid rgba(80,250,123,.2);padding:2px 8px;border-radius:4px}
+
+/* Code */
+.cb{position:relative;background:#0d1117;border:1px solid var(--border);border-radius:8px;margin:16px 0;overflow:hidden}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11.5px;color:var(--text3)}
+.dots{display:flex;gap:5px}
+.dots span{width:10px;height:10px;border-radius:50%}
+.dots span:nth-child(1){background:#ff5f57}
+.dots span:nth-child(2){background:#ffbd2e}
+.dots span:nth-child(3){background:#28c840}
+.ccopy{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;font-family:var(--mono);padding:2px 6px;border-radius:4px;transition:color .15s,background .15s}
+.ccopy:hover{color:var(--text);background:var(--border)}
+pre{padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.65;color:#a8d8ea;tab-size:2}
+.kw{color:#ff79c6}.str{color:#f1fa8c}.fn{color:#50fa7b}.cm{color:#6272a4;font-style:italic}.nm{color:#bd93f9}.rx{color:#8be9fd}
+
+/* Shortcode box */
+.sc{display:inline-flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-family:var(--mono);font-size:16px;color:var(--accent);margin:8px 0 16px;cursor:pointer;transition:border-color .2s}
+.sc:hover{border-color:var(--accent)}
+
+/* Progress */
+.prog{position:fixed;top:56px;left:0;right:0;z-index:99;height:2px;background:linear-gradient(90deg,var(--accent),var(--purple));transform-origin:left;transform:scaleX(0);transition:transform .05s}
+
+/* Footer */
+.foot{margin-left:var(--sw);padding:24px 48px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--text3);flex-wrap:wrap;gap:12px}
+
+/* Lang */
+[data-lang=en] .tro{display:none!important}
+[data-lang=tr] .eno{display:none!important}
+
+/* Search highlight */
+mark{background:rgba(210,153,34,.35);color:var(--gold);border-radius:2px;padding:0 2px}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0;padding:32px 20px 60px}
+  .foot{margin-left:0}
+  h1.h1{font-size:1.9rem}
+  .fgrid{grid-template-columns:1fr}
+  .search-wrap{display:none}
+  .mtoggle{display:block}
+}
+</style>
+</head>
+<body data-lang="tr">
+
+<div class="prog" id="prog"></div>
+
+<header class="topbar">
+  <a href="#" class="brand">
+    <div class="brand-logo">ERT</div>
+    <div class="brand-name">Appointment <span>by ERT</span></div>
+  </a>
+  <div class="search-wrap">
+    <span class="si">⌕</span>
+    <input class="search-box" type="search" id="srch" placeholder="Ara... / Search...">
+  </div>
+  <div class="topbar-right">
+    <span class="vbadge">v1.0.0</span>
+    <button class="lbtn active" onclick="setLang('tr')" id="btn-tr">TR</button>
+    <button class="lbtn" onclick="setLang('en')" id="btn-en">EN</button>
+    <button class="mtoggle" onclick="toggleSB()">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="sidebar" id="sb">
+  <div><div class="shd tro">Başlangıç</div><div class="shd eno">Getting Started</div>
+    <a class="slink active" onclick="goTo('s1')"><span class="snum">01</span><span class="tro">Genel Bakış</span><span class="eno">Overview</span></a>
+    <a class="slink" onclick="goTo('s2')"><span class="snum">02</span><span class="tro">Kurulum</span><span class="eno">Installation</span></a>
+  </div>
+  <div class="sdiv"></div>
+  <div><div class="shd tro">Yönetim</div><div class="shd eno">Administration</div>
+    <a class="slink" onclick="goTo('s3')"><span class="snum">03</span><span class="tro">Departmanlar</span><span class="eno">Departments</span></a>
+    <a class="slink" onclick="goTo('s4')"><span class="snum">04</span><span class="tro">Sağlayıcılar</span><span class="eno">Providers</span></a>
+    <a class="slink" onclick="goTo('s5')"><span class="snum">05</span><span class="tro">Rezervasyon Formları</span><span class="eno">Booking Forms</span></a>
+    <a class="slink" onclick="goTo('s6')"><span class="snum">06</span><span class="tro">E-posta Bildirimleri</span><span class="eno">Email Notifications</span></a>
+  </div>
+  <div class="sdiv"></div>
+  <div><div class="shd">Frontend &amp; API</div>
+    <a class="slink" onclick="goTo('s7')"><span class="snum">07</span><span class="tro">Kısa Kodlar</span><span class="eno">Shortcodes</span></a>
+    <a class="slink" onclick="goTo('s8')"><span class="snum">08</span>REST API</a>
+  </div>
+  <div class="sdiv"></div>
+  <div><div class="shd tro">Geliştirici</div><div class="shd eno">Developer</div>
+    <a class="slink" onclick="goTo('s9')"><span class="snum">09</span><span class="tro">Hook'lar</span><span class="eno">Hooks</span></a>
+    <a class="slink" onclick="goTo('s10')"><span class="snum">10</span><span class="tro">SSS &amp; Destek</span><span class="eno">FAQ &amp; Support</span></a>
+  </div>
+</nav>
+
+<main class="main">
+<div class="inner">
+
+<!-- ── S1 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s1">
+  <div class="slabel"><span class="tro">01 / Genel Bakış</span><span class="eno">01 / Overview</span></div>
+  <h1 class="h1">Appointment Booking by ERT</h1>
+
+  <div class="hero">
+    <p class="p tro" style="color:var(--text);font-size:1rem;margin:0 0 16px">WordPress tabanlı hizmet siteleri için geliştirilmiş kapsamlı randevu rezervasyon sistemi. Klinikler, güzellik salonları, danışmanlık firmaları, spor tesisleri ve daha pek çok sektör için tasarlandı.</p>
+    <p class="p eno" style="color:var(--text);font-size:1rem;margin:0 0 16px">A comprehensive appointment scheduling system built for WordPress service sites. Designed for clinics, beauty salons, consulting firms, sports facilities, and any service-based business.</p>
+    <div class="badges">
+      <span class="badge bv">v1.0.0</span>
+      <span class="badge bf">✓ Lite — GPL v2</span>
+      <span class="badge bp">★ Pro — Proprietary</span>
+    </div>
+    <div class="hmeta">
+      <div class="mi"><span class="ml tro">Geliştirici</span><span class="ml eno">Developer</span><span class="mv">ERT Yazılım</span></div>
+      <div class="mi"><span class="ml">Website</span><span class="mv"><a href="https://www.ertyazilim.com" target="_blank">www.ertyazilim.com</a></span></div>
+      <div class="mi"><span class="ml tro">Gereksinim</span><span class="ml eno">Requires</span><span class="mv">WordPress 6.0+ · PHP 8.1+</span></div>
+    </div>
+  </div>
+
+  <h2 class="h2 tro">Temel Özellikler</h2><h2 class="h2 eno">Core Features</h2>
+  <div class="fgrid">
+    <div class="fcard"><div class="ficon">🏢</div><div class="ftitle tro">Çoklu Departman</div><div class="ftitle eno">Multi-Department</div><div class="fdesc tro">Sağlayıcıları departmanlara göre gruplandırın.</div><div class="fdesc eno">Group providers into departments — clinic, team, studio.</div></div>
+    <div class="fcard"><div class="ficon">👤</div><div class="ftitle tro">Sağlayıcı Yönetimi</div><div class="ftitle eno">Provider Management</div><div class="fdesc tro">Her sağlayıcıya özel çalışma saatleri, molalar ve tampon süreler.</div><div class="fdesc eno">Individual working hours, breaks, and buffer times per provider.</div></div>
+    <div class="fcard"><div class="ficon">⚡</div><div class="ftitle tro">Akıllı Slot Motoru</div><div class="ftitle eno">Smart Slot Engine</div><div class="fdesc tro">Rezervasyonları, tatilleri ve özel günleri hesaba katarak müsait slotları otomatik üretir.</div><div class="fdesc eno">Auto-generates available slots accounting for bookings, holidays, and special days.</div></div>
+    <div class="fcard"><div class="ficon">📋</div><div class="ftitle tro">Özel Formlar</div><div class="ftitle eno">Custom Forms</div><div class="fdesc tro">Sürükle-bırak form oluşturucu: metin, e-posta, telefon, tarih, seçim.</div><div class="fdesc eno">Drag-and-drop builder: text, email, phone, date, select, checkbox.</div></div>
+    <div class="fcard"><div class="ficon">📧</div><div class="ftitle tro">E-posta Bildirimleri</div><div class="ftitle eno">Email Notifications</div><div class="fdesc tro">Onay, iptal ve hatırlatma için tam özelleştirilebilir şablonlar.</div><div class="fdesc eno">Fully customisable templates for confirmations, cancellations, and reminders.</div></div>
+    <div class="fcard"><div class="ficon">🌐</div><div class="ftitle">REST API</div><div class="fdesc tro">Başsız veya üçüncü taraf entegrasyonlar için kapsamlı JSON API.</div><div class="fdesc eno">Comprehensive JSON API for headless or third-party integrations.</div></div>
+    <div class="fcard"><div class="ficon">⚛️</div><div class="ftitle">Vue.js Admin</div><div class="fdesc tro">Hızlı ve sezgisel tek sayfa yönetim paneli (SPA).</div><div class="fdesc eno">Fast, intuitive single-page administration panel (SPA).</div></div>
+    <div class="fcard"><div class="ficon">🌍</div><div class="ftitle tro">Çok Dilli</div><div class="ftitle eno">Multilingual</div><div class="fdesc tro">TR, DE, FR, ES, AR, RU — 160+ çeviri dizesi.</div><div class="fdesc eno">TR, DE, FR, ES, AR, RU — 160+ translation strings.</div></div>
+  </div>
+
+  <h2 class="h2 tro">Sistem Gereksinimleri</h2><h2 class="h2 eno">System Requirements</h2>
+  <div class="rgrid">
+    <div class="ritem"><div class="rl">WordPress</div><div class="rv">6.0+</div></div>
+    <div class="ritem"><div class="rl">PHP</div><div class="rv">8.1+</div></div>
+    <div class="ritem"><div class="rl">MySQL</div><div class="rv">5.7+</div></div>
+    <div class="ritem"><div class="rl">PHP Ext.</div><div class="rv">json, mbstring, openssl</div></div>
+    <div class="ritem"><div class="rl">Browser</div><div class="rv">Chrome 90+, Firefox 88+</div></div>
+  </div>
+  <div class="call call-warn"><span class="call-icon">⚠</span><div class="call-body"><span class="tro">Pro eklentisi, Lite eklentisinin yüklü ve etkin olmasını zorunlu kılar. Lite olmadan Pro çalışmaz.</span><span class="eno">The Pro add-on requires the Lite plugin to be installed and active. Pro will not function without Lite.</span></div></div>
+</section>
+
+<!-- ── S2 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s2">
+  <div class="slabel"><span class="tro">02 / Kurulum</span><span class="eno">02 / Installation</span></div>
+  <h1 class="h1 tro">Kurulum</h1><h1 class="h1 eno">Installation</h1>
+
+  <h2 class="h2 tro">2.1 Lite Eklentisini Kurma</h2><h2 class="h2 eno">2.1 Installing the Lite Plugin</h2>
+  <h3 class="h3 tro">Yöntem A — WordPress Dizini</h3><h3 class="h3 eno">Method A — WordPress Plugin Directory</h3>
+  <ol class="steps">
+    <li><span class="tro">WordPress yönetici paneline giriş yapın</span><span class="eno">Log in to your WordPress administration panel</span></li>
+    <li><strong>Plugins → Add New</strong></li>
+    <li><span class="tro">Arama kutusuna <code class="ci">Appointment Booking by ERT</code> yazın</span><span class="eno">Search for <code class="ci">Appointment Booking by ERT</code></span></li>
+    <li><span class="tro">"Şimdi Yükle" ardından "Etkinleştir"</span><span class="eno">Click "Install Now" then "Activate"</span></li>
+  </ol>
+
+  <h3 class="h3 tro">Yöntem B — Manuel Yükleme</h3><h3 class="h3 eno">Method B — Manual Upload</h3>
+  <ol class="steps">
+    <li><span class="tro"><code class="ci">ert-appointment.zip</code> dosyasını ertyazilim.com'dan indirin</span><span class="eno">Download <code class="ci">ert-appointment.zip</code> from ertyazilim.com</span></li>
+    <li><span class="tro"><strong>Eklentiler → Yeni Ekle → Eklenti Yükle</strong></span><span class="eno"><strong>Plugins → Add New → Upload Plugin</strong></span></li>
+    <li><span class="tro">ZIP dosyasını seçin ve "Şimdi Yükle"</span><span class="eno">Select the ZIP file and click "Install Now"</span></li>
+    <li><span class="tro">"Etkinleştir" butonuna tıklayın</span><span class="eno">Click "Activate"</span></li>
+  </ol>
+  <div class="call call-info"><span class="call-icon">ℹ</span><div class="call-body"><span class="tro">Etkinleştirme sonrasında <code class="ci">wp_erta_</code> önekli tablolar otomatik oluşturulur.</span><span class="eno">After activation, <code class="ci">wp_erta_</code> tables are created automatically — no SQL needed.</span></div></div>
+
+  <h2 class="h2 tro">2.2 Pro Eklentisini Kurma</h2><h2 class="h2 eno">2.2 Installing the Pro Add-on</h2>
+  <div class="call call-warn"><span class="call-icon">⚠</span><div class="call-body"><span class="tro">Pro'yu kurmadan önce Lite'ın etkin olduğundan emin olun.</span><span class="eno">Ensure the Lite plugin is active before installing Pro.</span></div></div>
+  <ol class="steps">
+    <li><span class="tro">ertyazilim.com üzerinden Pro lisansı satın alın</span><span class="eno">Purchase a Pro licence at ertyazilim.com</span></li>
+    <li><span class="tro">E-postanızdaki <code class="ci">ert-appointment-pro.zip</code> dosyasını indirin</span><span class="eno">Download <code class="ci">ert-appointment-pro.zip</code> from your purchase email</span></li>
+    <li><span class="tro">Eklenti Yükle ile ZIP'i yükleyin ve etkinleştirin</span><span class="eno">Upload via Upload Plugin and activate</span></li>
+    <li><span class="tro"><strong>ERT Appointment → Pro Lisans</strong> menüsüne gidin</span><span class="eno">Go to <strong>ERT Appointment → Pro Licence</strong></span></li>
+    <li><span class="tro">Lisans anahtarını girin ve "Lisansı Aktive Et"</span><span class="eno">Enter your key and click "Activate Licence"</span></li>
+  </ol>
+
+  <h2 class="h2 tro">2.3 Hızlı Başlangıç</h2><h2 class="h2 eno">2.3 Quick Start</h2>
+  <ol class="steps">
+    <li><span class="tro">ERT Appointment → Departmanlar → Yeni Departman oluşturun</span><span class="eno">ERT Appointment → Departments → Create a department</span></li>
+    <li><span class="tro">ERT Appointment → Sağlayıcılar → Sağlayıcı oluşturun ve departmana atayın</span><span class="eno">ERT Appointment → Providers → Create a provider and assign to the department</span></li>
+    <li><span class="tro">ERT Appointment → Çalışma Saatleri → Günleri ve saatleri girin</span><span class="eno">ERT Appointment → Working Hours → Set days and times</span></li>
+    <li><span class="tro">ERT Appointment → Ayarlar → Slot süresini ve onay modunu yapılandırın</span><span class="eno">ERT Appointment → Settings → Configure slot duration and confirmation mode</span></li>
+    <li><span class="tro">WordPress'te yeni bir sayfa oluşturun, içerik alanına <code class="ci">[erta_booking]</code> ekleyin ve yayınlayın</span><span class="eno">Create a page, add <code class="ci">[erta_booking]</code> to the content, and publish</span></li>
+  </ol>
+  <div class="call call-tip"><span class="call-icon">✓</span><div class="call-body"><span class="tro">Aynı sayfaya <code class="ci">[erta_my_appointments]</code> ekleyerek giriş yapmış kullanıcıların kendi randevularını yönetmesini sağlayabilirsiniz.</span><span class="eno">Add <code class="ci">[erta_my_appointments]</code> to let logged-in customers manage their bookings.</span></div></div>
+</section>
+
+<!-- ── S3 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s3">
+  <div class="slabel"><span class="tro">03 / Departman Yönetimi</span><span class="eno">03 / Department Management</span></div>
+  <h1 class="h1 tro">Departman Yönetimi</h1><h1 class="h1 eno">Department Management</h1>
+  <p class="p tro">Departmanlar, sağlayıcıları ve hizmetleri mantıksal gruplara ayırmanızı sağlar. Müşteri önce departmanı, ardından o departmana bağlı sağlayıcıyı seçer.</p>
+  <p class="p eno">Departments allow you to group providers and services into logical units. Customers first select a department then choose a provider within it.</p>
+
+  <h2 class="h2 tro">3.1 Yeni Departman Oluşturma</h2><h2 class="h2 eno">3.1 Creating a Department</h2>
+  <ol class="steps">
+    <li><span class="tro"><strong>ERT Appointment → Departmanlar</strong></span><span class="eno"><strong>ERT Appointment → Departments</strong></span></li>
+    <li><span class="tro">"Yeni Departman" butonuna tıklayın</span><span class="eno">Click "New Department"</span></li>
+    <li><span class="tro">Ad, açıklama, sıra ve durumu doldurun</span><span class="eno">Fill in name, description, order, and status</span></li>
+    <li><span class="tro">Kaydedin</span><span class="eno">Save</span></li>
+  </ol>
+
+  <h2 class="h2 tro">3.2 Departman Ayar Override'ları</h2><h2 class="h2 eno">3.2 Department-Level Overrides</h2>
+  <table class="tbl">
+    <thead><tr><th class="tro">Ayar</th><th class="eno">Setting</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td class="key tro">Slot Süresi</td><td class="key eno">Slot Duration</td><td class="tro">Bu departmana özel randevu süresi (dk). Boş → global geçerli.</td><td class="eno">Department-specific appointment length (min). Empty = inherit global.</td></tr>
+      <tr><td class="key tro">Tampon Süre</td><td class="key eno">Buffer Time</td><td class="tro">Ardışık iki randevu arasındaki zorunlu boşluk (dk).</td><td class="eno">Mandatory gap between consecutive appointments (min).</td></tr>
+      <tr><td class="key tro">Onay Modu</td><td class="key eno">Confirmation Mode</td><td class="tro">"Otomatik" veya "Manuel" onay akışı seçin.</td><td class="eno">"Automatic" or "Manual" confirmation flow.</td></tr>
+      <tr><td class="key tro">Maks. İleri Gün</td><td class="key eno">Max Days Ahead</td><td class="tro">Müşterinin kaç gün öncesine kadar rezervasyon yapabileceği.</td><td class="eno">How many days in advance customers are allowed to book.</td></tr>
+      <tr><td class="key tro">Min. Önceden</td><td class="key eno">Min Lead Time</td><td class="tro">Rezervasyonun en az kaç saat önceden yapılması gerektiği.</td><td class="eno">Minimum hours before an appointment that a booking must be placed.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── S4 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s4">
+  <div class="slabel"><span class="tro">04 / Sağlayıcı Yönetimi</span><span class="eno">04 / Provider Management</span></div>
+  <h1 class="h1 tro">Sağlayıcı Yönetimi</h1><h1 class="h1 eno">Provider Management</h1>
+  <p class="p tro">Sağlayıcılar, müşterilerin randevu alacağı kişi veya kaynaklardır. Bir sağlayıcı doktor, terapist, öğretmen ya da masaj yatağı gibi fiziksel bir kaynak olabilir.</p>
+  <p class="p eno">Providers are the people or resources that customers book appointments with — a doctor, therapist, teacher, or a physical resource like a massage table.</p>
+
+  <h2 class="h2 tro">4.1 Çalışma Saatleri Öncelik Sırası</h2><h2 class="h2 eno">4.1 Working Hours Priority Order</h2>
+  <table class="tbl">
+    <thead><tr><th>#</th><th class="tro">Katman</th><th class="eno">Layer</th><th class="tro">Öncelik</th><th class="eno">Priority</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">1</span></td><td class="tro">Global çalışma saatleri</td><td class="eno">Global working hours</td><td class="tro">En düşük — sistem varsayılanı</td><td class="eno">Lowest — system-wide default</td></tr>
+      <tr><td><span class="mono">2</span></td><td class="tro">Departman çalışma saatleri</td><td class="eno">Department working hours</td><td class="tro">Globalı ezer</td><td class="eno">Overrides global</td></tr>
+      <tr><td><span class="mono">3</span></td><td class="tro">Sağlayıcı çalışma saatleri</td><td class="eno">Provider working hours</td><td class="tro">En yüksek — tüm üsttekileri ezer</td><td class="eno">Highest — overrides all above</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2 tro">4.2 Özel Günler</h2><h2 class="h2 eno">4.2 Special Days</h2>
+  <p class="p tro">Tatil günleri veya normalden farklı saatlerle çalışılan günler için "Özel Günler" tanımlanabilir. Tanımlandığında o tarihe ait haftalık program yoksayılır.</p>
+  <p class="p eno">Define "Special Days" for holidays or days with non-standard hours. When defined, the weekly schedule for that date is ignored entirely.</p>
+  <div class="call call-info"><span class="call-icon">ℹ</span><div class="call-body"><span class="tro">"Kapalı" olarak işaretlenen günde slot üretilmez. Özel saatlerle tanımlanırsa yalnızca o saatler geçerli olur.</span><span class="eno">A "Closed" special day generates no slots. Custom hours generate slots only within those hours.</span></div></div>
+</section>
+
+<!-- ── S5 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s5">
+  <div class="slabel"><span class="tro">05 / Rezervasyon Formları</span><span class="eno">05 / Booking Forms</span></div>
+  <h1 class="h1 tro">Rezervasyon Formları</h1><h1 class="h1 eno">Booking Forms</h1>
+  <p class="p tro">Özel formlar, müşteriden randevu sırasında ek bilgi toplamanızı sağlar. Her form bir departmana veya sağlayıcıya atanabilir.</p>
+  <p class="p eno">Custom forms let you collect additional information from customers during booking. Each form can be assigned to a department or provider.</p>
+
+  <table class="tbl">
+    <thead><tr><th class="tro">Alan Türü</th><th class="eno">Field Type</th><th class="tro">Kullanım</th><th class="eno">Usage</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">text</span></td><td class="tro">Kısa tek satırlı metin (örn. "Notlar")</td><td class="eno">Short single-line text (e.g. "Notes")</td></tr>
+      <tr><td><span class="mono">email</span></td><td class="tro">Format doğrulamalı e-posta</td><td class="eno">Email with format validation</td></tr>
+      <tr><td><span class="mono">phone</span></td><td class="tro">Telefon numarası girişi</td><td class="eno">Telephone number input</td></tr>
+      <tr><td><span class="mono">textarea</span></td><td class="tro">Çok satırlı uzun metin</td><td class="eno">Multi-line long-form text</td></tr>
+      <tr><td><span class="mono">select</span></td><td class="tro">Açılır listeden tek seçim</td><td class="eno">Single-choice dropdown</td></tr>
+      <tr><td><span class="mono">checkbox</span></td><td class="tro">Çoklu seçim</td><td class="eno">Multi-choice tick boxes</td></tr>
+      <tr><td><span class="mono">date</span></td><td class="tro">Takvimli tarih seçici</td><td class="eno">Calendar-based date picker</td></tr>
+      <tr><td><span class="mono">hidden</span></td><td class="tro">Sabit değer taşır; müşteriye görünmez</td><td class="eno">Fixed value; not visible to customer</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── S6 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s6">
+  <div class="slabel"><span class="tro">06 / E-posta Bildirimleri</span><span class="eno">06 / Email Notifications</span></div>
+  <h1 class="h1 tro">E-posta Bildirimleri</h1><h1 class="h1 eno">Email Notifications</h1>
+
+  <h2 class="h2 tro">6.1 Bildirim Türleri</h2><h2 class="h2 eno">6.1 Notification Types</h2>
+  <table class="tbl">
+    <thead><tr><th class="tro">Bildirim</th><th class="eno">Notification</th><th class="tro">Tetikleyici</th><th class="eno">Trigger</th></tr></thead>
+    <tbody>
+      <tr><td class="key tro">Rezervasyon Onayı (Müşteri)</td><td class="key eno">Booking Confirmation (Customer)</td><td class="tro">Rezervasyon oluşturulduğunda</td><td class="eno">When a booking is created</td></tr>
+      <tr><td class="key tro">Yeni Rezervasyon (Admin)</td><td class="key eno">New Booking (Admin)</td><td class="tro">Yeni rezervasyon geldiğinde</td><td class="eno">When a new booking arrives</td></tr>
+      <tr><td class="key tro">Manuel Onay (Müşteri)</td><td class="key eno">Manual Approval (Customer)</td><td class="tro">Yönetici onayladığında (Manuel modda)</td><td class="eno">When admin approves (Manual mode)</td></tr>
+      <tr><td class="key tro">İptal (Müşteri)</td><td class="key eno">Cancellation (Customer)</td><td class="tro">Rezervasyon iptal edildiğinde</td><td class="eno">When a booking is cancelled</td></tr>
+      <tr><td class="key tro">İptal (Sağlayıcı)</td><td class="key eno">Cancellation (Provider)</td><td class="tro">Rezervasyon iptal edildiğinde</td><td class="eno">When a booking is cancelled</td></tr>
+      <tr><td class="key tro">Yeniden Planlama</td><td class="key eno">Reschedule</td><td class="tro">Randevu zamanı değiştirildiğinde</td><td class="eno">When appointment time changes</td></tr>
+      <tr><td class="key tro">Hatırlatma</td><td class="key eno">Reminder</td><td class="tro">Randevudan önce otomatik</td><td class="eno">Automatically before appointment</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2 tro">6.2 Şablon Değişkenleri</h2><h2 class="h2 eno">6.2 Template Variables</h2>
+  <table class="tbl">
+    <thead><tr><th class="tro">Değişken</th><th class="eno">Variable</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="vt">{{customer_name}}</span></td><td class="tro">Müşterinin tam adı</td><td class="eno">Customer's full name</td></tr>
+      <tr><td><span class="vt">{{customer_email}}</span></td><td class="tro">Müşterinin e-posta adresi</td><td class="eno">Customer's email address</td></tr>
+      <tr><td><span class="vt">{{customer_phone}}</span></td><td class="tro">Müşterinin telefon numarası</td><td class="eno">Customer's phone number</td></tr>
+      <tr><td><span class="vt">{{appointment_date}}</span></td><td class="tro">Randevu tarihi</td><td class="eno">Appointment date</td></tr>
+      <tr><td><span class="vt">{{appointment_time}}</span></td><td class="tro">Randevu saati</td><td class="eno">Appointment time</td></tr>
+      <tr><td><span class="vt">{{appointment_id}}</span></td><td class="tro">Benzersiz rezervasyon numarası</td><td class="eno">Unique booking reference number</td></tr>
+      <tr><td><span class="vt">{{provider_name}}</span></td><td class="tro">Sağlayıcının tam adı</td><td class="eno">Provider's full name</td></tr>
+      <tr><td><span class="vt">{{department_name}}</span></td><td class="tro">Departman adı</td><td class="eno">Department name</td></tr>
+      <tr><td><span class="vt">{{cancel_url}}</span></td><td class="tro">Tek tıkla iptal bağlantısı</td><td class="eno">One-click cancellation link</td></tr>
+      <tr><td><span class="vt">{{reschedule_url}}</span></td><td class="tro">Yeniden planlama bağlantısı</td><td class="eno">Rescheduling link</td></tr>
+      <tr><td><span class="vt">{{site_name}}</span></td><td class="tro">WordPress site adı</td><td class="eno">WordPress site name</td></tr>
+    </tbody>
+  </table>
+  <div class="call call-tip"><span class="call-icon">✓</span><div class="call-body"><span class="tro">Güvenilir e-posta teslimatı için <strong>WP Mail SMTP</strong> + Gmail, SendGrid veya Mailgun kullanın.</span><span class="eno">For reliable delivery, use <strong>WP Mail SMTP</strong> + Gmail, SendGrid, or Mailgun.</span></div></div>
+</section>
+
+<!-- ── S7 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s7">
+  <div class="slabel"><span class="tro">07 / Kısa Kodlar &amp; Widget</span><span class="eno">07 / Shortcodes &amp; Widget</span></div>
+  <h1 class="h1 tro">Kısa Kodlar &amp; Widget</h1><h1 class="h1 eno">Shortcodes &amp; Widget</h1>
+
+  <h2 class="h2">[erta_booking]</h2>
+  <p class="p tro">Rezervasyon widget'ını herhangi bir sayfaya eklemek için:</p>
+  <p class="p eno">Add the booking widget to any page or post:</p>
+  <div class="sc" onclick="cpText('[erta_booking]',this)">[erta_booking] <span style="color:var(--text3);font-size:13px;margin-left:8px">— click to copy</span></div>
+  <table class="tbl">
+    <thead><tr><th class="tro">Parametre</th><th class="eno">Parameter</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">department="ID"</span></td><td class="tro">Belirli departmana önceden yönlendirir, o adımı atlar</td><td class="eno">Pre-selects a department and skips that step</td></tr>
+      <tr><td><span class="mono">provider="ID"</span></td><td class="tro">Belirli sağlayıcıya önceden yönlendirir</td><td class="eno">Pre-selects a provider and skips that step</td></tr>
+      <tr><td><span class="mono">hide_steps="..."</span></td><td class="tro">Virgülle ayrılmış adımları gizler. Örn: <code class="ci">department,provider</code></td><td class="eno">Hides comma-separated steps. E.g. <code class="ci">department,provider</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2">[erta_my_appointments]</h2>
+  <p class="p tro">Giriş yapmış müşterilerin kendi randevularını görüntüleyip yönetmesini sağlar:</p>
+  <p class="p eno">Allows logged-in customers to view and manage their own bookings:</p>
+  <div class="sc" onclick="cpText('[erta_my_appointments]',this)">[erta_my_appointments] <span style="color:var(--text3);font-size:13px;margin-left:8px">— click to copy</span></div>
+
+  <h2 class="h2 tro">Rezervasyon Akışı</h2><h2 class="h2 eno">Default Booking Flow</h2>
+  <ol class="steps">
+    <li><span class="tro">Departman seçimi</span><span class="eno">Department selection</span></li>
+    <li><span class="tro">Sağlayıcı seçimi</span><span class="eno">Provider selection</span></li>
+    <li><span class="tro">Takvimden gün seçimi</span><span class="eno">Date selection from calendar</span></li>
+    <li><span class="tro">Müsait slot seçimi</span><span class="eno">Available time slot selection</span></li>
+    <li><span class="tro">Özel form doldurma (yapılandırılmışsa)</span><span class="eno">Custom form completion (if configured)</span></li>
+    <li><span class="tro">Onay ekranı / Ödeme (Pro)</span><span class="eno">Confirmation / Payment (Pro)</span></li>
+    <li><span class="tro">Başarı mesajı + e-posta bildirimi</span><span class="eno">Success message + email notification</span></li>
+  </ol>
+</section>
+
+<!-- ── S8 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s8">
+  <div class="slabel">08 / REST API</div>
+  <h1 class="h1">REST API</h1>
+
+  <div class="rgrid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+    <div class="ritem"><div class="rl">Base URL</div><div class="rv" style="font-size:12px;font-family:var(--mono)">/wp-json/erta/v1/</div></div>
+    <div class="ritem"><div class="rl tro">Kimlik Doğrulama</div><div class="rl eno">Auth</div><div class="rv" style="font-size:13px">Application Passwords / JWT</div></div>
+    <div class="ritem"><div class="rl tro">Yanıt Formatı</div><div class="rl eno">Response</div><div class="rv">JSON</div></div>
+  </div>
+
+  <h2 class="h2 tro">Endpoint Listesi</h2><h2 class="h2 eno">Endpoint Reference</h2>
+  <table class="tbl">
+    <thead><tr><th>Method</th><th>Endpoint</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/departments</span></td><td class="tro">Aktif departmanları listeler</td><td class="eno">List all active departments</td></tr>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/providers</span></td><td class="tro">Sağlayıcıları listeler (?department_id ile filtreler)</td><td class="eno">List providers, filter with ?department_id</td></tr>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/availability</span></td><td class="tro">Müsait slotları döner</td><td class="eno">Return available slots for provider &amp; date range</td></tr>
+      <tr><td><span class="mpost">POST</span></td><td><span class="mono">/appointments</span></td><td class="tro">Yeni rezervasyon oluşturur</td><td class="eno">Create a new booking</td></tr>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/appointments/{id}</span></td><td class="tro">Tek rezervasyon detayı</td><td class="eno">Retrieve a single booking</td></tr>
+      <tr><td><span class="mpatch">PATCH</span></td><td><span class="mono">/appointments/{id}</span></td><td class="tro">Durumu günceller (admin)</td><td class="eno">Update booking status (admin)</td></tr>
+      <tr><td><span class="mdel">DELETE</span></td><td><span class="mono">/appointments/{id}</span></td><td class="tro">Rezervasyonu iptal eder</td><td class="eno">Cancel a booking</td></tr>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/working-hours</span></td><td class="tro">Çalışma saatlerini döner</td><td class="eno">Return working hours config</td></tr>
+      <tr><td><span class="mget">GET</span></td><td><span class="mono">/forms/{id}</span></td><td class="tro">Form alanlarını döner</td><td class="eno">Return form fields</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2 tro">Örnek: Slot Sorgulama</h2><h2 class="h2 eno">Example: Fetching Available Slots</h2>
+  <div class="cb"><div class="ch"><div class="dots"><span></span><span></span><span></span></div><span>HTTP Request</span><button class="ccopy" onclick="cpBlock(this)">Copy</button></div>
+<pre><span class="kw">GET</span> /wp-json/erta/v1/availability
+    ?provider_id=<span class="nm">3</span>
+    &amp;date_from=<span class="str">2025-06-01</span>
+    &amp;date_to=<span class="str">2025-06-07</span>
+
+<span class="cm">// Response</span>
+{
+  <span class="str">"2025-06-02"</span>: [<span class="str">"09:00"</span>, <span class="str">"09:30"</span>, <span class="str">"10:00"</span>, <span class="str">"14:00"</span>],
+  <span class="str">"2025-06-03"</span>: [<span class="str">"10:30"</span>, <span class="str">"11:00"</span>, <span class="str">"15:00"</span>, <span class="str">"15:30"</span>]
+}</pre></div>
+
+  <h2 class="h2 tro">Örnek: Rezervasyon Oluşturma</h2><h2 class="h2 eno">Example: Creating a Booking</h2>
+  <div class="cb"><div class="ch"><div class="dots"><span></span><span></span><span></span></div><span>HTTP Request</span><button class="ccopy" onclick="cpBlock(this)">Copy</button></div>
+<pre><span class="kw">POST</span> /wp-json/erta/v1/appointments
+{
+  <span class="str">"provider_id"</span>   : <span class="nm">3</span>,
+  <span class="str">"department_id"</span> : <span class="nm">1</span>,
+  <span class="str">"start_time"</span>    : <span class="str">"2025-06-02 14:00:00"</span>,
+  <span class="str">"customer_name"</span> : <span class="str">"Ahmet Yılmaz"</span>,
+  <span class="str">"customer_email"</span>: <span class="str">"ahmet@ornek.com"</span>,
+  <span class="str">"customer_phone"</span>: <span class="str">"+90 555 123 4567"</span>,
+  <span class="str">"form_data"</span>     : { <span class="str">"notlar"</span>: <span class="str">"İlk muayene"</span> }
+}</pre></div>
+</section>
+
+<!-- ── S9 ─────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s9">
+  <div class="slabel"><span class="tro">09 / WordPress Hook'ları</span><span class="eno">09 / WordPress Hooks</span></div>
+  <h1 class="h1 tro">WordPress Hook'ları</h1><h1 class="h1 eno">WordPress Hooks</h1>
+
+  <h2 class="h2 tro">9.1 Action Hook'ları</h2><h2 class="h2 eno">9.1 Action Hooks</h2>
+  <table class="tbl">
+    <thead><tr><th>Hook</th><th class="tro">Tür</th><th class="eno">Type</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">erta_loaded</span></td><td><span class="tag-a">Action</span></td><td class="tro">Eklenti tamamen yüklendiğinde tetiklenir</td><td class="eno">Fires when the plugin is fully loaded</td></tr>
+      <tr><td><span class="mono">erta_appointment_created</span></td><td><span class="tag-a">Action</span></td><td class="tro">Yeni rezervasyon oluşturulduğunda</td><td class="eno">Fires when a new booking is created</td></tr>
+      <tr><td><span class="mono">erta_appointment_confirmed</span></td><td><span class="tag-a">Action</span></td><td class="tro">Rezervasyon onaylandığında</td><td class="eno">Fires when a booking is confirmed</td></tr>
+      <tr><td><span class="mono">erta_appointment_cancelled</span></td><td><span class="tag-a">Action</span></td><td class="tro">Rezervasyon iptal edildiğinde</td><td class="eno">Fires when a booking is cancelled</td></tr>
+      <tr><td><span class="mono">erta_appointment_rescheduled</span></td><td><span class="tag-a">Action</span></td><td class="tro">Yeniden planlandığında</td><td class="eno">Fires when a booking is rescheduled</td></tr>
+      <tr><td><span class="mono">erta_before_booking_saved</span></td><td><span class="tag-a">Action</span></td><td class="tro">Veritabanına yazılmadan önce</td><td class="eno">Fires before a booking is saved to the DB</td></tr>
+      <tr><td><span class="mono">erta_after_booking_saved</span></td><td><span class="tag-a">Action</span></td><td class="tro">Veritabanına yazıldıktan sonra</td><td class="eno">Fires after a booking is saved to the DB</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2 tro">9.2 Filter Hook'ları</h2><h2 class="h2 eno">9.2 Filter Hooks</h2>
+  <table class="tbl">
+    <thead><tr><th>Hook</th><th class="tro">Tür</th><th class="eno">Type</th><th class="tro">Açıklama</th><th class="eno">Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="mono">erta_is_pro_active</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Pro aktif mi? Varsayılan: false</td><td class="eno">Is Pro active? Default: false</td></tr>
+      <tr><td><span class="mono">erta_slot_duration</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Slot süresini özelleştirmek için (dk)</td><td class="eno">Customise slot duration (min)</td></tr>
+      <tr><td><span class="mono">erta_available_slots</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Hesaplanan slot listesini değiştirmek için</td><td class="eno">Modify the computed slot list</td></tr>
+      <tr><td><span class="mono">erta_notification_channels</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Bildirim kanallarını genişletmek için</td><td class="eno">Extend notification channels</td></tr>
+      <tr><td><span class="mono">erta_email_headers</span></td><td><span class="tag-f">Filter</span></td><td class="tro">E-posta başlıklarını özelleştirmek için</td><td class="eno">Customise email headers</td></tr>
+      <tr><td><span class="mono">erta_booking_form_data</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Form verisini doğrulama/dönüştürme</td><td class="eno">Validate or transform form data</td></tr>
+      <tr><td><span class="mono">erta_appointment_status_label</span></td><td><span class="tag-f">Filter</span></td><td class="tro">Durum etiketlerini özelleştirmek için</td><td class="eno">Customise status label strings</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="h2 tro">9.3 Kod Örnekleri</h2><h2 class="h2 eno">9.3 Code Examples</h2>
+  <p class="p tro">Rezervasyon oluşturulduğunda özel mantık çalıştırma:</p>
+  <p class="p eno">Run custom logic when a booking is created:</p>
+  <div class="cb"><div class="ch"><div class="dots"><span></span><span></span><span></span></div><span>PHP</span><button class="ccopy" onclick="cpBlock(this)">Copy</button></div>
+<pre><span class="fn">add_action</span>( <span class="str">'erta_appointment_created'</span>,
+    <span class="kw">function</span>( \ErtAppointment\Domain\Appointment\Appointment <span class="rx">$appt</span> ): <span class="kw">void</span> {
+        <span class="cm">// CRM entegrasyonu, webhook tetikleme vb. / CRM push, webhook, etc.</span>
+        <span class="fn">my_crm_create_contact</span>( <span class="rx">$appt</span>->customerEmail, <span class="rx">$appt</span>->customerName );
+    }
+);</pre></div>
+
+  <p class="p tro">Belirli sağlayıcı için slotları filtreleme:</p>
+  <p class="p eno">Filter available slots for a specific provider:</p>
+  <div class="cb"><div class="ch"><div class="dots"><span></span><span></span><span></span></div><span>PHP</span><button class="ccopy" onclick="cpBlock(this)">Copy</button></div>
+<pre><span class="fn">add_filter</span>( <span class="str">'erta_available_slots'</span>,
+    <span class="kw">function</span>( <span class="kw">array</span> <span class="rx">$slots</span>, <span class="kw">string</span> <span class="rx">$date</span>, <span class="kw">int</span> <span class="rx">$providerId</span> ): <span class="kw">array</span> {
+        <span class="kw">if</span> ( <span class="rx">$providerId</span> !== <span class="nm">5</span> ) <span class="kw">return</span> <span class="rx">$slots</span>;
+        <span class="cm">// Yalnızca sabah slotları / Morning slots only</span>
+        <span class="kw">return</span> <span class="fn">array_filter</span>( <span class="rx">$slots</span>, <span class="fn">fn</span>( <span class="rx">$s</span> ) => <span class="rx">$s</span> &lt; <span class="str">'12:00'</span> );
+    },
+<span class="nm">10</span>, <span class="nm">3</span> );</pre></div>
+</section>
+
+<!-- ── S10 ────────────────────────────────────────────────────────────────── -->
+<section class="sec" id="s10">
+  <div class="slabel"><span class="tro">10 / SSS &amp; Destek</span><span class="eno">10 / FAQ &amp; Support</span></div>
+  <h1 class="h1 tro">SSS &amp; Sorun Giderme</h1><h1 class="h1 eno">FAQ &amp; Troubleshooting</h1>
+
+  <h2 class="h2 tro">Widget sayfada görünmüyor</h2><h2 class="h2 eno">The widget is not showing on my page</h2>
+  <ul class="blist">
+    <li><span class="tro"><code class="ci">[erta_booking]</code> kısa kodunun sayfaya eklendiğini doğrulayın</span><span class="eno">Confirm the <code class="ci">[erta_booking]</code> shortcode is in the page content</span></li>
+    <li><span class="tro">Eklentinin "Etkin" durumda olduğunu kontrol edin</span><span class="eno">Verify the plugin is "Active"</span></li>
+    <li><span class="tro">En az bir aktif departman ve bağlı aktif sağlayıcı gerekir</span><span class="eno">At least one active department with one active provider is required</span></li>
+    <li><span class="tro">Sağlayıcı için çalışma saatlerinin tanımlandığından emin olun</span><span class="eno">The provider must have working hours configured</span></li>
+  </ul>
+
+  <h2 class="h2 tro">E-postalar gönderilmiyor</h2><h2 class="h2 eno">Emails are not being delivered</h2>
+  <ul class="blist">
+    <li><span class="tro"><strong>WP Mail SMTP</strong> eklentisini kurun</span><span class="eno">Install the <strong>WP Mail SMTP</strong> plugin</span></li>
+    <li><span class="tro">Gmail (OAuth), SendGrid veya Mailgun ile yapılandırın</span><span class="eno">Configure with Gmail (OAuth), SendGrid, or Mailgun</span></li>
+    <li><span class="tro">Ayarlar sayfasından test e-postası gönderin</span><span class="eno">Send a test email from the settings page</span></li>
+  </ul>
+
+  <h2 class="h2 tro">Slot görünmüyor</h2><h2 class="h2 eno">No time slots are appearing</h2>
+  <ul class="blist">
+    <li><span class="tro">Sağlayıcının ilgili gün için çalışma saati tanımlı mı?</span><span class="eno">Is a working schedule defined for the provider on that day?</span></li>
+    <li><span class="tro">Slot süresi çalışma saati penceresine sığıyor mu?</span><span class="eno">Is the slot duration small enough to fit within the working hours?</span></li>
+    <li><span class="tro">"Min. Önceden" ayarı çok kısıtlayıcı mı?</span><span class="eno">Is the "Min Lead Time" setting too restrictive?</span></li>
+    <li><span class="tro">Tüm slotlar dolu mu?</span><span class="eno">Are all slots already booked?</span></li>
+  </ul>
+
+  <h2 class="h2 tro">Hata Ayıklama</h2><h2 class="h2 eno">Debug Logging</h2>
+  <div class="cb"><div class="ch"><div class="dots"><span></span><span></span><span></span></div><span>wp-config.php</span><button class="ccopy" onclick="cpBlock(this)">Copy</button></div>
+<pre><span class="fn">define</span>( <span class="str">'WP_DEBUG'</span>,         <span class="kw">true</span> );
+<span class="fn">define</span>( <span class="str">'WP_DEBUG_LOG'</span>,     <span class="kw">true</span> );
+<span class="fn">define</span>( <span class="str">'WP_DEBUG_DISPLAY'</span>, <span class="kw">false</span> );</pre></div>
+  <p class="p tro">Günlük kayıtları <code class="ci">wp-content/debug.log</code> dosyasına yazılır.</p>
+  <p class="p eno">Logs are written to <code class="ci">wp-content/debug.log</code>.</p>
+
+  <h2 class="h2 tro">Destek Kanalları</h2><h2 class="h2 eno">Support Channels</h2>
+  <table class="tbl">
+    <thead><tr><th class="tro">Kanal</th><th class="eno">Channel</th><th class="tro">Adres</th><th class="eno">Address</th></tr></thead>
+    <tbody>
+      <tr><td class="key tro">Web Sitesi</td><td class="key eno">Website</td><td><a href="https://www.ertyazilim.com" target="_blank">www.ertyazilim.com</a></td></tr>
+      <tr><td class="key tro">E-posta</td><td class="key eno">Email</td><td><a href="mailto:destek@ertyazilim.com">destek@ertyazilim.com</a></td></tr>
+      <tr><td class="key tro">Dokümantasyon</td><td class="key eno">Docs</td><td><a href="https://www.ertyazilim.com/docs" target="_blank">www.ertyazilim.com/docs</a></td></tr>
+      <tr><td class="key">WordPress.org</td><td colspan="3"><a href="https://wordpress.org/plugins/ert-appointment/" target="_blank">wordpress.org/plugins/ert-appointment/</a></td></tr>
+      <tr><td class="key">GitHub</td><td colspan="3"><a href="https://github.com/ert-yazilim/ert-appointment" target="_blank">github.com/ert-yazilim/ert-appointment</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div></main>
+</div>
+
+<footer class="foot">
+  <span>© 2025 <a href="https://www.ertyazilim.com" target="_blank">ERT Yazılım</a> — <span class="tro">Tüm hakları saklıdır.</span><span class="eno">All rights reserved.</span></span>
+  <span>Appointment Booking by ERT v1.0.0</span>
+</footer>
+
+<script>
+function setLang(l){
+  document.body.setAttribute('data-lang',l);
+  document.getElementById('btn-tr').classList.toggle('active',l==='tr');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.documentElement.lang=l;
+}
+
+const sids=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'];
+
+function goTo(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-76,behavior:'smooth'});
+  document.getElementById('sb').classList.remove('open');
+}
+
+function updateActive(){
+  let cur='s1';
+  sids.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY+110>=el.offsetTop)cur=id;});
+  document.querySelectorAll('.slink').forEach((l,i)=>l.classList.toggle('active',sids[i]===cur));
+}
+
+function updateProg(){
+  const d=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('prog').style.transform=`scaleX(${d>0?window.scrollY/d:0})`;
+}
+
+function reveal(){
+  document.querySelectorAll('.sec').forEach(s=>{
+    if(s.getBoundingClientRect().top<window.innerHeight*.93)s.classList.add('vis');
+  });
+}
+
+window.addEventListener('scroll',()=>{updateActive();updateProg();reveal();},{passive:true});
+setTimeout(reveal,80);
+
+// Search
+const srch=document.getElementById('srch');
+let hl=[];
+srch.addEventListener('input',function(){
+  hl.forEach(m=>{const p=m.parentNode;if(p){p.replaceChild(document.createTextNode(m.textContent),m);}});
+  hl=[];
+  const q=this.value.trim().toLowerCase();
+  if(q.length<2)return;
+  const main=document.querySelector('.main');
+  const tw=document.createTreeWalker(main,NodeFilter.SHOW_TEXT,null);
+  const ns=[];let n;
+  while((n=tw.nextNode()))if(n.nodeValue.toLowerCase().includes(q))ns.push(n);
+  ns.slice(0,40).forEach(n=>{
+    const s=document.createElement('span');
+    s.innerHTML=n.nodeValue.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<mark>$1</mark>');
+    n.parentNode.replaceChild(s,n);
+    hl.push(...s.querySelectorAll('mark'));
+  });
+  if(hl[0])hl[0].scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+function cpBlock(btn){
+  const pre=btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1800);});
+}
+
+function cpText(t,el){
+  const orig=el.innerHTML;
+  navigator.clipboard.writeText(t).then(()=>{
+    el.innerHTML=t+' <span style="color:var(--green);font-size:13px;margin-left:8px">✓ Copied!</span>';
+    setTimeout(()=>el.innerHTML=orig,2000);
+  });
+}
+
+function toggleSB(){document.getElementById('sb').classList.toggle('open');}
+document.querySelector('.main').addEventListener('click',()=>document.getElementById('sb').classList.remove('open'));
+</script>
+</body>
+</html>

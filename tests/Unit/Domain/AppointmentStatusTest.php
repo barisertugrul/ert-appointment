@@ -71,7 +71,7 @@ final class AppointmentStatusTest extends TestCase
     {
         foreach (AppointmentStatus::cases() as $status) {
             $this->assertStringStartsWith(
-                'ertaa-badge--',
+                'erta-badge--',
                 $status->cssClass(),
                 "cssClass() missing prefix for {$status->name}"
             );
@@ -80,7 +80,7 @@ final class AppointmentStatusTest extends TestCase
 
     public function test_css_class_uses_hyphens_not_underscores(): void
     {
-        $this->assertSame('ertaa-badge--no-show', AppointmentStatus::NoShow->cssClass());
+        $this->assertSame('erta-badge--no-show', AppointmentStatus::NoShow->cssClass());
     }
 
     // ── activeStatuses() / terminalStatuses() ─────────────────────────────────

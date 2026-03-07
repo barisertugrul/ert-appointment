@@ -19,196 +19,200 @@ use ERTAppointment\Settings\SettingsManager;
  *  4. Delegate pure slot calculation to SlotGenerator.
  *  5. Cache results to avoid re-computation on the same request.
  */
-final class AvailabilityService
-{
-    public function __construct(
-        private readonly SlotGenerator        $slotGenerator,
-        private readonly SettingsManager      $settings,
-        private readonly AppointmentRepository $appointmentRepository,
-        private readonly TransientCache       $cache,
-    ) {}
+final class AvailabilityService {
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
+	public function __construct(
+		private readonly SlotGenerator $slotGenerator,
+		private readonly SettingsManager $settings,
+		private readonly AppointmentRepository $appointmentRepository,
+		private readonly TransientCache $cache,
+	) {}
 
-    /**
-     * Returns available time slots for a provider on a given date.
-     *
-     * @return list<TimeSlot>
-     */
-    public function getAvailableSlots(int $providerId, DateTimeImmutable $date): array
-    {
-        $dateStr  = $date->format('Y-m-d');
-        $cacheKey = "slots_{$providerId}_{$dateStr}";
+	// -------------------------------------------------------------------------
+	// Public API
+	// -------------------------------------------------------------------------
 
-        return $this->cache->remember($cacheKey, 120, function () use ($providerId, $date, $dateStr) {
-            $config = $this->settings->resolveForProvider($providerId);
+	/**
+	 * Returns available time slots for a provider on a given date.
+	 *
+	 * @return list<TimeSlot>
+	 */
+	public function getAvailableSlots( int $providerId, DateTimeImmutable $date ): array {
+		$dateStr  = $date->format( 'Y-m-d' );
+		$cacheKey = "slots_{$providerId}_{$dateStr}";
 
-            // --- Check for a special day override. ---
-            $specialDay = $this->loadSpecialDay($providerId, $date, $config);
+		return $this->cache->remember(
+			$cacheKey,
+			120,
+			function () use ( $providerId, $date, $dateStr ) {
+				$config = $this->settings->resolveForProvider( $providerId );
 
-            if ($specialDay !== null && $specialDay['is_closed']) {
-                return []; // Holiday / closure.
-            }
+				// Check special-day override first.
+				$specialDay = $this->loadSpecialDay( $providerId, $date, $config );
 
-            // --- Resolve working hours. ---
-            $dayOfWeek = (int) $date->format('N'); // 1=Monday, 7=Sunday (ISO-8601).
+				if ( $specialDay !== null && $specialDay['is_closed'] ) {
+					return array(); // Holiday / closure.
+				}
 
-            $hours = $specialDay !== null
-                ? ['start' => $specialDay['custom_open_time'], 'end' => $specialDay['custom_close_time']]
-                : $config->workingHoursForDay($dayOfWeek);
+				// Resolve working hours.
+				$dayOfWeek = (int) $date->format( 'N' ); // 1=Monday, 7=Sunday (ISO-8601).
 
-            if ($hours === null || ! ($hours['open'] ?? true)) {
-                return []; // Non-working day.
-            }
+				$hours = $specialDay !== null
+				? array(
+					'start' => $specialDay['custom_open_time'],
+					'end'   => $specialDay['custom_close_time'],
+				)
+				: $config->workingHoursForDay( $dayOfWeek );
 
-            // --- Load breaks (from DB, scoped). ---
-            $breaks = $this->loadBreaks($providerId, $date, $config, $dayOfWeek);
+				if ( $hours === null || ! ( $hours['open'] ?? true ) ) {
+					return array(); // Non-working day.
+				}
 
-            // --- Load booked blocks. ---
-            $bookedBlocks = $this->appointmentRepository->findBookedBlocks($providerId, $date);
+				// Load scoped breaks from storage.
+				$breaks = $this->loadBreaks( $providerId, $date, $config, $dayOfWeek );
 
-            // --- Generate slots. ---
-            $slots = $this->slotGenerator->generate(
-                date:           $date,
-                openTime:       $hours['start'],
-                closeTime:      $hours['end'],
-                slotDuration:   $config->slotDuration(),
-                slotInterval:   $config->slotInterval(),
-                bufferBefore:   $config->bufferBefore(),
-                bufferAfter:    $config->bufferAfter(),
-                minimumNotice:  $config->minimumNotice(),
-                breaks:         $breaks,
-                bookedBlocks:   $bookedBlocks,
-            );
+				// --- Load booked blocks. ---
+				$bookedBlocks = $this->appointmentRepository->findBookedBlocks( $providerId, $date );
 
-            /**
-             * Filter: allows Pro / third-party code to modify the slot list.
-             * Useful for capacity-based filtering, waitlist injection, etc.
-             *
-             * @param list<TimeSlot> $slots
-             * @param int            $providerId
-             * @param string         $dateStr
-             */
-            return apply_filters('erta_available_slots', $slots, $providerId, $dateStr);
-        });
-    }
+				// --- Generate slots. ---
+				$slots = $this->slotGenerator->generate(
+					date:           $date,
+					openTime:       $hours['start'],
+					closeTime:      $hours['end'],
+					slotDuration:   $config->slotDuration(),
+					slotInterval:   $config->slotInterval(),
+					bufferBefore:   $config->bufferBefore(),
+					bufferAfter:    $config->bufferAfter(),
+					minimumNotice:  $config->minimumNotice(),
+					breaks:         $breaks,
+					bookedBlocks:   $bookedBlocks,
+				);
 
-    /**
-     * Returns a map of available slot counts per date for a date range.
-     * Used to highlight available dates on the calendar widget.
-     *
-     * @return array<string, int>  ['2024-04-01' => 8, '2024-04-02' => 0, ...]
-     */
-    public function getAvailabilityCalendar(
-        int $providerId,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to
-    ): array {
-        $result  = [];
-        $current = $from->setTime(0, 0, 0);
-        $end     = $to->setTime(0, 0, 0);
+				/**
+				 * Filter: allows Pro / third-party code to modify the slot list.
+				 * Useful for capacity-based filtering, waitlist injection, etc.
+				 *
+				 * @param list<TimeSlot> $slots
+				 * @param int            $providerId
+				 * @param string         $dateStr
+				 */
+				return apply_filters( 'erta_available_slots', $slots, $providerId, $dateStr );
+			}
+		);
+	}
 
-        while ($current <= $end) {
-            $slots  = $this->getAvailableSlots($providerId, $current);
-            $result[$current->format('Y-m-d')] = count($slots);
-            $current = $current->modify('+1 day');
-        }
+	/**
+	 * Returns a map of available slot counts per date for a date range.
+	 * Used to highlight available dates on the calendar widget.
+	 *
+	 * @return array<string, int>  ['2024-04-01' => 8, '2024-04-02' => 0, ...]
+	 */
+	public function getAvailabilityCalendar(
+		int $providerId,
+		DateTimeImmutable $from,
+		DateTimeImmutable $to
+	): array {
+		$result  = array();
+		$current = $from->setTime( 0, 0, 0 );
+		$end     = $to->setTime( 0, 0, 0 );
 
-        return $result;
-    }
+		while ( $current <= $end ) {
+			$slots                                 = $this->getAvailableSlots( $providerId, $current );
+			$result[ $current->format( 'Y-m-d' ) ] = count( $slots );
+			$current                               = $current->modify( '+1 day' );
+		}
 
-    // -------------------------------------------------------------------------
-    // Internal helpers
-    // -------------------------------------------------------------------------
+		return $result;
+	}
 
-    /**
-     * Checks for a special-day row for the provider (or its department / global).
-     *
-     * @return array<string, mixed>|null
-     */
-    private function loadSpecialDay(int $providerId, DateTimeImmutable $date, $config): ?array
-    {
-        global $wpdb;
-        $table   = $wpdb->prefix . 'erta_special_days';
-        $dateStr = $date->format('Y-m-d');
+	// -------------------------------------------------------------------------
+	// Internal helpers
+	// -------------------------------------------------------------------------
 
-        // Priority: provider > department > global.
-        $scopes = [
-            ['provider',   $providerId],
-            ['department', $config->departmentId()],
-            ['global',     null],
-        ];
+	/**
+	 * Checks for a special-day row for the provider (or its department / global).
+	 *
+	 * @return array<string, mixed>|null
+	 */
+	private function loadSpecialDay( int $providerId, DateTimeImmutable $date, $config ): ?array {
+		global $wpdb;
+		$table   = esc_sql( $wpdb->prefix . 'erta_special_days' );
+		$dateStr = $date->format( 'Y-m-d' );
 
-        foreach ($scopes as [$scope, $scopeId]) {
-            if ($scopeId === null && $scope !== 'global') {
-                continue;
-            }
+		// Priority: provider > department > global.
+		$scopes = array(
+			array( 'provider', $providerId ),
+			array( 'department', $config->departmentId() ),
+			array( 'global', null ),
+		);
 
-            $row = $wpdb->get_row(
-                $wpdb->prepare(
-                    "SELECT * FROM {$table}
+		foreach ( $scopes as [$scope, $scopeId] ) {
+			if ( $scopeId === null && $scope !== 'global' ) {
+				continue;
+			}
+
+			$row = $wpdb->get_row(
+				$wpdb->prepare(
+					'SELECT * FROM ' . $table . '
                      WHERE scope = %s AND scope_id <=> %d AND date = %s
-                     LIMIT 1",
-                    $scope,
-                    $scopeId,
-                    $dateStr
-                ),
-                ARRAY_A
-            );
+                     LIMIT 1',
+					$scope,
+					$scopeId,
+					$dateStr
+				),
+				ARRAY_A
+			);
 
-            if ($row !== null) {
-                return $row;
-            }
-        }
+			if ( $row !== null ) {
+				return $row;
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * Loads all applicable breaks for the provider on this day of week.
-     *
-     * @return list<array{start: string, end: string}>
-     */
-    private function loadBreaks(int $providerId, DateTimeImmutable $date, $config, int $dayOfWeek): array
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . 'erta_breaks';
+	/**
+	 * Loads all applicable breaks for the provider on this day of week.
+	 *
+	 * @return list<array{start: string, end: string}>
+	 */
+	private function loadBreaks( int $providerId, DateTimeImmutable $date, $config, int $dayOfWeek ): array {
+		global $wpdb;
+		$table = esc_sql( $wpdb->prefix . 'erta_breaks' );
 
-        $scopeParts = [
-            ['global',     null],
-            ['department', $config->departmentId()],
-            ['provider',   $providerId],
-        ];
+		$scopeParts = array(
+			array( 'global', null ),
+			array( 'department', $config->departmentId() ),
+			array( 'provider', $providerId ),
+		);
 
-        $allBreaks = [];
+		$allBreaks = array();
 
-        foreach ($scopeParts as [$scope, $scopeId]) {
-            if ($scopeId === null && $scope !== 'global') {
-                continue;
-            }
+		foreach ( $scopeParts as [$scope, $scopeId] ) {
+			if ( $scopeId === null && $scope !== 'global' ) {
+				continue;
+			}
 
-            $rows = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$table}
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM ' . $table . '
                      WHERE scope = %s AND scope_id <=> %d
-                       AND (day_of_week IS NULL OR day_of_week = %d)",
-                    $scope,
-                    $scopeId,
-                    $dayOfWeek
-                ),
-                ARRAY_A
-            );
+                       AND (day_of_week IS NULL OR day_of_week = %d)',
+					$scope,
+					$scopeId,
+					$dayOfWeek
+				),
+				ARRAY_A
+			);
 
-            foreach ($rows as $row) {
-                $allBreaks[] = [
-                    'start' => $row['start_time'],
-                    'end'   => $row['end_time'],
-                ];
-            }
-        }
+			foreach ( $rows as $row ) {
+				$allBreaks[] = array(
+					'start' => $row['start_time'],
+					'end'   => $row['end_time'],
+				);
+			}
+		}
 
-        return $allBreaks;
-    }
+		return $allBreaks;
+	}
 }

@@ -6,10 +6,31 @@
     <template v-if="!editing">
       <div class="erta-page-header">
         <h1 class="erta-page-title">{{ t('notifications') }}</h1>
+        <button class="erta-btn erta-btn--primary" @click="openNewTemplate">+ {{ t('addTemplate') }}</button>
       </div>
 
       <div v-if="saved"  class="erta-alert erta-alert--success">{{ t('saved') }}</div>
       <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
+
+      <details class="erta-quick-combos">
+        <summary class="erta-quick-combos__summary">
+          <span>{{ t('quickTemplateCombos') }}</span>
+          <span class="erta-quick-combos__hint">{{ t('createCustomerAdminEmail') }}</span>
+        </summary>
+
+        <div class="erta-quick-combos__grid">
+          <button
+            v-for="event in EVENT_ORDER"
+            :key="`quick-${event}`"
+            class="erta-quick-combos__btn"
+            :disabled="saving"
+            @click="createCustomerAdminEmailPair(event)"
+          >
+            <span class="erta-quick-combos__btn-event">{{ eventLabel(event) }}</span>
+            <span class="erta-quick-combos__btn-action">{{ t('createCustomerAdminEmail') }}</span>
+          </button>
+        </div>
+      </details>
 
       <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
       <template v-else>
@@ -34,10 +55,10 @@
                 <tr v-for="tpl in group" :key="tpl.id">
                   <td>
                     <span class="erta-badge" :class="tpl.channel === 'email' ? 'erta-badge--confirmed' : 'erta-badge--pending'">
-                      {{ tpl.channel }}
+                      {{ channelLabel(tpl.channel) }}
                     </span>
                   </td>
-                  <td>{{ tpl.recipient }}</td>
+                  <td>{{ recipientLabel(tpl.recipient || tpl.recipient_type) }}</td>
                   <td class="erta-notif-subject">{{ tpl.subject || '—' }}</td>
                   <td>
                     <label class="erta-toggle erta-toggle--sm">
@@ -65,7 +86,7 @@
     <template v-else>
       <div class="erta-page-header">
         <h1 class="erta-page-title">
-          {{ eventLabel(editing.event) }} — {{ editing.channel }} / {{ editing.recipient }}
+          {{ eventLabel(editing.event || editing.event_type) }} — {{ channelLabel(editing.channel) }} / {{ recipientLabel(editing.recipient) }}
         </h1>
         <div class="erta-header-actions">
           <button class="erta-btn erta-btn--ghost" @click="editing = null">{{ t('cancel') }}</button>
@@ -82,6 +103,30 @@
 
         <!-- Left: form -->
         <div class="erta-editor-form">
+          <div class="erta-form-row">
+            <label class="erta-form-label">{{ t('templateGroup') }}</label>
+            <select class="erta-input" v-model="editing.event">
+              <option v-for="evt in EVENT_ORDER" :key="evt" :value="evt">{{ eventLabel(evt) }}</option>
+            </select>
+          </div>
+
+          <div class="erta-form-row">
+            <label class="erta-form-label">{{ t('templateChannel') }}</label>
+            <select class="erta-input" v-model="editing.channel">
+              <option value="email">{{ channelLabel('email') }}</option>
+              <option value="sms">{{ channelLabel('sms') }}</option>
+            </select>
+          </div>
+
+          <div class="erta-form-row">
+            <label class="erta-form-label">{{ t('templateRecipient') }}</label>
+            <select class="erta-input" v-model="editing.recipient">
+              <option value="customer">{{ recipientLabel('customer') }}</option>
+              <option value="provider">{{ recipientLabel('provider') }}</option>
+              <option value="admin">{{ recipientLabel('admin') }}</option>
+            </select>
+          </div>
+
           <!-- Subject (email only) -->
           <div v-if="editing.channel === 'email'" class="erta-form-row">
             <label class="erta-form-label">{{ t('subject') }}</label>
@@ -197,18 +242,20 @@ const SAMPLE = {
 };
 
 // ── Event metadata ──────────────────────────────────────────────────────────
-const EVENT_LABELS = {
-  appointment_pending:      t('New Booking (Pending)'),
-  appointment_confirmed:    t('Booking Confirmed'),
-  appointment_cancelled:    t('Booking Cancelled'),
-  appointment_rescheduled:  t('Booking Rescheduled'),
-  appointment_completed:    t('Appointment Completed'),
-  appointment_no_show:      t('No-Show Marked'),
-  appointment_reminder:     t('Reminder'),
-  appointment_reminder_24h: t('24h Reminder'),
-  appointment_reminder_1h:  t('1h Reminder'),
-  waitlist_available:       t('Waitlist Slot Available'),
+const EVENT_LABEL_KEYS = {
+  appointment_pending:      'notifEventPending',
+  appointment_confirmed:    'notifEventConfirmed',
+  appointment_cancelled:    'notifEventCancelled',
+  appointment_rescheduled:  'notifEventRescheduled',
+  appointment_completed:    'notifEventCompleted',
+  appointment_no_show:      'notifEventNoShow',
+  appointment_reminder:     'notifEventReminder',
+  appointment_reminder_24h: 'notifEventReminder24h',
+  appointment_reminder_1h:  'notifEventReminder1h',
+  waitlist_available:       'notifEventWaitlist',
 };
+
+const EVENT_ORDER = Object.keys(EVENT_LABEL_KEYS);
 
 const EVENT_ICONS = {
   appointment_pending:      '🕐',
@@ -223,14 +270,30 @@ const EVENT_ICONS = {
   waitlist_available:       '📋',
 };
 
-function eventLabel(event) { return EVENT_LABELS[event] ?? event; }
+function eventLabel(event) {
+  const key = EVENT_LABEL_KEYS[event];
+  return key ? t(key) : event;
+}
 function eventIcon(event)  { return EVENT_ICONS[event]  ?? '📧'; }
+
+function channelLabel(channel) {
+  if (channel === 'email') return t('channelEmail');
+  if (channel === 'sms') return t('channelSms');
+  return channel;
+}
+
+function recipientLabel(recipient) {
+  if (recipient === 'customer') return t('recipientCustomer');
+  if (recipient === 'provider') return t('recipientProvider');
+  if (recipient === 'admin') return t('recipientAdmin');
+  return recipient;
+}
 
 // ── Group templates by event ────────────────────────────────────────────────
 const grouped = computed(() => {
   const g = {};
-  for (const event of Object.keys(EVENT_LABELS)) {
-    g[event] = templates.value.filter(t => t.event === event);
+  for (const event of EVENT_ORDER) {
+    g[event] = templates.value.filter(t => (t.event || t.event_type) === event);
   }
   return g;
 });
@@ -249,8 +312,24 @@ onMounted(async () => {
 
 // ── Editor ───────────────────────────────────────────────────────────────────
 function openEditor(tpl) {
-  editing.value    = JSON.parse(JSON.stringify(tpl));
+  const cloned = JSON.parse(JSON.stringify(tpl));
+  cloned.event = cloned.event || cloned.event_type;
+  cloned.recipient = cloned.recipient || cloned.recipient_type;
+  editing.value = cloned;
   saveError.value  = null;
+  updatePreview();
+}
+
+function openNewTemplate() {
+  editing.value = {
+    event: 'appointment_pending',
+    channel: 'email',
+    recipient: 'customer',
+    subject: '',
+    body: '',
+    is_active: 1,
+  };
+  saveError.value = null;
   updatePreview();
 }
 
@@ -290,13 +369,23 @@ async function saveTemplate() {
   saveError.value = null;
   saving.value    = true;
 
-  const { error: err } = await api.saveTemplate(editing.value);
+  const payload = {
+    ...editing.value,
+    event: editing.value.event || editing.value.event_type,
+    recipient: editing.value.recipient || editing.value.recipient_type,
+  };
+
+  const { data, error: err } = await api.saveTemplate(payload);
   saving.value = false;
 
   if (err) { saveError.value = err; return; }
 
-  const idx = templates.value.findIndex(t => t.id === editing.value.id);
-  if (idx > -1) templates.value[idx] = { ...editing.value };
+  if (editing.value.id) {
+    const idx = templates.value.findIndex(t => t.id === editing.value.id);
+    if (idx > -1) templates.value[idx] = { ...data };
+  } else {
+    templates.value.push(data);
+  }
 
   editing.value = null;
   saved.value   = true;
@@ -306,8 +395,54 @@ async function saveTemplate() {
 // ── Quick active toggle (from list) ─────────────────────────────────────────
 async function toggleActive(tpl) {
   const updated = { ...tpl, is_active: tpl.is_active == 1 ? 0 : 1 };
-  await api.saveTemplate(updated);
+  await api.saveTemplate({
+    ...updated,
+    event: updated.event || updated.event_type,
+    recipient: updated.recipient || updated.recipient_type,
+  });
   const idx = templates.value.findIndex(t => t.id === tpl.id);
   if (idx > -1) templates.value[idx].is_active = updated.is_active;
+}
+
+async function createCustomerAdminEmailPair(event) {
+  error.value = null;
+  saving.value = true;
+
+  const recipients = ['customer', 'admin'];
+  let created = 0;
+
+  for (const recipient of recipients) {
+    const exists = templates.value.some((tpl) => {
+      const tplEvent = tpl.event || tpl.event_type;
+      const tplRecipient = tpl.recipient || tpl.recipient_type;
+      return tplEvent === event && tpl.channel === 'email' && tplRecipient === recipient;
+    });
+
+    if (exists) continue;
+
+    const { data, error: err } = await api.saveTemplate({
+      event,
+      channel: 'email',
+      recipient,
+      subject: '',
+      body: '',
+      is_active: 1,
+    });
+
+    if (err) {
+      error.value = err;
+      continue;
+    }
+
+    templates.value.push(data);
+    created += 1;
+  }
+
+  saving.value = false;
+
+  if (created > 0) {
+    saved.value = true;
+    setTimeout(() => (saved.value = false), 3000);
+  }
 }
 </script>

@@ -21,236 +21,261 @@ use ERTAppointment\Domain\Provider\ProviderRepository;
  *  POST   /erta/v1/admin/providers/{id}/users        — assign user { user_id, role }
  *  DELETE /erta/v1/admin/providers/{id}/users/{uid}  — remove user
  */
-final class AdminProviderApiController
-{
-    public function __construct(
-        private readonly ProviderRepository $providers
-    ) {}
+final class AdminProviderApiController {
 
-    // ── List ──────────────────────────────────────────────────────────────
+	public function __construct(
+		private readonly ProviderRepository $providers
+	) {}
 
-    public function index(WP_REST_Request $request): WP_REST_Response
-    {
-        $departmentId = $request->get_param('department_id')
-            ? (int) $request->get_param('department_id')
-            : null;
+	// ── List ──────────────────────────────────────────────────────────────
 
-        $items = $departmentId
-            ? $this->providers->findByDepartment($departmentId)
-            : $this->providers->findAll();
+	public function index( WP_REST_Request $request ): WP_REST_Response {
+		$departmentId = $request->get_param( 'department_id' )
+			? (int) $request->get_param( 'department_id' )
+			: null;
 
-        return new WP_REST_Response([
-            'items' => array_map(fn(Provider $p) => $this->providerRow($p), $items),
-            'total' => count($items),
-        ]);
-    }
+		$items = $departmentId
+			? $this->providers->findByDepartment( $departmentId, false )
+			: $this->providers->findAll( false );
 
-    // ── Create ────────────────────────────────────────────────────────────
+		return new WP_REST_Response(
+			array(
+				'items' => array_map( fn( Provider $p ) => $this->providerRow( $p ), $items ),
+				'total' => count( $items ),
+			)
+		);
+	}
 
-    public function create(WP_REST_Request $request): WP_REST_Response
-    {
-        $data   = $this->extractFields($request);
-        $errors = $this->validate($data);
+	// ── Create ────────────────────────────────────────────────────────────
 
-        if ($errors) {
-            return new WP_REST_Response(['error' => implode(' ', $errors)], 422);
-        }
+	public function create( WP_REST_Request $request ): WP_REST_Response {
+		$data   = $this->extractFields( $request );
+		$errors = $this->validate( $data );
 
-        $provider = Provider::create(
-            departmentId: $data['department_id'],
-            type:         $data['type'],
-            name:         $data['name'],
-            email:        $data['email'],
-            phone:        $data['phone'],
-            description:  $data['description'],
-            status:       $data['status'],
-            sortOrder:    $data['sort_order'],
-        );
+		if ( $errors ) {
+			return new WP_REST_Response( array( 'error' => implode( ' ', $errors ) ), 422 );
+		}
 
-        $saved = $this->providers->save($provider);
+		$provider = Provider::create(
+			departmentId: $data['department_id'],
+			type:         $data['type'],
+			name:         $data['name'],
+			email:        $data['email'],
+			phone:        $data['phone'],
+			description:  $data['description'],
+			status:       $data['status'],
+			sortOrder:    $data['sort_order'],
+		);
 
-        // Auto-assign a WP user if provided.
-        if (! empty($data['user_id'])) {
-            $this->providers->assignUser($saved->id, (int) $data['user_id'], 'manager');
-        }
+		$saved = $this->providers->save( $provider );
 
-        return new WP_REST_Response($this->providerRow($saved), 201);
-    }
+		// Auto-assign a WP user if provided.
+		if ( ! empty( $data['user_id'] ) ) {
+			$this->providers->assignUser( $saved->id, (int) $data['user_id'], 'manager' );
+		}
 
-    // ── Update ────────────────────────────────────────────────────────────
+		return new WP_REST_Response( $this->providerRow( $saved ), 201 );
+	}
 
-    public function update(WP_REST_Request $request): WP_REST_Response
-    {
-        $id       = (int) $request->get_param('id');
-        $provider = $this->providers->findById($id);
+	// ── Update ────────────────────────────────────────────────────────────
 
-        if (! $provider) {
-            return new WP_REST_Response(['error' => 'Provider not found.'], 404);
-        }
+	public function update( WP_REST_Request $request ): WP_REST_Response {
+		$id       = (int) $request->get_param( 'id' );
+		$provider = $this->providers->findById( $id );
 
-        $data   = $this->extractFields($request);
-        $errors = $this->validate($data);
+		if ( ! $provider ) {
+			return new WP_REST_Response( array( 'error' => __( 'Provider not found.', 'ert-appointment' ) ), 404 );
+		}
 
-        if ($errors) {
-            return new WP_REST_Response(['error' => implode(' ', $errors)], 422);
-        }
+		$data   = $this->extractFields( $request );
+		$errors = $this->validate( $data );
 
-        $updated = $provider->with([
-            'department_id' => $data['department_id'] ?? $provider->departmentId,
-            'type'          => $data['type']          ?? $provider->type,
-            'name'          => $data['name']           ?? $provider->name,
-            'email'         => $data['email']          ?? $provider->email,
-            'phone'         => $data['phone']          ?? $provider->phone,
-            'description'   => $data['description']    ?? $provider->description,
-            'status'        => $data['status']         ?? $provider->status,
-            'sort_order'    => $data['sort_order']      ?? $provider->sortOrder,
-        ]);
+		if ( $errors ) {
+			return new WP_REST_Response( array( 'error' => implode( ' ', $errors ) ), 422 );
+		}
 
-        $saved = $this->providers->save($updated);
+		$updated = $provider->with(
+			array(
+				'department_id' => $data['department_id'] ?? $provider->departmentId,
+				'type'          => $data['type'] ?? $provider->type,
+				'name'          => $data['name'] ?? $provider->name,
+				'email'         => $data['email'] ?? $provider->email,
+				'phone'         => $data['phone'] ?? $provider->phone,
+				'description'   => $data['description'] ?? $provider->description,
+				'status'        => $data['status'] ?? $provider->status,
+				'sort_order'    => $data['sort_order'] ?? $provider->sortOrder,
+			)
+		);
 
-        return new WP_REST_Response($this->providerRow($saved));
-    }
+		$saved = $this->providers->save( $updated );
 
-    // ── Delete (soft) ─────────────────────────────────────────────────────
+		return new WP_REST_Response( $this->providerRow( $saved ) );
+	}
 
-    public function delete(WP_REST_Request $request): WP_REST_Response
-    {
-        $id       = (int) $request->get_param('id');
-        $provider = $this->providers->findById($id);
+	// ── Delete (soft) ─────────────────────────────────────────────────────
 
-        if (! $provider) {
-            return new WP_REST_Response(['error' => 'Provider not found.'], 404);
-        }
+	public function delete( WP_REST_Request $request ): WP_REST_Response {
+		$id       = (int) $request->get_param( 'id' );
+		$provider = $this->providers->findById( $id );
 
-        // Check for upcoming confirmed appointments.
-        if ($this->hasUpcomingAppointments($id)) {
-            return new WP_REST_Response([
-                'error' => 'Provider has upcoming appointments. Cancel or reassign them before deleting.',
-            ], 409);
-        }
+		if ( ! $provider ) {
+			return new WP_REST_Response( array( 'error' => __( 'Provider not found.', 'ert-appointment' ) ), 404 );
+		}
 
-        $this->providers->delete($id);
+		// Check for upcoming confirmed appointments.
+		if ( $this->hasUpcomingAppointments( $id ) ) {
+			return new WP_REST_Response(
+				array(
+					'error' => 'Provider has upcoming appointments. Cancel or reassign them before deleting.',
+				),
+				409
+			);
+		}
 
-        return new WP_REST_Response(['deleted' => true, 'id' => $id]);
-    }
+		$this->providers->delete( $id );
 
-    // ── User assignments ──────────────────────────────────────────────────
+		return new WP_REST_Response(
+			array(
+				'deleted' => true,
+				'id'      => $id,
+			)
+		);
+	}
 
-    public function listUsers(WP_REST_Request $request): WP_REST_Response
-    {
-        $id    = (int) $request->get_param('id');
-        $users = $this->getAssignedUsers($id);
+	// ── User assignments ──────────────────────────────────────────────────
 
-        return new WP_REST_Response(['items' => $users]);
-    }
+	public function listUsers( WP_REST_Request $request ): WP_REST_Response {
+		$id    = (int) $request->get_param( 'id' );
+		$users = $this->getAssignedUsers( $id );
 
-    public function assignUser(WP_REST_Request $request): WP_REST_Response
-    {
-        $id     = (int) $request->get_param('id');
-        $userId = (int) ($request->get_param('user_id') ?? 0);
-        $role   = sanitize_key($request->get_param('role') ?? 'staff');
+		return new WP_REST_Response( array( 'items' => $users ) );
+	}
 
-        if (! $userId || ! get_user_by('id', $userId)) {
-            return new WP_REST_Response(['error' => 'Invalid user_id.'], 422);
-        }
+	public function assignUser( WP_REST_Request $request ): WP_REST_Response {
+		$id     = (int) $request->get_param( 'id' );
+		$userId = (int) ( $request->get_param( 'user_id' ) ?? 0 );
+		$role   = sanitize_key( $request->get_param( 'role' ) ?? 'staff' );
 
-        $allowedRoles = ['manager', 'staff'];
-        if (! in_array($role, $allowedRoles, true)) {
-            return new WP_REST_Response(['error' => 'role must be manager or staff.'], 422);
-        }
+		if ( ! $userId || ! get_user_by( 'id', $userId ) ) {
+			return new WP_REST_Response( array( 'error' => __( 'Invalid user_id.', 'ert-appointment' ) ), 422 );
+		}
 
-        $this->providers->assignUser($id, $userId, $role);
+		$allowedRoles = array( 'manager', 'staff' );
+		if ( ! in_array( $role, $allowedRoles, true ) ) {
+			return new WP_REST_Response( array( 'error' => 'role must be manager or staff.' ), 422 );
+		}
 
-        return new WP_REST_Response(['assigned' => true, 'user_id' => $userId, 'role' => $role], 201);
-    }
+		$this->providers->assignUser( $id, $userId, $role );
 
-    public function removeUser(WP_REST_Request $request): WP_REST_Response
-    {
-        $id     = (int) $request->get_param('id');
-        $userId = (int) $request->get_param('user_id');
+		return new WP_REST_Response(
+			array(
+				'assigned' => true,
+				'user_id'  => $userId,
+				'role'     => $role,
+			),
+			201
+		);
+	}
 
-        $this->providers->removeUser($id, $userId);
+	public function removeUser( WP_REST_Request $request ): WP_REST_Response {
+		$id     = (int) $request->get_param( 'id' );
+		$userId = (int) $request->get_param( 'user_id' );
 
-        return new WP_REST_Response(['removed' => true]);
-    }
+		$this->providers->removeUser( $id, $userId );
 
-    // ── Helpers ───────────────────────────────────────────────────────────
+		return new WP_REST_Response( array( 'removed' => true ) );
+	}
 
-    private function extractFields(WP_REST_Request $request): array
-    {
-        return [
-            'department_id' => (int) ($request->get_param('department_id') ?? 0)  ?: null,
-            'type'          => sanitize_key($request->get_param('type')           ?? 'individual'),
-            'name'          => sanitize_text_field($request->get_param('name')    ?? ''),
-            'email'         => sanitize_email($request->get_param('email')        ?? ''),
-            'phone'         => sanitize_text_field($request->get_param('phone')   ?? ''),
-            'description'   => sanitize_textarea_field($request->get_param('description') ?? ''),
-            'status'        => sanitize_key($request->get_param('status')         ?? 'active'),
-            'sort_order'    => (int) ($request->get_param('sort_order')            ?? 0),
-            'user_id'       => (int) ($request->get_param('user_id')               ?? 0),
-        ];
-    }
+	// ── Helpers ───────────────────────────────────────────────────────────
 
-    private function validate(array $data): array
-    {
-        $errors = [];
+	private function extractFields( WP_REST_Request $request ): array {
+		return array(
+			'department_id' => (int) ( $request->get_param( 'department_id' ) ?? 0 ) ?: null,
+			'type'          => sanitize_key( $request->get_param( 'type' ) ?? 'individual' ),
+			'name'          => sanitize_text_field( $request->get_param( 'name' ) ?? '' ),
+			'email'         => sanitize_email( $request->get_param( 'email' ) ?? '' ),
+			'phone'         => sanitize_text_field( $request->get_param( 'phone' ) ?? '' ),
+			'description'   => sanitize_textarea_field( $request->get_param( 'description' ) ?? '' ),
+			'status'        => sanitize_key( $request->get_param( 'status' ) ?? 'active' ),
+			'sort_order'    => (int) ( $request->get_param( 'sort_order' ) ?? 0 ),
+			'user_id'       => (int) ( $request->get_param( 'user_id' ) ?? 0 ),
+		);
+	}
 
-        if (empty($data['name'])) {
-            $errors[] = 'Name is required.';
-        }
+	private function validate( array $data ): array {
+		$errors = array();
 
-        if (! in_array($data['type'], ['individual', 'unit'], true)) {
-            $errors[] = 'type must be individual or unit.';
-        }
+		if ( empty( $data['name'] ) ) {
+			$errors[] = __( 'Name is required.', 'ert-appointment' );
+		}
 
-        if (! empty($data['email']) && ! is_email($data['email'])) {
-            $errors[] = 'Invalid email address.';
-        }
+		if ( ! in_array( $data['type'], array( 'individual', 'unit' ), true ) ) {
+			$errors[] = 'type must be individual or unit.';
+		}
 
-        return $errors;
-    }
+		if ( ! in_array( $data['status'], array( 'active', 'inactive' ), true ) ) {
+			$errors[] = __( 'Invalid status.', 'ert-appointment' );
+		}
 
-    private function providerRow(Provider $p): array
-    {
-        $row = $p->toArray();
+		if ( $data['type'] === 'unit' && empty( $data['department_id'] ) ) {
+			$errors[] = __( 'Department is required when type is unit.', 'ert-appointment' );
+		}
 
-        // Attach department name for display.
-        if ($p->departmentId) {
-            global $wpdb;
-            $row['department_name'] = $wpdb->get_var($wpdb->prepare(
-                "SELECT name FROM {$wpdb->prefix}erta_departments WHERE id = %d",
-                $p->departmentId
-            ));
-        }
+		if ( ! empty( $data['email'] ) && ! is_email( $data['email'] ) ) {
+			$errors[] = __( 'Invalid email address.', 'ert-appointment' );
+		}
 
-        return $row;
-    }
+		return $errors;
+	}
 
-    private function getAssignedUsers(int $providerId): array
-    {
-        global $wpdb;
+	private function providerRow( Provider $p ): array {
+		$row = array_merge(
+			array( 'id' => $p->id ),
+			$p->toArray()
+		);
 
-        $rows = $wpdb->get_results($wpdb->prepare(
-            "SELECT pu.user_id, pu.role, u.display_name, u.user_email
+		// Attach department name for display.
+		if ( $p->departmentId ) {
+			global $wpdb;
+			$row['department_name'] = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT name FROM {$wpdb->prefix}erta_departments WHERE id = %d",
+					$p->departmentId
+				)
+			);
+		}
+
+		return $row;
+	}
+
+	private function getAssignedUsers( int $providerId ): array {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT pu.user_id, pu.role, u.display_name, u.user_email
              FROM {$wpdb->prefix}erta_provider_users pu
              JOIN {$wpdb->users} u ON u.ID = pu.user_id
              WHERE pu.provider_id = %d
              ORDER BY pu.role ASC, u.display_name ASC",
-            $providerId
-        ), ARRAY_A);
+				$providerId
+			),
+			ARRAY_A
+		);
 
-        return $rows ?: [];
-    }
+		return $rows ?: array();
+	}
 
-    private function hasUpcomingAppointments(int $providerId): bool
-    {
-        global $wpdb;
-        return (bool) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}erta_appointments
+	private function hasUpcomingAppointments( int $providerId ): bool {
+		global $wpdb;
+		return (bool) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}erta_appointments
              WHERE provider_id = %d
                AND status IN ('pending','confirmed')
                AND start_datetime > NOW()",
-            $providerId
-        ));
-    }
+				$providerId
+			)
+		);
+	}
 }

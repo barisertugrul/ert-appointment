@@ -9,24 +9,32 @@
         <button class="erta-btn erta-btn--primary" @click="openNew">+ {{ t('newForm') }}</button>
       </div>
 
+      <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
+
       <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
       <div v-else class="erta-table-wrap">
         <table class="erta-table">
           <thead>
             <tr>
               <th>#</th><th>{{ t('name') }}</th><th>{{ t('scope') }}</th>
-              <th>{{ t('fields') }}</th><th>{{ t('actions') }}</th>
+              <th>{{ t('fields') }}</th><th>Shortcode</th><th>{{ t('actions') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="!forms.length">
-              <td colspan="5" class="erta-empty-cell">{{ t('noForms') }}</td>
+              <td colspan="6" class="erta-empty-cell">{{ t('noForms') }}</td>
             </tr>
             <tr v-for="f in forms" :key="f.id">
               <td>#{{ f.id }}</td>
               <td><strong>{{ f.name }}</strong></td>
               <td><span class="erta-badge erta-badge--scope">{{ f.scope }}</span></td>
               <td>{{ f.fields?.length ?? 0 }}</td>
+              <td>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <input class="erta-input erta-input--mono" :value="formShortcode(f)" readonly style="max-width:240px;" />
+                  <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="copyShortcode(f)">Kopyala</button>
+                </div>
+              </td>
               <td class="erta-actions-cell">
                 <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="openEdit(f)">✏️ {{ t('edit') }}</button>
                 <button class="erta-btn erta-btn--sm erta-btn--danger" @click="del(f.id)">🗑</button>
@@ -64,7 +72,7 @@
           <label class="erta-form-label">{{ t('scope') }}</label>
           <select class="erta-input" v-model="editing.scope">
             <option value="global">{{ t('global') }}</option>
-            <option value="department">{{ t('department') }}</option>
+            <option value="department" :disabled="!isPro">{{ t('department') }} ({{ t('proBadge') }})</option>
             <option value="provider">{{ t('provider') }}</option>
           </select>
         </div>
@@ -229,6 +237,7 @@ import { useAdminApi } from '../../composables/useAdminApi.js';
 
 const api     = useAdminApi();
 const t       = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
+const isPro   = window.ertaAdminData?.isPro ?? false;
 
 const loading    = ref(true);
 const saving     = ref(false);
@@ -252,6 +261,25 @@ const fieldTypes = [
 
 function fieldTypeLabel(type) {
   return fieldTypes.find(f => f.type === type)?.label ?? type;
+}
+
+function formShortcode(form) {
+  const formId = form?.id ?? '';
+  return formId ? `[erta-booking form="${formId}"]` : '[erta-booking]';
+}
+
+async function copyShortcode(form) {
+  const shortcode = formShortcode(form);
+  try {
+    await navigator.clipboard.writeText(shortcode);
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = shortcode;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
 }
 
 // ── Default field set ──────────────────────────────────────────────────────
@@ -315,6 +343,10 @@ function moveField(idx, dir) {
 
 async function saveForm() {
   saveError.value = null;
+  if (!isPro && editing.value?.scope === 'department') {
+    saveError.value = t('departmentProOnly');
+    return;
+  }
   saving.value    = true;
   const { error } = await api.saveForm(editing.value);
   saving.value    = false;

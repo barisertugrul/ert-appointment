@@ -3,7 +3,7 @@
 
     <!-- Sidebar nav -->
     <nav class="erta-sidebar">
-      <div class="erta-sidebar__brand">📅 WP Appointment</div>
+      <div class="erta-sidebar__brand">📅 ERT Appointment</div>
       <ul class="erta-nav">
         <li v-for="item in navItems" :key="item.page">
           <button
@@ -13,7 +13,7 @@
           >
             <span class="erta-nav__icon">{{ item.icon }}</span>
             {{ item.label }}
-            <span v-if="item.pro && !isPro" class="erta-pro-badge">PRO</span>
+            <span v-if="(item.pro || item.proBadgeOnly) && !isPro" class="erta-pro-badge">PRO</span>
           </button>
         </li>
       </ul>
@@ -43,7 +43,7 @@ const currentPage = ref(props.page);
 const navItems = [
   { page: 'erta-dashboard',     icon: '📊', label: t('dashboard')     },
   { page: 'erta-appointments',  icon: '📋', label: t('appointments')  },
-  { page: 'erta-departments',   icon: '🏢', label: t('departments')   },
+  { page: 'erta-departments',   icon: '🏢', label: t('departments'), proBadgeOnly: true },
   { page: 'erta-providers',     icon: '👤', label: t('providers')     },
   { page: 'erta-forms',          icon: '📝', label: t('forms')         },
   { page: 'erta-working-hours', icon: '🕐', label: t('workingHours')  },

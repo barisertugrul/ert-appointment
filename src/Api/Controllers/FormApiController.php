@@ -1,29 +1,32 @@
 <?php declare(strict_types=1);
 namespace ERTAppointment\Api\Controllers;
 
-use WP_REST_Request; use WP_REST_Response; use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_Error;
 use ERTAppointment\Domain\Form\FormRepository;
 
-final class FormApiController
-{
-    public function __construct(private readonly FormRepository $repository) {}
+final class FormApiController {
 
-    public function get(WP_REST_Request $request): WP_REST_Response|WP_Error
-    {
-        $scope   = $request->get_param('scope') ?? 'global';
-        $scopeId = $request->get_param('scope_id') ? (int) $request->get_param('scope_id') : null;
+	public function __construct( private readonly FormRepository $repository ) {}
 
-        $form = $this->repository->findForScope($scope, $scopeId);
+	public function get( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$scope   = $request->get_param( 'scope' ) ?? 'global';
+		$scopeId = $request->get_param( 'scope_id' ) ? (int) $request->get_param( 'scope_id' ) : null;
 
-        if (!$form) {
-            return new WP_Error('erta_not_found', __('No form found for this scope.', 'ert-appointment'), ['status' => 404]);
-        }
+		$form = $this->repository->findForScope( $scope, $scopeId );
 
-        return new WP_REST_Response([
-            'id'     => $form->id,
-            'name'   => $form->name,
-            'scope'  => $form->scope,
-            'fields' => $form->fields,
-        ]);
-    }
+		if ( ! $form ) {
+			return new WP_Error( 'erta_not_found', __( 'No form found for this scope.', 'ert-appointment' ), array( 'status' => 404 ) );
+		}
+
+		return new WP_REST_Response(
+			array(
+				'id'     => $form->id,
+				'name'   => $form->name,
+				'scope'  => $form->scope,
+				'fields' => $form->fields,
+			)
+		);
+	}
 }
