@@ -82,11 +82,11 @@
         </div>
         <div class="erta-form-row">
           <label class="erta-form-label">Department/Service Label</label>
-          <input class="erta-input" v-model="editing.department_label" placeholder="Select Department/Service" />
+          <input class="erta-input" :disabled="!isPro" v-model="editing.department_label" placeholder="Select Department/Service" />
         </div>
         <div class="erta-form-row">
           <label class="erta-form-label">Person Label</label>
-          <input class="erta-input" v-model="editing.provider_label" placeholder="Select Person" />
+          <input class="erta-input" :disabled="!isPro" v-model="editing.provider_label" placeholder="Select Person" />
         </div>
       </div>
 

@@ -68,6 +68,9 @@ EXCLUDES=(
     ".prettierignore"
     ".prettierrc"
     "node_modules"
+    ".venv"
+    "venv"
+    "env"
     "tests"
     "*.sh"
     "phpunit.xml*"
@@ -88,6 +91,8 @@ EXCLUDES=(
     ".env.*"
     "*.map"
     "scripts"
+    "docs"
+    "test-results"
     "WPORG_PRECHECK.md"
     "repomix-output.xml"
     "*.docx"
@@ -233,6 +238,8 @@ fi
 
 # Güvenlik ağı: dağıtımda asla bulunmaması gereken geliştirme/artık dosyaları kaldır.
 rm -rf "${STAGE}/scripts" 2>/dev/null || true
+rm -rf "${STAGE}/docs" 2>/dev/null || true
+rm -rf "${STAGE}/test-results" 2>/dev/null || true
 rm -f "${STAGE}/.cursorrules" 2>/dev/null || true
 rm -f "${STAGE}/.curssorrules" 2>/dev/null || true
 rm -f "${STAGE}/WPORG_PRECHECK.md" 2>/dev/null || true

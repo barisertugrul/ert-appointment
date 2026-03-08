@@ -329,6 +329,11 @@ final class AdminFormApiController {
 			return '';
 		}
 
+		$externalValue = $this->getExternalMeta( $formId, 'department_label' );
+		if ( $externalValue !== null ) {
+			return is_string( $externalValue ) ? sanitize_text_field( $externalValue ) : '';
+		}
+
 		$value = get_option( $this->departmentLabelOptionKey( $formId ), '' );
 		return is_string( $value ) ? sanitize_text_field( $value ) : '';
 	}
@@ -339,6 +344,10 @@ final class AdminFormApiController {
 		}
 
 		$sanitized = sanitize_text_field( $departmentLabel );
+		if ( $this->setExternalMeta( $formId, 'department_label', $sanitized ) ) {
+			return;
+		}
+
 		if ( $sanitized === '' ) {
 			$this->deleteDepartmentLabel( $formId );
 			return;
@@ -352,12 +361,21 @@ final class AdminFormApiController {
 			return;
 		}
 
+		if ( $this->deleteExternalMeta( $formId, 'department_label' ) ) {
+			return;
+		}
+
 		delete_option( $this->departmentLabelOptionKey( $formId ) );
 	}
 
 	private function getProviderLabel( int $formId ): string {
 		if ( $formId <= 0 ) {
 			return '';
+		}
+
+		$externalValue = $this->getExternalMeta( $formId, 'provider_label' );
+		if ( $externalValue !== null ) {
+			return is_string( $externalValue ) ? sanitize_text_field( $externalValue ) : '';
 		}
 
 		$value = get_option( $this->providerLabelOptionKey( $formId ), '' );
@@ -370,6 +388,10 @@ final class AdminFormApiController {
 		}
 
 		$sanitized = sanitize_text_field( $providerLabel );
+		if ( $this->setExternalMeta( $formId, 'provider_label', $sanitized ) ) {
+			return;
+		}
+
 		if ( $sanitized === '' ) {
 			$this->deleteProviderLabel( $formId );
 			return;
@@ -380,6 +402,10 @@ final class AdminFormApiController {
 
 	private function deleteProviderLabel( int $formId ): void {
 		if ( $formId <= 0 ) {
+			return;
+		}
+
+		if ( $this->deleteExternalMeta( $formId, 'provider_label' ) ) {
 			return;
 		}
 
@@ -433,6 +459,11 @@ final class AdminFormApiController {
 			return array();
 		}
 
+		$externalValue = $this->getExternalMeta( $formId, 'ui_styles' );
+		if ( is_array( $externalValue ) ) {
+			return $this->sanitizeUiStyles( $externalValue );
+		}
+
 		$value = get_option( $this->uiStylesOptionKey( $formId ), array() );
 		if ( ! is_array( $value ) ) {
 			return array();
@@ -450,6 +481,10 @@ final class AdminFormApiController {
 		}
 
 		$sanitized = $this->sanitizeUiStyles( $styles );
+		if ( $this->setExternalMeta( $formId, 'ui_styles', $sanitized ) ) {
+			return;
+		}
+
 		if ( empty( $sanitized ) ) {
 			$this->deleteUiStyles( $formId );
 			return;
@@ -463,7 +498,29 @@ final class AdminFormApiController {
 			return;
 		}
 
+		if ( $this->deleteExternalMeta( $formId, 'ui_styles' ) ) {
+			return;
+		}
+
 		delete_option( $this->uiStylesOptionKey( $formId ) );
+	}
+
+	/**
+	 * @return mixed
+	 */
+	private function getExternalMeta( int $formId, string $key ): mixed {
+		return apply_filters( 'erta_form_meta_get', null, $formId, $key );
+	}
+
+	/**
+	 * @param mixed $value
+	 */
+	private function setExternalMeta( int $formId, string $key, mixed $value ): bool {
+		return (bool) apply_filters( 'erta_form_meta_set', false, $formId, $key, $value );
+	}
+
+	private function deleteExternalMeta( int $formId, string $key ): bool {
+		return (bool) apply_filters( 'erta_form_meta_delete', false, $formId, $key );
 	}
 
 	private function deleteSubmitButtonText( int $formId ): void {

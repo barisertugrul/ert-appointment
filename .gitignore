@@ -25,6 +25,9 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+.venv/
+venv/
+env/
 
 # Build files
 dist/
@@ -46,3 +49,6 @@ wp-content/plugins/*/
 
 # Documentation
 # docs/
+
+# Virtual environments
+venv/

@@ -8,7 +8,7 @@ Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A modern, fast and mobile-friendly appointment booking system for WordPress. Manage services, staff, availability, forms and notifications from one panel.
+Fast, mobile-friendly WordPress appointment booking plugin with providers, availability rules, custom forms, and notification templates.
 
 == Description ==
 

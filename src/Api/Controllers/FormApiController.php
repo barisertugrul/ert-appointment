@@ -56,6 +56,11 @@ final class FormApiController {
 			return '';
 		}
 
+		$externalValue = $this->getExternalMeta( (int) $formId, 'department_label' );
+		if ( $externalValue !== null ) {
+			return is_string( $externalValue ) ? sanitize_text_field( $externalValue ) : '';
+		}
+
 		$value = get_option( 'erta_form_department_label_' . (int) $formId, '' );
 		return is_string( $value ) ? sanitize_text_field( $value ) : '';
 	}
@@ -63,6 +68,11 @@ final class FormApiController {
 	private function getProviderLabel( ?int $formId ): string {
 		if ( ! $formId || $formId <= 0 ) {
 			return '';
+		}
+
+		$externalValue = $this->getExternalMeta( (int) $formId, 'provider_label' );
+		if ( $externalValue !== null ) {
+			return is_string( $externalValue ) ? sanitize_text_field( $externalValue ) : '';
 		}
 
 		$value = get_option( 'erta_form_provider_label_' . (int) $formId, '' );
@@ -77,7 +87,13 @@ final class FormApiController {
 			return array();
 		}
 
-		$value = get_option( 'erta_form_ui_styles_' . (int) $formId, array() );
+		$externalValue = $this->getExternalMeta( (int) $formId, 'ui_styles' );
+		if ( is_array( $externalValue ) ) {
+			$value = $externalValue;
+		} else {
+			$value = get_option( 'erta_form_ui_styles_' . (int) $formId, array() );
+		}
+
 		if ( ! is_array( $value ) ) {
 			return array();
 		}
@@ -94,5 +110,12 @@ final class FormApiController {
 		}
 
 		return $sanitized;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	private function getExternalMeta( int $formId, string $key ): mixed {
+		return apply_filters( 'erta_form_meta_get', null, $formId, $key );
 	}
 }
