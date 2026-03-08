@@ -43,3 +43,6 @@ yarn.lock
 # WordPress specific
 wp-content/plugins/*/
 !wp-content/plugins/ert-appointment/
+
+# Documentation
+# docs/

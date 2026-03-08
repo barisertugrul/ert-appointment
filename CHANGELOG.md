@@ -13,6 +13,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - QA tooling: `scripts/fill-live-test-report.ps1` ile JSON test çıktısından doldurulmuş canlı test raporu üretimi eklendi.
 - Dokümantasyon: canlı test için tek sayfa rapor şablonu eklendi (`docs/live-booking-mode-test-report.md`).
 - Dokümantasyon: Pro WhatsApp/SMS doğrulaması için smoke checklist eklendi (`docs/pro-whatsapp-smoke-checklist.md`).
+- Dokümantasyon: WordPress.org SVN yayın adımları için rehber eklendi (`docs/wporg-svn-publish.md`).
 - Pro bildirim altyapısına gerçek WhatsApp provider desteği eklendi (Meta Cloud API).
 - Varsayılan bildirim şablonlarına müşteri odaklı WhatsApp şablonları eklendi (pending/confirmed/cancelled/rescheduled/reminder_24h).
 

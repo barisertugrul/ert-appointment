@@ -80,6 +80,114 @@
           <label class="erta-form-label">{{ t('bookingButtonText') }}</label>
           <input class="erta-input" v-model="editing.submit_button_text" :placeholder="t('book')" />
         </div>
+        <div class="erta-form-row">
+          <label class="erta-form-label">Department/Service Label</label>
+          <input class="erta-input" v-model="editing.department_label" placeholder="Select Department/Service" />
+        </div>
+        <div class="erta-form-row">
+          <label class="erta-form-label">Person Label</label>
+          <input class="erta-input" v-model="editing.provider_label" placeholder="Select Person" />
+        </div>
+      </div>
+
+      <div class="erta-builder-meta" style="margin-top:12px;">
+        <div class="erta-page-header" style="padding:0; margin:0 0 8px; border:none;">
+          <h2 class="erta-page-title" style="font-size:16px; margin:0;">Frontend Style (Pro)</h2>
+          <span v-if="!isPro" class="erta-badge erta-badge--scope">{{ t('proBadge') }}</span>
+        </div>
+
+        <div v-if="!isPro" class="erta-alert erta-alert--info" style="margin-bottom:10px;">{{ t('proOnlyArea') }}</div>
+
+        <fieldset :disabled="!isPro" class="erta-fieldset-reset" :class="{ 'erta-pro-gate': !isPro }">
+          <div class="erta-form-row">
+            <label class="erta-form-label">Primary Color</label>
+            <input class="erta-input" type="color" v-model="editing.ui_styles.primary_color" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Panel Background</label>
+            <input class="erta-input" type="color" v-model="editing.ui_styles.panel_background" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Panel Radius</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.panel_radius" placeholder="8px" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Button Radius</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.button_radius" placeholder="6px" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Input Radius</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.input_radius" placeholder="6px" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Title Font Size</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.title_font_size" placeholder="1.2rem" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Body Font Size</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.body_font_size" placeholder="0.95rem" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Card Border Width</label>
+            <input class="erta-input" type="text" v-model="editing.ui_styles.card_border_width" placeholder="2px" />
+          </div>
+          <div class="erta-form-row">
+            <label class="erta-form-label">Card Border Color</label>
+            <input class="erta-input" type="color" v-model="editing.ui_styles.card_border_color" />
+          </div>
+        </fieldset>
+
+        <div class="erta-step-actions" style="margin-top:8px; justify-content:flex-start; flex-wrap:wrap;">
+          <button type="button" class="erta-btn erta-btn--sm" :class="previewStep === 'department' ? 'erta-btn--primary' : 'erta-btn--ghost'" @click="previewStep = 'department'">Department</button>
+          <button type="button" class="erta-btn erta-btn--sm" :class="previewStep === 'provider' ? 'erta-btn--primary' : 'erta-btn--ghost'" @click="previewStep = 'provider'">Person</button>
+          <button type="button" class="erta-btn erta-btn--sm" :class="previewStep === 'calendar' ? 'erta-btn--primary' : 'erta-btn--ghost'" @click="previewStep = 'calendar'">Date/Time</button>
+          <button type="button" class="erta-btn erta-btn--sm" :class="previewStep === 'form' ? 'erta-btn--primary' : 'erta-btn--ghost'" @click="previewStep = 'form'">Form</button>
+          <button type="button" class="erta-btn erta-btn--sm" :class="previewStep === 'success' ? 'erta-btn--primary' : 'erta-btn--ghost'" @click="previewStep = 'success'">Success</button>
+        </div>
+
+        <div class="erta-step-panel" :style="previewStyleVars" style="margin-top:10px; border:1px solid #e5e7eb;">
+          <template v-if="previewStep === 'department'">
+            <h3 class="erta-step-title">{{ editing.department_label || 'Select Department/Service' }}</h3>
+            <div class="erta-card-list">
+              <div class="erta-card"><span class="erta-card__name">Dermatology</span><span class="erta-card__desc">Skin & Care</span></div>
+              <div class="erta-card"><span class="erta-card__name">Dental</span><span class="erta-card__desc">Teeth & Smile</span></div>
+            </div>
+          </template>
+          <template v-else-if="previewStep === 'provider'">
+            <h3 class="erta-step-title">{{ editing.provider_label || 'Select Person' }}</h3>
+            <div class="erta-card-list">
+              <div class="erta-card"><span class="erta-card__name">Dr. Jane Doe</span><span class="erta-card__desc">Specialist</span></div>
+              <div class="erta-card"><span class="erta-card__name">Dr. John Smith</span><span class="erta-card__desc">Consultant</span></div>
+            </div>
+          </template>
+          <template v-else-if="previewStep === 'calendar'">
+            <h3 class="erta-step-title">Choose a Date & Time</h3>
+            <div class="erta-slot-grid">
+              <span class="erta-slot">09:00</span>
+              <span class="erta-slot erta-slot--selected">10:00</span>
+              <span class="erta-slot">11:30</span>
+            </div>
+          </template>
+          <template v-else-if="previewStep === 'form'">
+            <h3 class="erta-step-title">Your Details</h3>
+            <div class="erta-form-field">
+              <label class="erta-form-label">Full Name</label>
+              <input class="erta-input" type="text" placeholder="John Doe" />
+            </div>
+            <div class="erta-step-actions" style="margin-top:12px;">
+              <button type="button" class="erta-btn erta-btn--ghost">Back</button>
+              <button type="button" class="erta-btn erta-btn--primary">{{ editing.submit_button_text || 'Book Now' }}</button>
+            </div>
+          </template>
+          <template v-else>
+            <h3 class="erta-step-title">Booking Completed</h3>
+            <div class="erta-summary-bar">
+              <span>📅 2026-01-20</span>
+              <span>🕐 10:00</span>
+            </div>
+            <button type="button" class="erta-btn erta-btn--primary">Book Another Appointment</button>
+          </template>
+        </div>
       </div>
 
       <!-- Builder columns -->
@@ -236,7 +344,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAdminApi } from '../../composables/useAdminApi.js';
 
 const api     = useAdminApi();
@@ -249,6 +357,7 @@ const saveError  = ref(null);
 const forms      = ref([]);
 const editing    = ref(null);
 const activeField = ref(null);
+const previewStep = ref('department');
 
 // ── Field type palette ─────────────────────────────────────────────────────
 const fieldTypes = [
@@ -307,15 +416,64 @@ async function load() {
 
 // ── Actions ────────────────────────────────────────────────────────────────
 function openNew() {
-  editing.value  = { name: '', scope: 'global', submit_button_text: '', fields: DEFAULT_FIELDS() };
+  editing.value  = {
+    name: '',
+    scope: 'global',
+    submit_button_text: '',
+    department_label: '',
+    provider_label: '',
+    ui_styles: {
+      primary_color: '#2563eb',
+      panel_background: '#ffffff',
+      panel_radius: '8px',
+      button_radius: '6px',
+      input_radius: '6px',
+      title_font_size: '1.2rem',
+      body_font_size: '0.95rem',
+      card_border_width: '2px',
+      card_border_color: '#e5e7eb',
+    },
+    fields: DEFAULT_FIELDS(),
+  };
+  previewStep.value = 'department';
   activeField.value = null;
 }
 
 function openEdit(f) {
   editing.value  = JSON.parse(JSON.stringify(f));
   editing.value.submit_button_text = editing.value.submit_button_text ?? '';
+  editing.value.department_label = editing.value.department_label ?? '';
+  editing.value.provider_label = editing.value.provider_label ?? '';
+  editing.value.ui_styles = {
+    primary_color: '#2563eb',
+    panel_background: '#ffffff',
+    panel_radius: '8px',
+    button_radius: '6px',
+    input_radius: '6px',
+    title_font_size: '1.2rem',
+    body_font_size: '0.95rem',
+    card_border_width: '2px',
+    card_border_color: '#e5e7eb',
+    ...(editing.value.ui_styles ?? {}),
+  };
+  previewStep.value = 'department';
   activeField.value = null;
 }
+
+const previewStyleVars = computed(() => {
+  const styles = editing.value?.ui_styles ?? {};
+  return {
+    '--erta-pro-primary': styles.primary_color || '#2563eb',
+    '--erta-pro-panel-bg': styles.panel_background || '#ffffff',
+    '--erta-pro-panel-radius': styles.panel_radius || '8px',
+    '--erta-pro-button-radius': styles.button_radius || '6px',
+    '--erta-pro-input-radius': styles.input_radius || '6px',
+    '--erta-pro-title-size': styles.title_font_size || '1.2rem',
+    '--erta-pro-body-size': styles.body_font_size || '0.95rem',
+    '--erta-pro-card-border-width': styles.card_border_width || '2px',
+    '--erta-pro-card-border-color': styles.card_border_color || '#e5e7eb',
+  };
+});
 
 function addField(type) {
   const field = {

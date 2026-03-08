@@ -1,7 +1,7 @@
 <!-- ProviderStep.vue -->
 <template>
   <div class="erta-step-panel erta-step-providers">
-    <h3 class="erta-step-title">{{ t('selectProvider') }}</h3>
+    <h3 class="erta-step-title">{{ titleText || t('selectProvider') }}</h3>
     <div class="erta-card-list">
       <button
         v-for="prov in providers"
@@ -22,7 +22,11 @@
   </div>
 </template>
 <script setup>
-defineProps({ providers: Array, department: Object });
+defineProps({
+  providers: Array,
+  department: Object,
+  titleText: { type: String, default: '' },
+});
 defineEmits(['select', 'back']);
 const t = (k) => window.ertaData?.i18n?.[k] ?? k;
 </script>

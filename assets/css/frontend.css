@@ -25,6 +25,15 @@
   max-width: 680px;
   margin: 0 auto;
   font-family: inherit;
+  --erta-pro-primary: var(--erta-primary);
+  --erta-pro-panel-bg: #fff;
+  --erta-pro-panel-radius: var(--erta-radius);
+  --erta-pro-button-radius: 6px;
+  --erta-pro-input-radius: 6px;
+  --erta-pro-title-size: 1.2rem;
+  --erta-pro-body-size: .95rem;
+  --erta-pro-card-border-width: 2px;
+  --erta-pro-card-border-color: var(--erta-gray-200);
 }
 
 /* ── Steps Progress ──────────────────────────────────────────────────────── */
@@ -43,12 +52,15 @@
 }
 
 .erta-step--active, .erta-step--completed {
-  background: var(--erta-primary);
+  background: var(--erta-pro-primary);
 }
 
 /* ── Step Panels ─────────────────────────────────────────────────────────── */
 .erta-step-panel {
   animation: erta-fade-in .22s ease;
+  background: var(--erta-pro-panel-bg);
+  border-radius: var(--erta-pro-panel-radius);
+  padding: 12px;
 }
 
 @keyframes erta-fade-in {
@@ -57,7 +69,7 @@
 }
 
 .erta-step-title {
-  font-size: 1.2rem;
+  font-size: var(--erta-pro-title-size);
   font-weight: 600;
   color: var(--erta-gray-800);
   margin: 0 0 16px;
@@ -82,7 +94,7 @@
   gap: 4px;
   padding: 16px;
   background: #fff;
-  border: 2px solid var(--erta-gray-200);
+  border: var(--erta-pro-card-border-width) solid var(--erta-pro-card-border-color);
   border-radius: var(--erta-radius);
   cursor: pointer;
   text-align: left;
@@ -90,7 +102,7 @@
 }
 
 .erta-card:hover {
-  border-color: var(--erta-primary);
+  border-color: var(--erta-pro-primary);
   box-shadow: var(--erta-shadow);
 }
 
@@ -151,13 +163,13 @@
 
 .erta-calendar-cell--available {
   background: #dbeafe;
-  color: var(--erta-primary);
+  color: var(--erta-pro-primary);
   font-weight: 600;
 }
 
 .erta-calendar-cell--available:hover,
 .erta-calendar-cell--selected {
-  background: var(--erta-primary);
+  background: var(--erta-pro-primary);
   color: #fff;
 }
 
@@ -167,7 +179,7 @@
 }
 
 .erta-calendar-cell--today {
-  outline: 2px solid var(--erta-primary);
+  outline: 2px solid var(--erta-pro-primary);
   outline-offset: 1px;
 }
 
@@ -189,8 +201,8 @@
   transition: all var(--erta-transition);
 }
 
-.erta-slot:hover { border-color: var(--erta-primary); color: var(--erta-primary); }
-.erta-slot--selected { background: var(--erta-primary); border-color: var(--erta-primary); color: #fff; }
+.erta-slot:hover { border-color: var(--erta-pro-primary); color: var(--erta-pro-primary); }
+.erta-slot--selected { background: var(--erta-pro-primary); border-color: var(--erta-pro-primary); color: #fff; }
 .erta-slot:disabled { opacity: .4; cursor: not-allowed; }
 
 .erta-no-slots {
@@ -229,8 +241,8 @@
 .erta-input {
   padding: 10px 12px;
   border: 1.5px solid var(--erta-gray-200);
-  border-radius: 6px;
-  font-size: .95rem;
+  border-radius: var(--erta-pro-input-radius);
+  font-size: var(--erta-pro-body-size);
   width: 100%;
   box-sizing: border-box;
   transition: border-color var(--erta-transition);
@@ -241,7 +253,7 @@
   min-height: var(--erta-form-control-height);
   height: var(--erta-form-control-height);
   border: var(--erta-form-control-border) !important;
-  border-radius: var(--erta-form-control-radius) !important;
+  border-radius: var(--erta-pro-input-radius, var(--erta-form-control-radius)) !important;
   background: var(--erta-form-control-bg) !important;
   color: var(--erta-gray-800);
   box-shadow: none !important;
@@ -282,11 +294,11 @@
 #erta-booking-app.erta-booking-host .erta-form .erta-input:focus,
 #erta-my-appointments-app.erta-my-appointments-host .erta-form .erta-input:focus {
   outline: none;
-  border-color: var(--erta-primary);
+  border-color: var(--erta-pro-primary);
   box-shadow: 0 0 0 2px #dbeafe;
 }
 
-.erta-input:focus { outline: none; border-color: var(--erta-primary); }
+.erta-input:focus { outline: none; border-color: var(--erta-pro-primary); }
 .erta-input--error { border-color: var(--erta-danger); }
 
 .erta-field-error { font-size: .8rem; color: var(--erta-danger); }
@@ -297,7 +309,7 @@
   gap: 10px;
   padding: 8px 14px;
   background: #dbeafe;
-  color: var(--erta-primary);
+  color: var(--erta-pro-primary);
   border-radius: 6px;
   font-weight: 600;
   font-size: .9rem;
@@ -368,8 +380,8 @@
   align-items: center;
   gap: 6px;
   padding: 10px 22px;
-  border-radius: 6px;
-  font-size: .95rem;
+  border-radius: var(--erta-pro-button-radius);
+  font-size: var(--erta-pro-body-size);
   font-weight: 500;
   cursor: pointer;
   border: none;
@@ -377,7 +389,7 @@
 }
 
 .erta-btn:disabled { opacity: .5; cursor: not-allowed; }
-.erta-btn--primary { background: var(--erta-primary); color: #fff; }
+.erta-btn--primary { background: var(--erta-pro-primary); color: #fff; }
 .erta-btn--primary:hover:not(:disabled) { background: var(--erta-primary-dark); }
 .erta-btn--ghost { background: transparent; border: 1.5px solid var(--erta-gray-200); color: var(--erta-gray-800); }
 .erta-btn--ghost:hover { border-color: var(--erta-gray-500); }

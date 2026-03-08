@@ -8,11 +8,13 @@ Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A powerful, extensible appointment booking system. Manage departments, providers, working hours, custom forms and email notifications.
+A modern, fast and mobile-friendly appointment booking system for WordPress. Manage services, staff, availability, forms and notifications from one panel.
 
 == Description ==
 
 **Appointment Booking by ERT** lets you add a full-featured appointment booking system to any WordPress site.
+
+Create a smooth booking flow for your customers and manage your operations from a clean admin interface. The plugin includes flexible availability rules, a custom form builder, and notification templates out of the box.
 
 
 = Core Features =
@@ -36,6 +38,7 @@ The free plugin is fully functional. A separate **Pro add-on** (sold on our webs
 * Zoom meeting auto-creation
 * Online payments (PayTR, Stripe, PayPal, İyzico)
 * SMS notifications (Twilio, NetGSM)
+* WhatsApp notifications (Meta Cloud API)
 * Waitlist management
 * Advanced reports
 
@@ -76,18 +79,23 @@ Yes. The plugin ships with translations for Turkish, German, French, Spanish, Ar
 
 == Screenshots ==
 
-1. Booking widget — department and provider selection
-2. Booking widget — date and time picker
-3. Admin dashboard — appointment overview
-4. Admin panel — working hours management
-5. Admin panel — form builder
-6. Admin panel — email notification editor
+1. Frontend booking form — service/provider and date-time selection
+2. Frontend booking form — customer details and submit step
+3. Admin dashboard — appointments overview and quick actions
+4. Admin forms page — drag-and-drop form builder and booking button text customization
+5. Admin notifications page — email, SMS and WhatsApp template channels
+6. Admin settings page — integrations overview (Google Calendar, Zoom, SMS, WhatsApp)
+7. Mobile booking view — responsive booking experience on phone screens
 
 == Changelog ==
 
 = 1.0.1 — 2026-03-08 =
 * Added QA scripts for one-command live test + markdown report generation (`run-live-test-and-report.ps1`, `fill-live-test-report.ps1`)
 * Added one-page live test report template for repeatable QA runs (`docs/live-booking-mode-test-report.md`)
+* Added real Pro WhatsApp provider support (Meta Cloud API)
+* Added Pro channel expansion for notifications (SMS: Twilio/NetGSM, WhatsApp: Meta Cloud API)
+* Added form-level booking button text override support
+* Added WordPress.org release/publish docs and asset production guides (`docs/wporg-*.md`)
 * Booking flow is now mode-based: general, department without provider, department with provider, provider-only
 * Frontend step orchestration updated to follow selected booking mode dynamically
 * Personless modes now aggregate calendar/slot data across provider sets
@@ -114,7 +122,7 @@ Yes. The plugin ships with translations for Turkish, German, French, Spanish, Ar
 == Upgrade Notice ==
 
 = 1.0.1 =
-Includes mode-based booking flow improvements, Gutenberg block UX updates, and QA tooling additions. No manual migration steps required.
+Includes mode-based booking flow improvements, notification channel upgrades (Pro SMS/WhatsApp), form-level booking button text override, Gutenberg block UX updates, and QA/WP.org tooling additions. No manual migration steps required.
 
 = 1.0.0 =
 Initial release. No upgrade steps required.

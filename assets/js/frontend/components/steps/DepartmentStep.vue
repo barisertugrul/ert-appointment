@@ -1,7 +1,7 @@
 <!-- DepartmentStep.vue -->
 <template>
   <div class="erta-step-panel erta-step-departments">
-    <h3 class="erta-step-title">{{ t('selectDepartment') }}</h3>
+    <h3 class="erta-step-title">{{ titleText || t('selectDepartment') }}</h3>
     <div class="erta-card-list">
       <button
         v-for="dept in departments"
@@ -16,7 +16,10 @@
   </div>
 </template>
 <script setup>
-defineProps({ departments: Array });
+defineProps({
+  departments: Array,
+  titleText: { type: String, default: '' },
+});
 defineEmits(['select']);
 const t = (k) => window.ertaData?.i18n?.[k] ?? k;
 </script>

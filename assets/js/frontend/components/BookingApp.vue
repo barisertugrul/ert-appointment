@@ -1,5 +1,5 @@
 <template>
-  <div class="erta-booking-wizard">
+  <div class="erta-booking-wizard" :style="wizardStyle">
 
     <!-- Progress bar -->
     <div class="erta-steps" v-if="!isComplete">
@@ -30,6 +30,7 @@
     <DepartmentStep
       v-else-if="store.currentStep === 1 && !store.skipDepartmentStep && store.departmentsEnabled"
       :departments="store.departments"
+      :title-text="store.i18n.selectDepartment || ''"
       @select="store.selectDepartment"
     />
 
@@ -38,6 +39,7 @@
       v-else-if="store.currentStep === 2 && !store.skipProviderStep"
       :providers="store.providers"
       :department="store.selectedDepartment"
+      :title-text="store.i18n.selectProvider || ''"
       @select="store.selectProvider"
       @back="store.goBack"
     />
@@ -112,6 +114,23 @@ const store = useBookingStore();
 const t     = (key) => store.i18n[key] ?? key;
 
 const isComplete = computed(() => store.currentStep === 6);
+
+const wizardStyle = computed(() => {
+  const styles = store.form?.ui_styles ?? {};
+  const vars = {};
+
+  if (styles.primary_color) vars['--erta-pro-primary'] = styles.primary_color;
+  if (styles.panel_background) vars['--erta-pro-panel-bg'] = styles.panel_background;
+  if (styles.panel_radius) vars['--erta-pro-panel-radius'] = styles.panel_radius;
+  if (styles.button_radius) vars['--erta-pro-button-radius'] = styles.button_radius;
+  if (styles.input_radius) vars['--erta-pro-input-radius'] = styles.input_radius;
+  if (styles.title_font_size) vars['--erta-pro-title-size'] = styles.title_font_size;
+  if (styles.body_font_size) vars['--erta-pro-body-size'] = styles.body_font_size;
+  if (styles.card_border_width) vars['--erta-pro-card-border-width'] = styles.card_border_width;
+  if (styles.card_border_color) vars['--erta-pro-card-border-color'] = styles.card_border_color;
+
+  return vars;
+});
 
 const bookingSummary = computed(() => ({
   department: store.selectedDepartment?.name,

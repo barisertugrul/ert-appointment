@@ -8,9 +8,20 @@ WordPress için randevu rezervasyon eklentisi. Bölümler (departmanlar), sağla
 
 | Gereksinim | Minimum |
 |---|---|
-| WordPress | 6.0+ |
+| WordPress | 6.2+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
+
+---
+
+## 1.0.1 Öne Çıkan Güncellemeler
+
+- Mode-bazlı booking akışı: `general`, `department_no_provider`, `department_with_provider`, `provider_only`
+- Form bazlı gönderim butonu metni override desteği (`Booking Button Text`)
+- Bildirim kanal modeli genişletildi: Lite `email`, Pro `sms` ve `whatsapp`
+- Pro WhatsApp provider (Meta Cloud API) eklendi
+- Lite tarafta SMS/WhatsApp kanalları görünür fakat seçim/gönderim Pro ile aktif
+- WordPress.org release ve assets süreç dokümanları eklendi (`docs/wporg-*.md`)
 
 ---
 
@@ -47,12 +58,18 @@ Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 
 | Ayar | Açıklama | Varsayılan |
 |---|---|---|
-| Slot süresi | Rezervasyon dilimi dakikası | 30 dk |
+| Randevu süresi (Appointment Duration) | Rezervasyon dilimi dakikası | 30 dk |
 | Buffer (önce) | Randevular arası boşluk | 0 dk |
 | Buffer (sonra) | Randevular arası boşluk | 0 dk |
-| Min. ihbar süresi | Kaç saat öncesine kadar rezervasyon | 1 saat |
+| Min. önceden rezervasyon süresi | Randevunun en az kaç saat öncesinden rezervasyon yapılabileceği | 1 saat |
 | Max. ileri tarih | Kaç güne kadar rezervasyon alınır | 60 gün |
 | Otomatik onay | Onay gerektirmeden kabul et | Kapalı |
+
+### Bildirim Kanalları
+
+- Lite: `email`
+- Pro: `sms` (Twilio/NetGSM), `whatsapp` (Meta Cloud API)
+- Not: Lite UI'da SMS/WhatsApp görünebilir; seçim ve gönderim yalnızca Pro aktifken açılır.
 
 ### Çalışma Saatleri
 
@@ -75,6 +92,13 @@ Aktifleştirme sırasında veritabanı tabloları otomatik oluşturulur.
 [erta_booking department="klinik" provider="5"]
 [erta_booking form="3"]
 ```
+
+Mode davranışı:
+
+- `general`: departman/sağlayıcı adımı gerekirse dinamik gösterilir
+- `department_no_provider`: departman var, sağlayıcı adımı yok
+- `department_with_provider`: departman ve sağlayıcı adımları birlikte
+- `provider_only`: sağlayıcı odaklı akış
 
 ### Bölüm Listesi
 
@@ -175,6 +199,13 @@ do_action('erta_rest_api_init', Container $container);
 ---
 
 ## Geliştirici Notları
+
+### WP.org Dokümanları
+
+- Release checklist: `docs/wporg-release-checklist.md`
+- SVN publish rehberi: `docs/wporg-svn-publish.md`
+- Assets master checklist: `docs/wporg-assets-master-checklist.md`
+- Assets production order: `docs/wporg-assets-production-order.md`
 
 ### QA / Live Test Quick Start
 

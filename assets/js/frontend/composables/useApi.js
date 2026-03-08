@@ -62,6 +62,15 @@ export function useApi() {
         return request(path);
     };
 
+    const getFormById = (formId) => {
+        const numericId = Number(formId || 0);
+        if (!numericId) {
+            return Promise.resolve({ data: null, error: 'Invalid form ID.' });
+        }
+
+        return request(`forms/id/${numericId}`);
+    };
+
     // ── Appointments ──────────────────────────────────────────────────────
     const bookAppointment = (payload) =>
         request('appointments', {
@@ -92,6 +101,7 @@ export function useApi() {
         getCalendar,
         getSlots,
         getForm,
+        getFormById,
         bookAppointment,
         cancelAppointment,
         rescheduleAppointment,

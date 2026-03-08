@@ -92,6 +92,7 @@ final class AdminFormApiController {
 
 		$id = $wpdb->insert_id;
 		$this->persistSubmitButtonText( (int) $id, (string) ( $data['submit_button_text'] ?? '' ) );
+		$this->persistExtraMeta( (int) $id, $data );
 		$formTable = $this->table();
 		$created = $wpdb->get_row(
 			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $formTable, (int) $id ),
@@ -141,6 +142,7 @@ final class AdminFormApiController {
 		);
 
 		$this->persistSubmitButtonText( $id, (string) ( $data['submit_button_text'] ?? '' ) );
+		$this->persistExtraMeta( $id, $data );
 
 		$updated = $wpdb->get_row(
 			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $tableSql, $id ),
@@ -168,6 +170,7 @@ final class AdminFormApiController {
 
 		$wpdb->delete( $table, array( 'id' => $id ) );
 		$this->deleteSubmitButtonText( $id );
+		$this->deleteExtraMeta( $id );
 
 		return new WP_REST_Response(
 			array(
@@ -189,6 +192,9 @@ final class AdminFormApiController {
 			'scope_id' => (int) ( $request->get_param( 'scope_id' ) ?? 0 ),
 			'fields'   => $fields,
 			'submit_button_text' => sanitize_text_field( (string) ( $request->get_param( 'submit_button_text' ) ?? '' ) ),
+			'department_label'   => sanitize_text_field( (string) ( $request->get_param( 'department_label' ) ?? '' ) ),
+			'provider_label'     => sanitize_text_field( (string) ( $request->get_param( 'provider_label' ) ?? '' ) ),
+			'ui_styles'          => $this->sanitizeUiStyles( $request->get_param( 'ui_styles' ) ),
 		);
 	}
 
@@ -273,11 +279,26 @@ final class AdminFormApiController {
 	private function decodeRow( array $row ): array {
 		$row['fields'] = json_decode( $row['fields'] ?? '[]', true ) ?? array();
 		$row['submit_button_text'] = $this->getSubmitButtonText( isset( $row['id'] ) ? (int) $row['id'] : 0 );
+		$row['department_label'] = $this->getDepartmentLabel( isset( $row['id'] ) ? (int) $row['id'] : 0 );
+		$row['provider_label'] = $this->getProviderLabel( isset( $row['id'] ) ? (int) $row['id'] : 0 );
+		$row['ui_styles'] = $this->getUiStyles( isset( $row['id'] ) ? (int) $row['id'] : 0 );
 		return $row;
 	}
 
 	private function submitButtonOptionKey( int $formId ): string {
 		return 'erta_form_submit_button_' . $formId;
+	}
+
+	private function departmentLabelOptionKey( int $formId ): string {
+		return 'erta_form_department_label_' . $formId;
+	}
+
+	private function providerLabelOptionKey( int $formId ): string {
+		return 'erta_form_provider_label_' . $formId;
+	}
+
+	private function uiStylesOptionKey( int $formId ): string {
+		return 'erta_form_ui_styles_' . $formId;
 	}
 
 	private function getSubmitButtonText( int $formId ): string {
@@ -303,12 +324,166 @@ final class AdminFormApiController {
 		update_option( $this->submitButtonOptionKey( $formId ), $sanitized, false );
 	}
 
+	private function getDepartmentLabel( int $formId ): string {
+		if ( $formId <= 0 ) {
+			return '';
+		}
+
+		$value = get_option( $this->departmentLabelOptionKey( $formId ), '' );
+		return is_string( $value ) ? sanitize_text_field( $value ) : '';
+	}
+
+	private function persistDepartmentLabel( int $formId, string $departmentLabel ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		$sanitized = sanitize_text_field( $departmentLabel );
+		if ( $sanitized === '' ) {
+			$this->deleteDepartmentLabel( $formId );
+			return;
+		}
+
+		update_option( $this->departmentLabelOptionKey( $formId ), $sanitized, false );
+	}
+
+	private function deleteDepartmentLabel( int $formId ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		delete_option( $this->departmentLabelOptionKey( $formId ) );
+	}
+
+	private function getProviderLabel( int $formId ): string {
+		if ( $formId <= 0 ) {
+			return '';
+		}
+
+		$value = get_option( $this->providerLabelOptionKey( $formId ), '' );
+		return is_string( $value ) ? sanitize_text_field( $value ) : '';
+	}
+
+	private function persistProviderLabel( int $formId, string $providerLabel ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		$sanitized = sanitize_text_field( $providerLabel );
+		if ( $sanitized === '' ) {
+			$this->deleteProviderLabel( $formId );
+			return;
+		}
+
+		update_option( $this->providerLabelOptionKey( $formId ), $sanitized, false );
+	}
+
+	private function deleteProviderLabel( int $formId ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		delete_option( $this->providerLabelOptionKey( $formId ) );
+	}
+
+	/**
+	 * @param mixed $styles
+	 * @return array<string, string>
+	 */
+	private function sanitizeUiStyles( mixed $styles ): array {
+		if ( ! is_array( $styles ) ) {
+			return array();
+		}
+
+		$allowed = array(
+			'primary_color',
+			'panel_background',
+			'panel_radius',
+			'button_radius',
+			'input_radius',
+			'title_font_size',
+			'body_font_size',
+			'card_border_width',
+			'card_border_color',
+		);
+
+		$sanitized = array();
+		foreach ( $styles as $key => $value ) {
+			$key = sanitize_key( (string) $key );
+			if ( ! in_array( $key, $allowed, true ) ) {
+				continue;
+			}
+
+			$clean = sanitize_text_field( (string) $value );
+			if ( $clean === '' ) {
+				continue;
+			}
+
+			$sanitized[ $key ] = $clean;
+		}
+
+		return $sanitized;
+	}
+
+	/**
+	 * @return array<string, string>
+	 */
+	private function getUiStyles( int $formId ): array {
+		if ( $formId <= 0 ) {
+			return array();
+		}
+
+		$value = get_option( $this->uiStylesOptionKey( $formId ), array() );
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+
+		return $this->sanitizeUiStyles( $value );
+	}
+
+	/**
+	 * @param array<string, string> $styles
+	 */
+	private function persistUiStyles( int $formId, array $styles ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		$sanitized = $this->sanitizeUiStyles( $styles );
+		if ( empty( $sanitized ) ) {
+			$this->deleteUiStyles( $formId );
+			return;
+		}
+
+		update_option( $this->uiStylesOptionKey( $formId ), $sanitized, false );
+	}
+
+	private function deleteUiStyles( int $formId ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		delete_option( $this->uiStylesOptionKey( $formId ) );
+	}
+
 	private function deleteSubmitButtonText( int $formId ): void {
 		if ( $formId <= 0 ) {
 			return;
 		}
 
 		delete_option( $this->submitButtonOptionKey( $formId ) );
+	}
+
+	private function persistExtraMeta( int $formId, array $data ): void {
+		$this->persistDepartmentLabel( $formId, (string) ( $data['department_label'] ?? '' ) );
+		$this->persistProviderLabel( $formId, (string) ( $data['provider_label'] ?? '' ) );
+		$this->persistUiStyles( $formId, is_array( $data['ui_styles'] ?? null ) ? $data['ui_styles'] : array() );
+	}
+
+	private function deleteExtraMeta( int $formId ): void {
+		$this->deleteDepartmentLabel( $formId );
+		$this->deleteProviderLabel( $formId );
+		$this->deleteUiStyles( $formId );
 	}
 }
 

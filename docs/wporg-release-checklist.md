@@ -38,6 +38,14 @@ Bu checklist, `ert-appointment` Lite sürümünü WordPress.org’a gönderirken
 - [ ] Notification şablonları kayıt/güncelleme test edildi.
 - [ ] Pro pasifken Lite kısıtları doğru (ör. SMS/WhatsApp kanal seçimi disabled).
 
+## E.1) WP.org assets hazırlığı
+
+- [ ] `docs/wporg-assets-master-checklist.md` güncel.
+- [ ] Progress script çalıştırıldı: `./scripts/update-wporg-assets-progress.ps1`
+- [ ] Gerekirse alias kontrolü yapıldı: `./scripts/update-wporg-assets-progress.ps1 -ListSections`
+- [ ] Banner/icon/screenshot seti `assets/wporg/` altında tamam.
+- [ ] Assets isimleri WP.org formatına uygun (`banner-1544x500`, `banner-772x250`, `icon-256x256`, `icon-128x128`, `screenshot-1..7`).
+
 ## F) Gönderim öncesi son adımlar
 
 - [ ] `Plugin Check` son tarama alındı.
@@ -53,4 +61,5 @@ Bu checklist, `ert-appointment` Lite sürümünü WordPress.org’a gönderirken
 1. Metadata sürüm eşleşmesi,
 2. Temiz build + temiz ZIP,
 3. Plugin Check kritik/hata yok,
-4. Temel smoke test geçmiş olmalı.
+4. Temel smoke test geçmiş olmalı,
+5. WP.org assets checklist tamamlanmış olmalı.

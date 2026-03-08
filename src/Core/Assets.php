@@ -194,8 +194,8 @@ final class Assets {
 	private function frontendI18n(): array {
 		return array(
 			// ── Booking steps ──────────────────────────────────────────────
-			'selectDepartment'      => __( 'Select a Department', 'ert-appointment' ),
-			'selectProvider'        => __( 'Select a Provider', 'ert-appointment' ),
+			'selectDepartment'      => __( 'Select Department/Service', 'ert-appointment' ),
+			'selectProvider'        => __( 'Select Person', 'ert-appointment' ),
 			'selectDate'            => __( 'Choose a Date', 'ert-appointment' ),
 			'selectTime'            => __( 'Choose a Time', 'ert-appointment' ),
 			'fillDetails'           => __( 'Your Details', 'ert-appointment' ),
@@ -286,8 +286,8 @@ final class Assets {
 			'book'                    => __( 'Book Now', 'ert-appointment' ),
 			'apply'                   => __( 'Apply', 'ert-appointment' ),
 			'select'                  => __( 'Select', 'ert-appointment' ),
-			'selectDepartment'        => __( 'Select Department', 'ert-appointment' ),
-			'selectProvider'          => __( 'Select Provider', 'ert-appointment' ),
+			'selectDepartment'        => __( 'Select Department/Service', 'ert-appointment' ),
+			'selectProvider'          => __( 'Select Person', 'ert-appointment' ),
 			'loading'                 => __( 'Loading…', 'ert-appointment' ),
 			'saved'                   => __( 'Saved.', 'ert-appointment' ),
 			'error'                   => __( 'An error occurred.', 'ert-appointment' ),

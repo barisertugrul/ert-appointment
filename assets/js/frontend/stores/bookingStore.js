@@ -53,7 +53,22 @@ export const useBookingStore = defineStore('booking', () => {
     const bookingMeta = ref({});
     const bookingMode = ref(BOOKING_MODES.DEPARTMENT_WITH_PROVIDER);
 
-    const i18n = computed(() => window.ertaData?.i18n ?? {});
+    const baseI18n = computed(() => window.ertaData?.i18n ?? {});
+    const i18n = computed(() => {
+        const merged = { ...(baseI18n.value ?? {}) };
+        const departmentLabel = String(form.value?.department_label ?? '').trim();
+        const providerLabel = String(form.value?.provider_label ?? '').trim();
+
+        if (departmentLabel) {
+            merged.selectDepartment = departmentLabel;
+        }
+
+        if (providerLabel) {
+            merged.selectProvider = providerLabel;
+        }
+
+        return merged;
+    });
     const departmentsEnabled = computed(() => departments.value.length > 0);
     const showsDepartmentStep = computed(() => bookingMode.value === BOOKING_MODES.DEPARTMENT_NO_PROVIDER || bookingMode.value === BOOKING_MODES.DEPARTMENT_WITH_PROVIDER);
     const showsProviderStep = computed(() => bookingMode.value === BOOKING_MODES.DEPARTMENT_WITH_PROVIDER || bookingMode.value === BOOKING_MODES.PROVIDER_ONLY);
@@ -339,7 +354,7 @@ export const useBookingStore = defineStore('booking', () => {
     async function loadForm(formIdOverride = null) {
         let result;
         if (formIdOverride) {
-            result = await api.getForm('global');
+            result = await api.getFormById(formIdOverride);
         } else if (selectedProvider.value?.id) {
             result = await api.getForm('provider', selectedProvider.value.id);
         } else if (selectedDepartment.value?.id) {
