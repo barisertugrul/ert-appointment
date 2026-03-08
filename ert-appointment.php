@@ -47,7 +47,7 @@ define('ERTA_FILE', __FILE__);
 define('ERTA_PATH', plugin_dir_path(__FILE__));
 define('ERTA_URL', plugin_dir_url(__FILE__));
 define('ERTA_BASENAME', plugin_basename(__FILE__));
-define('ERTA_MIN_PRO_VERSION', '1.0.0');
+define('ERTA_MIN_PRO_VERSION', '1.0.1');
 
 // Autoloader.
 if (file_exists(ERTA_PATH . 'vendor/autoload.php')) {
@@ -88,3 +88,29 @@ register_deactivation_hook(__FILE__, static function (): void {
 add_action('plugins_loaded', function (): void {
     \ERTAppointment\Plugin::getInstance(ERTA_FILE);
 }, 0);
+
+add_filter('plugin_action_links_' . ERTA_BASENAME, function (array $links): array {
+    if (apply_filters('erta_is_pro_active', false)) {
+        return $links;
+    }
+
+    $buyProLink = '<a href="' . esc_url('https://www.ertyazilim.com/ert-appointment-pro/#buy') . '" target="_blank" rel="noopener noreferrer" style="font-weight:600;">'
+        . esc_html__('Buy PRO', 'ert-appointment')
+        . '</a>';
+
+    array_unshift($links, $buyProLink);
+
+    return $links;
+});
+
+add_filter('plugin_row_meta', function (array $meta, string $pluginFile): array {
+    if ($pluginFile !== ERTA_BASENAME || apply_filters('erta_is_pro_active', false)) {
+        return $meta;
+    }
+
+    $meta[] = '<a href="' . esc_url('https://www.ertyazilim.com/ert-appointment-pro/#buy') . '" target="_blank" rel="noopener noreferrer">'
+        . esc_html__('Buy PRO', 'ert-appointment')
+        . '</a>';
+
+    return $meta;
+}, 10, 2);

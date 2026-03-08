@@ -13,7 +13,8 @@ use DateTimeImmutable;
 final class BookAppointmentDTO {
 
 	public function __construct(
-		public readonly int $providerId,
+		public readonly ?int $providerId,
+		public readonly int $resolvedProviderId,
 		public readonly ?int $departmentId,
 		public readonly ?int $formId,
 		public readonly ?int $customerUserId,
@@ -33,8 +34,13 @@ final class BookAppointmentDTO {
 	 * existing appointment and a reschedule request.
 	 */
 	public static function fromReschedule( RescheduleDTO $dto, Appointment $original ): self {
+		if ( $original->providerId === null ) {
+			throw new \RuntimeException( 'Cannot reschedule an appointment without provider assignment.' );
+		}
+
 		return new self(
 			providerId:           $original->providerId,
+			resolvedProviderId:   $original->providerId,
 			departmentId:         $original->departmentId,
 			formId:               $original->formId,
 			customerUserId:       $original->customerUserId,

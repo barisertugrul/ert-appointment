@@ -130,6 +130,16 @@
           </div>
         </div>
         <div class="erta-form-row">
+          <label>
+            {{ t('slotCapacity') }}
+            <span v-if="!isPro" class="erta-pro-badge">PRO</span>
+          </label>
+          <div>
+            <input class="erta-input" type="number" v-model.number="form.slot_capacity" min="1" :disabled="!isPro" />
+            <p class="description">{{ t('slotCapacityDesc') }}</p>
+          </div>
+        </div>
+        <div class="erta-form-row">
           <label>{{ t('bufferAfter') }}</label>
           <input class="erta-input" type="number" v-model.number="form.buffer_after_minutes" min="0" />
         </div>
@@ -566,6 +576,7 @@ const tabs = [
 
 const defaultForm = {
   slot_duration_minutes: 30,
+  slot_capacity: 1,
   buffer_before_minutes: 0,
   buffer_after_minutes: 0,
   min_notice_hours: 1,

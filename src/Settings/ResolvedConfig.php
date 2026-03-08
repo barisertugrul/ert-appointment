@@ -85,6 +85,13 @@ final class ResolvedConfig {
 	}
 
 	/**
+	 * Returns the maximum number of appointments allowed per slot start time.
+	 */
+	public function slotCapacity(): int {
+		return max( 1, $this->getInt( 'slot_capacity', 1 ) );
+	}
+
+	/**
 	 * Returns the required pre-appointment buffer in minutes.
 	 */
 	public function bufferBefore(): int {

@@ -1023,3 +1023,39 @@ msgstr "Graph API Version"
 
 msgid "WhatsApp"
 msgstr "WhatsApp"
+
+msgid "Buy PRO"
+msgstr "Comprar PRO"
+
+msgid "Slot Capacity"
+msgstr "Capacidad de franja"
+
+msgid "Maximum number of appointments allowed at the same slot start time."
+msgstr "Número máximo de citas permitidas en la misma hora de inicio de la franja."
+
+msgid "Bulk Actions"
+msgstr "Acciones masivas"
+
+msgid "Bulk Confirm"
+msgstr "Confirmar en bloque"
+
+msgid "Bulk Reject"
+msgstr "Rechazar en bloque"
+
+msgid "Bulk Delete"
+msgstr "Eliminar en bloque"
+
+msgid "Pending Approval"
+msgstr "Pendientes de aprobación"
+
+msgid "Latest Appointments"
+msgstr "Últimas citas"
+
+msgid "Free"
+msgstr "Gratis"
+
+msgid "Deleted."
+msgstr "Eliminado."
+
+msgid "Some bulk operations failed."
+msgstr "Algunas operaciones masivas fallaron."

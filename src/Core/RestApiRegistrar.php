@@ -131,9 +131,16 @@ final class RestApiRegistrar {
 			'erta/v1',
 			'/appointments/(?P<id>\d+)',
 			array(
-				'methods'             => 'GET',
-				'callback'            => fn( $req ) => $ctrl()->get( $req ),
-				'permission_callback' => fn( $req ) => $ctrl()->canViewAppointment( $req ),
+				array(
+					'methods'             => 'GET',
+					'callback'            => fn( $req ) => $ctrl()->get( $req ),
+					'permission_callback' => fn( $req ) => $ctrl()->canViewAppointment( $req ),
+				),
+				array(
+					'methods'             => 'DELETE',
+					'callback'            => fn( $req ) => $ctrl()->delete( $req ),
+					'permission_callback' => fn( $req ) => $ctrl()->canManageAppointment( $req ),
+				),
 			)
 		);
 
@@ -199,6 +206,16 @@ final class RestApiRegistrar {
 			array(
 				'methods'             => 'GET',
 				'callback'            => fn( $req ) => $ctrl()->adminList( $req ),
+				'permission_callback' => fn() => current_user_can( 'erta_manage_all' ),
+			)
+		);
+
+		register_rest_route(
+			'erta/v1',
+			'/admin/appointments/bulk',
+			array(
+				'methods'             => 'POST',
+				'callback'            => fn( $req ) => $ctrl()->bulk( $req ),
 				'permission_callback' => fn() => current_user_can( 'erta_manage_all' ),
 			)
 		);

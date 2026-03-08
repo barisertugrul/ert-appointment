@@ -48,9 +48,19 @@ final class AppointmentApiController {
 	 */
 	public function create( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 		$data = $request->get_json_params() ?: $request->get_body_params();
+		$selection = $this->extractSelectionMeta( $data['selection'] ?? null );
+		if ( ! is_array( $data['selection'] ?? null ) ) {
+			$selection = array(
+				'department_selected' => ! empty( $data['department_id'] ),
+				'provider_selected'   => ! empty( $data['provider_id'] ),
+			);
+		}
+		$formData = is_array( $data['form_data'] ?? null ) ? $data['form_data'] : array();
+		$formData['_erta_selection'] = $selection;
+		$resolvedProviderId = ! empty( $data['resolved_provider_id'] ) ? (int) $data['resolved_provider_id'] : ( ! empty( $data['provider_id'] ) ? (int) $data['provider_id'] : 0 );
 
 		// Basic field validation.
-		$required = array( 'provider_id', 'start_datetime', 'customer_name', 'customer_email' );
+		$required = array( 'start_datetime', 'customer_name', 'customer_email' );
 		foreach ( $required as $field ) {
 			if ( empty( $data[ $field ] ) ) {
 				return new WP_Error(
@@ -70,6 +80,14 @@ final class AppointmentApiController {
 			);
 		}
 
+		if ( $resolvedProviderId <= 0 ) {
+			return new WP_Error(
+				'erta_missing_field',
+				__( 'Field "resolved_provider_id" is required.', 'ert-appointment' ),
+				array( 'status' => 400 )
+			);
+		}
+
 		try {
 			$start = new DateTimeImmutable( sanitize_text_field( $data['start_datetime'] ) );
 		} catch ( \Throwable ) {
@@ -80,11 +98,12 @@ final class AppointmentApiController {
 			);
 		}
 
-		$providerId = (int) $data['provider_id'];
-		$config     = $this->settings->resolveForProvider( $providerId );
+		$providerId = ! empty( $data['provider_id'] ) ? (int) $data['provider_id'] : null;
+		$config     = $this->settings->resolveForProvider( $resolvedProviderId );
 
 		$dto = new BookAppointmentDTO(
 			providerId:           $providerId,
+			resolvedProviderId:   $resolvedProviderId,
 			departmentId: ! empty( $data['department_id'] ) ? (int) $data['department_id'] : null,
 			formId: ! empty( $data['form_id'] ) ? (int) $data['form_id'] : null,
 			customerUserId:       get_current_user_id() ?: null,
@@ -94,7 +113,7 @@ final class AppointmentApiController {
 			startDatetime:        $start,
 			durationMinutes:      $config->slotDuration(),
 			price:                $config->price(),
-			formData:             is_array( $data['form_data'] ?? null ) ? $data['form_data'] : array(),
+			formData:             $formData,
 			notes: ! empty( $data['notes'] ) ? sanitize_textarea_field( $data['notes'] ) : null,
 			arrivalBufferMinutes: $config->arrivalBuffer(),
 		);
@@ -198,6 +217,83 @@ final class AppointmentApiController {
 		} catch ( \Throwable $e ) {
 			return new WP_Error( 'erta_reschedule_error', $e->getMessage(), array( 'status' => 400 ) );
 		}
+	}
+
+	public function delete( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$id = (int) $request->get_param( 'id' );
+
+		$appointment = $this->repository->findById( $id );
+		if ( ! $appointment ) {
+			return new WP_Error( 'erta_not_found', __( 'Appointment not found.', 'ert-appointment' ), array( 'status' => 404 ) );
+		}
+
+		$deleted = $this->repository->delete( $id );
+
+		if ( ! $deleted ) {
+			return new WP_Error( 'erta_delete_error', __( 'Appointment could not be deleted.', 'ert-appointment' ), array( 'status' => 500 ) );
+		}
+
+		return new WP_REST_Response(
+			array(
+				'deleted' => true,
+				'id'      => $id,
+			)
+		);
+	}
+
+	public function bulk( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$params = $request->get_json_params() ?: $request->get_body_params();
+		$action = sanitize_key( (string) ( $params['action'] ?? '' ) );
+		$idsRaw = is_array( $params['ids'] ?? null ) ? $params['ids'] : array();
+
+		$ids = array_values(
+			array_unique(
+				array_filter(
+					array_map( 'intval', $idsRaw ),
+					static fn( int $id ): bool => $id > 0
+				)
+			)
+		);
+
+		if ( empty( $ids ) ) {
+			return new WP_Error( 'erta_bad_request', __( 'No appointment IDs provided.', 'ert-appointment' ), array( 'status' => 400 ) );
+		}
+
+		if ( ! in_array( $action, array( 'confirm', 'reject', 'delete' ), true ) ) {
+			return new WP_Error( 'erta_bad_request', __( 'Invalid bulk action.', 'ert-appointment' ), array( 'status' => 400 ) );
+		}
+
+		$done = array();
+		$failed = array();
+
+		foreach ( $ids as $id ) {
+			try {
+				if ( $action === 'confirm' ) {
+					$this->service->confirm( $id );
+				} elseif ( $action === 'reject' ) {
+					$this->service->cancel( $id, __( 'Cancelled by bulk action.', 'ert-appointment' ), get_current_user_id() );
+				} else {
+					if ( ! $this->repository->delete( $id ) ) {
+						throw new \RuntimeException( __( 'Delete failed.', 'ert-appointment' ) );
+					}
+				}
+
+				$done[] = $id;
+			} catch ( \Throwable $e ) {
+				$failed[] = array(
+					'id'      => $id,
+					'message' => $e->getMessage(),
+				);
+			}
+		}
+
+		return new WP_REST_Response(
+			array(
+				'action' => $action,
+				'done'   => $done,
+				'failed' => $failed,
+			)
+		);
 	}
 
 	// -------------------------------------------------------------------------
@@ -350,6 +446,9 @@ final class AppointmentApiController {
 	 */
 	private function formatAppointment( \ERTAppointment\Domain\Appointment\Appointment $appointment ): array {
 		$config = $this->resolvePresentationConfig( $appointment->providerId );
+		$selection = $this->selectionMetaFromAppointment( $appointment );
+		$providerSelected = (bool) ( $selection['provider_selected'] ?? false );
+		$departmentSelected = (bool) ( $selection['department_selected'] ?? false );
 		$location = $config->appointmentLocation();
 		$arrivalNotice = '';
 
@@ -372,10 +471,10 @@ final class AppointmentApiController {
 
 		return array(
 			'id'               => $appointment->id,
-			'provider_id'      => $appointment->providerId,
-			'provider_name'    => $this->providerName( $appointment->providerId ),
-			'department_id'    => $appointment->departmentId,
-			'department_name'  => $this->departmentName( $appointment->departmentId ),
+			'provider_id'      => $providerSelected ? $appointment->providerId : null,
+			'provider_name'    => $providerSelected ? $this->providerName( $appointment->providerId ) : '',
+			'department_id'    => $departmentSelected ? $appointment->departmentId : null,
+			'department_name'  => $departmentSelected ? $this->departmentName( $appointment->departmentId ) : '',
 			'customer_name'    => $appointment->customerName,
 			'customer_email'   => $appointment->customerEmail,
 			'customer_phone'   => $appointment->customerPhone,
@@ -403,10 +502,10 @@ final class AppointmentApiController {
 		);
 	}
 
-	private function resolvePresentationConfig( int $providerId ) {
+	private function resolvePresentationConfig( ?int $providerId ) {
 		$globalMode = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
 
-		if ( $globalMode === 'general' ) {
+		if ( $globalMode === 'general' || $providerId === null || $providerId <= 0 ) {
 			$global = $this->settings->getAll( 'global', null );
 			return new ResolvedConfig( $global, null );
 		}
@@ -414,7 +513,38 @@ final class AppointmentApiController {
 		return $this->settings->resolveForProvider( $providerId );
 	}
 
-	private function providerName( int $providerId ): string {
+	/**
+	 * @param mixed $selectionInput
+	 * @return array{department_selected: bool, provider_selected: bool}
+	 */
+	private function extractSelectionMeta( mixed $selectionInput ): array {
+		$selection = is_array( $selectionInput ) ? $selectionInput : array();
+
+		return array(
+			'department_selected' => ! empty( $selection['department_selected'] ),
+			'provider_selected'   => ! empty( $selection['provider_selected'] ),
+		);
+	}
+
+	/**
+	 * @return array{department_selected: bool, provider_selected: bool}
+	 */
+	private function selectionMetaFromAppointment( \ERTAppointment\Domain\Appointment\Appointment $appointment ): array {
+		$meta = $appointment->formData['_erta_selection'] ?? null;
+		if ( ! is_array( $meta ) ) {
+			return array(
+				'department_selected' => ( $appointment->departmentId ?? 0 ) > 0,
+				'provider_selected'   => ( $appointment->providerId ?? 0 ) > 0,
+			);
+		}
+
+		return array(
+			'department_selected' => ! empty( $meta['department_selected'] ),
+			'provider_selected'   => ! empty( $meta['provider_selected'] ),
+		);
+	}
+
+	private function providerName( ?int $providerId ): string {
 		if ( $providerId <= 0 ) {
 			return '';
 		}

@@ -1020,3 +1020,39 @@ msgstr "Graph API Sürümü"
 
 msgid "WhatsApp"
 msgstr "WhatsApp"
+
+msgid "Buy PRO"
+msgstr "PRO Satın Al"
+
+msgid "Slot Capacity"
+msgstr "Slot Kapasitesi"
+
+msgid "Maximum number of appointments allowed at the same slot start time."
+msgstr "Aynı slot başlangıç saatinde izin verilen maksimum randevu sayısı."
+
+msgid "Bulk Actions"
+msgstr "Toplu İşlemler"
+
+msgid "Bulk Confirm"
+msgstr "Toplu Onay"
+
+msgid "Bulk Reject"
+msgstr "Toplu Ret"
+
+msgid "Bulk Delete"
+msgstr "Toplu Sil"
+
+msgid "Pending Approval"
+msgstr "Onay Bekleyenler"
+
+msgid "Latest Appointments"
+msgstr "Son Alınan Randevular"
+
+msgid "Free"
+msgstr "Ücretsiz"
+
+msgid "Deleted."
+msgstr "Silindi."
+
+msgid "Some bulk operations failed."
+msgstr "Bazı toplu işlemler başarısız oldu."

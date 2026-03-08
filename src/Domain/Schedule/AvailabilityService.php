@@ -49,6 +49,7 @@ final class AvailabilityService {
 			120,
 			function () use ( $providerId, $date, $dateStr ) {
 				$config = $this->resolveAvailabilityConfig( $providerId );
+				$slotCapacity = $this->resolveSlotCapacity( $providerId, $dateStr, $config );
 				$slotDuration = $config->slotDuration();
 				$bufferAfter  = $config->bufferAfter();
 				$effectiveSlotInterval = max(
@@ -87,6 +88,8 @@ final class AvailabilityService {
 				// --- Load booked blocks. ---
 				$bookedBlocks = $this->appointmentRepository->findBookedBlocks( $providerId, $date );
 
+				$bookedBlocksForGenerator = $slotCapacity > 1 ? array() : $bookedBlocks;
+
 				// --- Generate slots. ---
 				$slots = $this->slotGenerator->generate(
 					date:           $date,
@@ -98,8 +101,18 @@ final class AvailabilityService {
 					bufferAfter:    $bufferAfter,
 					minimumNotice:  $config->minimumNotice(),
 					breaks:         $breaks,
-					bookedBlocks:   $bookedBlocks,
+					bookedBlocks:   $bookedBlocksForGenerator,
 				);
+
+				if ( $slotCapacity > 1 ) {
+					$bookedCountByTime = $this->countBookedStartsByTime( $bookedBlocks );
+					$slots = array_values(
+						array_filter(
+							$slots,
+							static fn( TimeSlot $slot ): bool => ( $bookedCountByTime[ $slot->time ] ?? 0 ) < $slotCapacity
+						)
+					);
+				}
 
 				/**
 				 * Filter: allows Pro / third-party code to modify the slot list.
@@ -115,7 +128,7 @@ final class AvailabilityService {
 	}
 
 	private function resolveAvailabilityConfig( int $providerId ) {
-		$globalMode = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
+		$globalMode = \sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
 
 		if ( $globalMode === 'general' ) {
 			$global = $this->settings->getAll( 'global', null );
@@ -123,6 +136,33 @@ final class AvailabilityService {
 		}
 
 		return $this->settings->resolveForProvider( $providerId );
+	}
+
+	private function resolveSlotCapacity( int $providerId, string $dateStr, $config ): int {
+		$capacity = max( 1, (int) $config->slotCapacity() );
+
+		$enabled = (bool) apply_filters( 'erta_enable_slot_capacity', false, $providerId, $dateStr, $capacity );
+
+		return $enabled ? $capacity : 1;
+	}
+
+	/**
+	 * @param list<array{start: DateTimeImmutable, end: DateTimeImmutable}> $bookedBlocks
+	 * @return array<string, int>
+	 */
+	private function countBookedStartsByTime( array $bookedBlocks ): array {
+		$counts = array();
+
+		foreach ( $bookedBlocks as $block ) {
+			if ( ! isset( $block['start'] ) || ! ( $block['start'] instanceof DateTimeImmutable ) ) {
+				continue;
+			}
+
+			$time = $block['start']->format( 'H:i' );
+			$counts[ $time ] = ( $counts[ $time ] ?? 0 ) + 1;
+		}
+
+		return $counts;
 	}
 
 	private function isWithinBookingWindow( DateTimeImmutable $date, $config ): bool {
@@ -201,7 +241,7 @@ final class AvailabilityService {
 					$scopeId,
 					$dateStr
 				),
-				ARRAY_A
+				\ARRAY_A
 			);
 
 			if ( $row !== null ) {
@@ -244,7 +284,7 @@ final class AvailabilityService {
 					$scopeId,
 					$dayOfWeek
 				),
-				ARRAY_A
+				\ARRAY_A
 			);
 
 			foreach ( $rows as $row ) {

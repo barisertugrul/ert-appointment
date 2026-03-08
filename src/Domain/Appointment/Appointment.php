@@ -20,7 +20,7 @@ final class Appointment {
 
 	public function __construct(
 		public readonly ?int $id,
-		public readonly int $providerId,
+		public readonly ?int $providerId,
 		public readonly ?int $departmentId,
 		public readonly ?int $formId,
 		public readonly ?int $customerUserId,
@@ -96,7 +96,7 @@ final class Appointment {
 	public static function fromRow( array $row ): self {
 		return new self(
 			id:                    (int) $row['id'],
-			providerId:            (int) $row['provider_id'],
+			providerId:            isset( $row['provider_id'] ) ? (int) $row['provider_id'] : null,
 			departmentId:          isset( $row['department_id'] ) ? (int) $row['department_id'] : null,
 			formId:                isset( $row['form_id'] ) ? (int) $row['form_id'] : null,
 			customerUserId:        isset( $row['customer_user_id'] ) ? (int) $row['customer_user_id'] : null,

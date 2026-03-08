@@ -1009,3 +1009,39 @@ msgstr ""
 
 msgid "WhatsApp"
 msgstr ""
+
+msgid "Buy PRO"
+msgstr ""
+
+msgid "Slot Capacity"
+msgstr ""
+
+msgid "Maximum number of appointments allowed at the same slot start time."
+msgstr ""
+
+msgid "Bulk Actions"
+msgstr ""
+
+msgid "Bulk Confirm"
+msgstr ""
+
+msgid "Bulk Reject"
+msgstr ""
+
+msgid "Bulk Delete"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Latest Appointments"
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Deleted."
+msgstr ""
+
+msgid "Some bulk operations failed."
+msgstr ""

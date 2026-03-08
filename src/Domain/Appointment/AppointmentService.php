@@ -50,10 +50,10 @@ final class AppointmentService {
 	 */
 	public function book( BookAppointmentDTO $dto ): Appointment {
 		// 1. Re-check availability (race condition guard).
-		$this->assertSlotAvailable( $dto->providerId, $dto->startDatetime, $dto->durationMinutes );
+		$this->assertSlotAvailable( $dto->resolvedProviderId, $dto->startDatetime, $dto->durationMinutes );
 
 		// 2. Resolve settings for price / arrival buffer.
-		$config = $this->settings->resolveForProvider( $dto->providerId );
+		$config = $this->settings->resolveForProvider( $dto->resolvedProviderId );
 
 		// 3. Build entity.
 		$appointment = Appointment::create( $dto );
@@ -87,7 +87,7 @@ final class AppointmentService {
 		}
 
 		// 6. Bust slot cache for this provider + date.
-		$this->bustSlotCache( $dto->providerId, $dto->startDatetime );
+		$this->bustSlotCache( $dto->resolvedProviderId, $dto->startDatetime );
 
 		return $appointment;
 	}
@@ -182,7 +182,9 @@ final class AppointmentService {
 		$appointment = apply_filters( 'erta_before_cancel_notifications', $appointment );
 
 		$this->notificationService->dispatch( 'appointment_cancelled', $appointment );
-		$this->bustSlotCache( $appointment->providerId, $appointment->startDatetime );
+		if ( $appointment->providerId !== null ) {
+			$this->bustSlotCache( $appointment->providerId, $appointment->startDatetime );
+		}
 
 		/**
 		 * Fires after an appointment is cancelled.
@@ -200,6 +202,10 @@ final class AppointmentService {
 	 */
 	public function reschedule( int $appointmentId, RescheduleDTO $dto, int $actorUserId ): Appointment {
 		$original = $this->repository->findOrFail( $appointmentId );
+
+		if ( $original->providerId === null ) {
+			throw new RuntimeException( esc_html__( 'This appointment cannot be rescheduled because no provider was selected.', 'ert-appointment' ) );
+		}
 
 		$this->assertCanActOn( $original, $actorUserId, 'reschedule' );
 
@@ -296,6 +302,20 @@ final class AppointmentService {
 	private function assertCanActOn( Appointment $appointment, int $actorUserId, string $action ): void {
 		if ( user_can( $actorUserId, 'erta_manage_all' ) ) {
 			return;
+		}
+
+		if ( $appointment->providerId === null ) {
+			if ( $appointment->customerUserId === $actorUserId ) {
+				return;
+			}
+
+			throw new RuntimeException(
+				sprintf(
+					/* translators: %s action name */
+					esc_html__( 'You do not have permission to %s this appointment.', 'ert-appointment' ),
+					esc_html( $action )
+				)
+			);
 		}
 
 		// Check if actor is an assigned provider user.

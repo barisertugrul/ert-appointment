@@ -24,10 +24,24 @@
     <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
 
     <template v-else>
+      <div class="erta-filters" style="margin-top:8px">
+        <select class="erta-input" v-model="bulkAction">
+          <option value="">{{ t('bulkActions') }}</option>
+          <option value="confirm">{{ t('bulkConfirm') }}</option>
+          <option value="reject">{{ t('bulkReject') }}</option>
+          <option value="delete">{{ t('bulkDelete') }}</option>
+        </select>
+        <button class="erta-btn erta-btn--ghost erta-btn--sm" :disabled="!bulkAction || !selectedIds.length || bulkLoading" @click="runBulkAction">
+          <span v-if="bulkLoading" class="erta-spinner erta-spinner--sm"></span>
+          {{ t('apply') }} ({{ selectedIds.length }})
+        </button>
+      </div>
+
       <div class="erta-table-wrap">
         <table class="erta-table">
           <thead>
             <tr>
+              <th><input type="checkbox" :checked="allSelected" @change="toggleSelectAll" /></th>
               <th>#</th><th>{{ t('customer') }}</th><th>{{ t('provider') }}</th>
               <th v-if="isPro">{{ t('department') }}</th>
               <th>{{ t('datetime') }}</th><th>{{ t('status') }}</th>
@@ -36,9 +50,10 @@
           </thead>
           <tbody>
             <tr v-if="!items.length">
-              <td :colspan="isPro ? 8 : 7" class="erta-empty-cell">{{ t('noAppointments') }}</td>
+              <td :colspan="isPro ? 9 : 8" class="erta-empty-cell">{{ t('noAppointments') }}</td>
             </tr>
             <tr v-for="a in items" :key="a.id" :class="{ 'erta-row--selected': selected === a.id }">
+              <td><input type="checkbox" :checked="selectedIds.includes(a.id)" @change="toggleRowSelection(a.id)" /></td>
               <td>#{{ a.id }}</td>
               <td>
                 <strong>{{ a.customer_name }}</strong><br>
@@ -50,6 +65,7 @@
               <td><span class="erta-badge" :class="`erta-badge--${a.status}`">{{ a.status_label }}</span></td>
               <td>
                 <span v-if="a.payment_status === 'paid'" style="color:#16a34a">✓ {{ t('paid') }}</span>
+                <span v-else-if="isFreeAppointment(a)" style="color:#6b7280">{{ t('free') }}</span>
                 <span v-else-if="a.payment_amount > 0" style="color:#d97706">{{ a.payment_status }}</span>
                 <span v-else style="color:#9ca3af">—</span>
               </td>
@@ -58,6 +74,7 @@
                   <button v-if="a.status === 'pending'"    class="erta-btn erta-btn--sm erta-btn--primary" :title="t('confirm')" @click="doConfirm(a)">✓</button>
                   <button v-if="a.status === 'confirmed'"  class="erta-btn erta-btn--sm erta-btn--ghost" :title="t('undoConfirm')" @click="doUnconfirm(a)">↩</button>
                   <button v-if="a.status !== 'cancelled'"  class="erta-btn erta-btn--sm erta-btn--danger"  @click="openCancel(a)">✕</button>
+                  <button class="erta-btn erta-btn--sm erta-btn--danger" :title="t('delete')" @click="doDelete(a)">🗑</button>
                   <button class="erta-btn erta-btn--sm erta-btn--ghost" @click="openDetail(a)">👁</button>
                 </div>
               </td>
@@ -123,10 +140,14 @@ const selected     = ref(null);
 const cancelTarget = ref(null);
 const cancelReason = ref('');
 const detailTarget = ref(null);
+const selectedIds = ref([]);
+const bulkAction = ref('');
+const bulkLoading = ref(false);
 
 const filters = ref({ search: '', status: '', department_id: '', date_from: '', date_to: '' });
 
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / perPage)));
+const allSelected = computed(() => items.value.length > 0 && selectedIds.value.length === items.value.length);
 
 const statuses = [
   { value: 'pending',     label: t('pending')     },
@@ -148,7 +169,7 @@ const detailRows = computed(() => {
     [t('datetime'),    fmt(a.start_datetime)],
     [t('duration'),    a.duration_minutes + ' dk'],
     [t('status'),      a.status_label],
-    [t('payment'),     a.payment_status],
+    [t('payment'),     paymentLabel(a)],
     [t('notes'),       a.notes || '—'],
   ];
 });
@@ -180,6 +201,7 @@ async function load() {
   if (err) { error.value = err; return; }
   items.value = data?.items ?? [];
   total.value = data?.total ?? 0;
+  selectedIds.value = [];
 }
 
 function restoreDepartmentFilterFromUrl() {
@@ -212,6 +234,16 @@ function fmt(dt) {
   return new Date(dt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 }
 
+function isFreeAppointment(a) {
+  return a?.payment_status === 'not_required' || Number(a?.payment_amount || 0) <= 0;
+}
+
+function paymentLabel(a) {
+  if (a?.payment_status === 'paid') return t('paid');
+  if (isFreeAppointment(a)) return t('free');
+  return a?.payment_status || '—';
+}
+
 async function doConfirm(a) {
   clearAlerts();
   const { error: err } = await api.confirmAppointment(a.id);
@@ -237,6 +269,66 @@ async function doCancel() {
   cancelTarget.value.status = 'cancelled'; cancelTarget.value.status_label = t('cancelled');
   showSuccess(t('appointmentCancelled'));
   cancelTarget.value = null;
+}
+
+async function doDelete(a) {
+  clearAlerts();
+  if (!window.confirm(t('deleteConfirm'))) return;
+  const { error: err } = await api.deleteAppointment(a.id);
+  if (err) { error.value = err; return; }
+  items.value = items.value.filter((item) => item.id !== a.id);
+  selectedIds.value = selectedIds.value.filter((id) => id !== a.id);
+  showSuccess(t('deleted'));
+}
+
+function toggleRowSelection(id) {
+  if (selectedIds.value.includes(id)) {
+    selectedIds.value = selectedIds.value.filter((x) => x !== id);
+  } else {
+    selectedIds.value = [...selectedIds.value, id];
+  }
+}
+
+function toggleSelectAll(event) {
+  if (event.target.checked) {
+    selectedIds.value = items.value.map((item) => item.id);
+  } else {
+    selectedIds.value = [];
+  }
+}
+
+async function runBulkAction() {
+  clearAlerts();
+  if (!bulkAction.value || selectedIds.value.length === 0) return;
+
+  if (bulkAction.value === 'delete' && !window.confirm(t('deleteConfirm'))) {
+    return;
+  }
+
+  bulkLoading.value = true;
+  const { data, error: err } = await api.bulkAppointments(bulkAction.value, selectedIds.value);
+  bulkLoading.value = false;
+
+  if (err) {
+    error.value = err;
+    return;
+  }
+
+  const done = data?.done ?? [];
+  if (bulkAction.value === 'delete') {
+    items.value = items.value.filter((item) => !done.includes(item.id));
+  } else if (bulkAction.value === 'confirm') {
+    items.value = items.value.map((item) => done.includes(item.id) ? { ...item, status: 'confirmed', status_label: t('confirmed') } : item);
+  } else if (bulkAction.value === 'reject') {
+    items.value = items.value.map((item) => done.includes(item.id) ? { ...item, status: 'cancelled', status_label: t('cancelled') } : item);
+  }
+
+  selectedIds.value = selectedIds.value.filter((id) => !done.includes(id));
+  const failedCount = (data?.failed ?? []).length;
+  if (failedCount > 0) {
+    error.value = `${t('bulkFailed')} (${failedCount})`;
+  }
+  showSuccess(t('saved'));
 }
 
 function openDetail(a) { detailTarget.value = a; }

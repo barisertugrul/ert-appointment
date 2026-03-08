@@ -16,6 +16,18 @@
             <span v-if="(item.pro || item.proBadgeOnly) && !isPro" class="erta-pro-badge">PRO</span>
           </button>
         </li>
+        <li v-if="!isPro">
+          <a
+            class="erta-nav__item"
+            :href="buyProUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="erta-nav__icon">🚀</span>
+            {{ t('buyPro') }}
+            <span class="erta-pro-badge">PRO</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -37,6 +49,7 @@ import { ref, computed, defineAsyncComponent } from 'vue';
 const props = defineProps({ page: { type: String, default: 'erta-dashboard' } });
 
 const isPro       = window.ertaAdminData?.isPro ?? false;
+const buyProUrl   = window.ertaAdminData?.buyProUrl ?? 'https://www.ertyazilim.com/ert-appointment-pro/#buy';
 const t           = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
 const currentPage = ref(props.page);
 

@@ -29,7 +29,9 @@ export function useAdminApi() {
     const confirmAppointment   = (id)         => req(`appointments/${id}/confirm`,   { method: 'POST' });
     const unconfirmAppointment = (id)         => req(`appointments/${id}/unconfirm`, { method: 'POST' });
     const cancelAppointment    = (id, reason) => req(`appointments/${id}/cancel`,    { method: 'POST', body: JSON.stringify({ reason }) });
+    const deleteAppointment    = (id)         => req(`appointments/${id}`,           { method: 'DELETE' });
     const rescheduleAppointment = (id, dt)    => req(`appointments/${id}/reschedule`,{ method: 'POST', body: JSON.stringify({ new_start_datetime: dt }) });
+    const bulkAppointments = (action, ids)    => req('admin/appointments/bulk', { method: 'POST', body: JSON.stringify({ action, ids }) });
 
     // ── Departments ───────────────────────────────────────────────────────
     const listDepartments  = ()           => req('admin/departments');
@@ -109,7 +111,7 @@ export function useAdminApi() {
     });
 
     return {
-        listAppointments, confirmAppointment, unconfirmAppointment, cancelAppointment, rescheduleAppointment,
+        listAppointments, confirmAppointment, unconfirmAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, bulkAppointments,
         listDepartments, saveDepartment, deleteDepartment,
         listProviders, saveProvider, deleteProvider,
         getSettings, saveSettings, repairInstallation,

@@ -159,6 +159,10 @@ export const useBookingStore = defineStore('booking', () => {
         skipDepartmentStep.value = !showsDepartmentStep.value || !departmentsEnabled.value;
         skipProviderStep.value = !showsProviderStep.value;
 
+        if (!showsProviderStep.value) {
+            selectedProvider.value = null;
+        }
+
         stepOffset.value = (skipDepartmentStep.value ? 1 : 0) + (skipProviderStep.value ? 1 : 0);
 
         if (showsDepartmentStep.value && !selectedDepartment.value && departmentsEnabled.value) {
@@ -208,7 +212,7 @@ export const useBookingStore = defineStore('booking', () => {
             if (options.preselectedProvider) {
                 const providerId = Number(options.preselectedProvider);
                 const provider = providers.value.find((item) => Number(item.id) === providerId);
-                if (provider) {
+                if (provider && showsProviderStep.value) {
                     selectedProvider.value = provider;
                 }
             }
@@ -352,10 +356,12 @@ export const useBookingStore = defineStore('booking', () => {
     }
 
     async function loadForm(formIdOverride = null) {
+        const useProviderScopedForm = showsProviderStep.value && Boolean(selectedProvider.value?.id);
+
         let result;
         if (formIdOverride) {
             result = await api.getFormById(formIdOverride);
-        } else if (selectedProvider.value?.id) {
+        } else if (useProviderScopedForm) {
             result = await api.getForm('provider', selectedProvider.value.id);
         } else if (selectedDepartment.value?.id) {
             result = await api.getForm('department', selectedDepartment.value.id);
@@ -376,15 +382,24 @@ export const useBookingStore = defineStore('booking', () => {
         loading.value = true;
         error.value = null;
 
+        const resolvedProviderId = selectedSlot.value?.provider_id ?? selectedProvider.value?.id ?? null;
+        const providerSelected = showsProviderStep.value && Boolean(selectedProvider.value?.id);
+        const departmentSelected = showsDepartmentStep.value && Boolean(selectedDepartment.value?.id);
+
         const payload = {
-            provider_id: selectedProvider.value?.id ?? selectedSlot.value?.provider_id ?? null,
-            department_id: selectedDepartment.value?.id ?? null,
+            provider_id: providerSelected ? resolvedProviderId : null,
+            resolved_provider_id: resolvedProviderId,
+            department_id: departmentSelected ? selectedDepartment.value?.id ?? null : null,
             start_datetime: selectedSlot.value?.datetime,
             customer_name: formData.value.customer_name,
             customer_email: formData.value.customer_email,
             customer_phone: formData.value.customer_phone ?? '',
             notes: formData.value.notes ?? '',
             form_data: formData.value,
+            selection: {
+                department_selected: departmentSelected,
+                provider_selected: providerSelected,
+            },
         };
 
         const { data, error: err } = await api.bookAppointment(payload);

@@ -136,6 +136,7 @@ final class Assets {
 		return array(
 			'restUrl'    => esc_url_raw( rest_url( 'erta/v1/' ) ),
 			'adminUrl'   => admin_url( 'admin.php' ),
+			'buyProUrl'  => 'https://www.ertyazilim.com/ert-appointment-pro/#buy',
 			'nonce'      => wp_create_nonce( 'wp_rest' ),
 			'dateFormat' => get_option( 'date_format', 'Y-m-d' ),
 			'timeFormat' => get_option( 'time_format', 'H:i' ),
@@ -315,6 +316,8 @@ final class Assets {
 			'payment'                 => __( 'Payment', 'ert-appointment' ),
 			'integrations'            => __( 'Integrations', 'ert-appointment' ),
 			'slotDuration'            => __( 'Appointment Duration (minutes)', 'ert-appointment' ),
+			'slotCapacity'            => __( 'Slot Capacity', 'ert-appointment' ),
+			'slotCapacityDesc'        => __( 'Maximum number of appointments allowed at the same slot start time.', 'ert-appointment' ),
 			'bufferBefore'            => __( 'Early Arrival Time (minutes)', 'ert-appointment' ),
 			'bufferAfter'             => __( 'Gap Between Appointments (minutes)', 'ert-appointment' ),
 			'arrivalBuffer'           => __( 'Early Arrival Time (minutes)', 'ert-appointment' ),
@@ -398,6 +401,7 @@ final class Assets {
 			'merchantId'              => __( 'Merchant ID', 'ert-appointment' ),
 			'merchantKey'             => __( 'Merchant Key', 'ert-appointment' ),
 			'merchantSalt'            => __( 'Merchant Salt', 'ert-appointment' ),
+			'buyPro'                  => __( 'Buy PRO', 'ert-appointment' ),
 
 			// ── Appointment statuses ───────────────────────────────────────
 			'pending'                 => __( 'Pending', 'ert-appointment' ),
@@ -420,6 +424,15 @@ final class Assets {
 			'appointmentConfirmed'    => __( 'Appointment confirmed.', 'ert-appointment' ),
 			'appointmentCancelled'    => __( 'Appointment cancelled.', 'ert-appointment' ),
 			'appointmentUnconfirmed'  => __( 'Appointment moved back to pending.', 'ert-appointment' ),
+			'deleted'                 => __( 'Deleted.', 'ert-appointment' ),
+			'bulkActions'             => __( 'Bulk Actions', 'ert-appointment' ),
+			'bulkConfirm'             => __( 'Bulk Confirm', 'ert-appointment' ),
+			'bulkReject'              => __( 'Bulk Reject', 'ert-appointment' ),
+			'bulkDelete'              => __( 'Bulk Delete', 'ert-appointment' ),
+			'pendingApproval'         => __( 'Pending Approval', 'ert-appointment' ),
+			'latestAppointments'      => __( 'Latest Appointments', 'ert-appointment' ),
+			'free'                    => __( 'Free', 'ert-appointment' ),
+			'bulkFailed'              => __( 'Some bulk operations failed.', 'ert-appointment' ),
 
 			// ── Departments ────────────────────────────────────────────────
 			'department'              => __( 'Department', 'ert-appointment' ),

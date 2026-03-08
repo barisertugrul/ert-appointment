@@ -27,6 +27,7 @@ final class SettingsApiController {
 		// Scheduling
 		'slot_duration_minutes',
 		'slot_duration',
+		'slot_capacity',
 		'buffer_before_minutes',
 		'buffer_before',
 		'buffer_after_minutes',

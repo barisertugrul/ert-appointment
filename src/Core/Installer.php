@@ -382,7 +382,7 @@ final class Installer {
 		dbDelta(
 			"CREATE TABLE {$p}erta_appointments (
             id                     BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-            provider_id            BIGINT UNSIGNED NOT NULL,
+			provider_id            BIGINT UNSIGNED NULL,
             department_id          BIGINT UNSIGNED NULL,
             form_id                BIGINT UNSIGNED NULL,
             customer_user_id       BIGINT UNSIGNED NULL,
@@ -414,6 +414,8 @@ final class Installer {
             KEY         idx_group          (group_id)
         ) {$charset};"
 		);
+
+		$wpdb->query( "ALTER TABLE {$p}erta_appointments MODIFY provider_id BIGINT UNSIGNED NULL" );
 
 		// --- Notification templates ------------------------------------------
 		dbDelta(

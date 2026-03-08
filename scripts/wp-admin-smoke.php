@@ -65,6 +65,7 @@ $appointmentId = 0;
 if ($slotDatetime !== null) {
     $bookingRes = do_rest('POST', '/erta/v1/appointments', [
         'provider_id' => $providerId,
+        'resolved_provider_id' => $providerId,
         'start_datetime' => $slotDatetime,
         'customer_name' => 'Smoke Test',
         'customer_email' => 'smoke-test@example.com',
@@ -86,6 +87,7 @@ if ($appointmentId <= 0) {
 
     $dto = new \ERTAppointment\Domain\Appointment\BookAppointmentDTO(
         providerId: $providerId,
+        resolvedProviderId: $providerId,
         departmentId: null,
         formId: null,
         customerUserId: null,
