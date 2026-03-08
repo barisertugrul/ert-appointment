@@ -67,6 +67,7 @@
       :form="store.form"
       :summary="bookingSummary"
       :intro-text="store.bookingMeta.booking_form_intro || ''"
+      :intro-color="store.bookingMeta.booking_form_intro_color || ''"
       v-model="store.formData"
       @submit="handleSubmit"
       @back="store.goBack"
@@ -80,6 +81,7 @@
       :appointment-location="store.bookedAppointment?.appointment_location || ''"
       :arrival-notice="store.bookedAppointment?.arrival_notice || ''"
       :post-booking-instructions="store.bookedAppointment?.post_booking_instructions || ''"
+      :post-booking-color="store.bookedAppointment?.post_booking_instructions_color || store.bookingMeta.post_booking_instructions_color || ''"
       @book-again="store.reset"
     />
 
@@ -100,6 +102,7 @@ const props = defineProps({
   preselectedDepartment: { type: String,  default: null },
   preselectedProvider:   { type: Number,  default: null },
   formOverrideId:        { type: Number,  default: null },
+  bookingMode:          { type: String,  default: null },
   generalBooking:        { type: Boolean, default: false },
   lockDepartment:        { type: Boolean, default: false },
   lockProvider:          { type: Boolean, default: false },
@@ -112,7 +115,7 @@ const isComplete = computed(() => store.currentStep === 6);
 
 const bookingSummary = computed(() => ({
   department: store.selectedDepartment?.name,
-  provider:   store.selectedProvider?.name,
+  provider:   store.showsProviderStep ? store.selectedProvider?.name : null,
   date:       store.selectedDate,
   time:       store.selectedSlot?.time,
   duration:   store.selectedSlot?.duration_minutes,
@@ -123,6 +126,7 @@ onMounted(() => {
     preselectedDepartment: props.preselectedDepartment,
     preselectedProvider:   props.preselectedProvider,
     formOverrideId:        props.formOverrideId,
+    bookingMode:           props.bookingMode,
     generalBooking:        props.generalBooking,
     lockDepartment:        props.lockDepartment,
     lockProvider:          props.lockProvider,
@@ -136,7 +140,7 @@ async function handleSubmit() {
   }
 }
 
-function onLoadMonth({ providerId, year, month }) {
-  store.loadCalendar(providerId, year, month);
+function onLoadMonth({ year, month }) {
+  store.loadCalendarForFlow(year, month);
 }
 </script>

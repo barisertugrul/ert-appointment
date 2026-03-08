@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 namespace ERTAppointment\Infrastructure\Repositories;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- repository performs intentional reads on plugin-owned custom tables.
+
 use ERTAppointment\Domain\Provider\Provider;
 use ERTAppointment\Domain\Provider\ProviderRepository;
 
@@ -26,15 +28,15 @@ final class ERTProviderRepository implements ProviderRepository {
 
 	public function findAll( bool $activeOnly = true ): array {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		if ( $activeOnly ) {
 			$rows = $wpdb->get_results(
-				$wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE status = %s ORDER BY sort_order, name', 'active' ),
+				$wpdb->prepare( 'SELECT * FROM %i WHERE status = %s ORDER BY sort_order, name', $table, 'active' ),
 				ARRAY_A
 			);
 		} else {
-			$rows = $wpdb->get_results( 'SELECT * FROM ' . $table . ' ORDER BY sort_order, name', ARRAY_A );
+			$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i ORDER BY sort_order, name', $table ), ARRAY_A );
 		}
 
 		return array_map( fn( $r ) => Provider::fromRow( $r ), $rows );
@@ -42,32 +44,50 @@ final class ERTProviderRepository implements ProviderRepository {
 
 	public function findByDepartment( ?int $departmentId, bool $activeOnly = true ): array {
 		global $wpdb;
-		$table      = $this->tableSql();
-		$conditions = array();
-		$params     = array();
+		$table = $this->table();
 
-		if ( $activeOnly ) {
-			$conditions[] = 'status = %s';
-			$params[]     = 'active';
-		}
-
-		if ( $departmentId !== null ) {
-			$conditions[] = 'department_id = %d';
-			$params[]     = $departmentId;
+		if ( $departmentId !== null && $activeOnly ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i WHERE status = %s AND department_id = %d ORDER BY sort_order, name',
+					$table,
+					'active',
+					$departmentId
+				),
+				ARRAY_A
+			);
+		} elseif ( $departmentId !== null ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i WHERE department_id = %d ORDER BY sort_order, name',
+					$table,
+					$departmentId
+				),
+				ARRAY_A
+			);
+		} elseif ( $activeOnly ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i WHERE status = %s AND department_id IS NULL ORDER BY sort_order, name',
+					$table,
+					'active'
+				),
+				ARRAY_A
+			);
 		} else {
-			$conditions[] = 'department_id IS NULL';
+			$rows = $wpdb->get_results(
+				$wpdb->prepare( 'SELECT * FROM %i WHERE department_id IS NULL ORDER BY sort_order, name', $table ),
+				ARRAY_A
+			);
 		}
-
-		$sql = 'SELECT * FROM ' . $table . ' WHERE ' . implode( ' AND ', $conditions ) . ' ORDER BY sort_order, name';
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
 
 		return array_map( fn( $r ) => Provider::fromRow( $r ), $rows );
 	}
 
 	public function findById( int $id ): ?Provider {
 		global $wpdb;
-		$table = $this->tableSql();
-		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE id = %d', $id ), ARRAY_A );
+		$table = $this->table();
+		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table, $id ), ARRAY_A );
 		return $row ? Provider::fromRow( $row ) : null;
 	}
 
@@ -89,11 +109,11 @@ final class ERTProviderRepository implements ProviderRepository {
 
 	public function findUserIds( int $providerId ): array {
 		global $wpdb;
-		$table = $this->usersTableSql();
+		$table = $this->usersTable();
 		return array_map(
 			'intval',
 			$wpdb->get_col(
-				$wpdb->prepare( 'SELECT user_id FROM ' . $table . ' WHERE provider_id = %d', $providerId )
+				$wpdb->prepare( 'SELECT user_id FROM %i WHERE provider_id = %d', $table, $providerId )
 			)
 		);
 	}
@@ -126,3 +146,5 @@ final class ERTProviderRepository implements ProviderRepository {
 		);
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

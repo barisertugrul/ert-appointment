@@ -1,0 +1,935 @@
+# Arabic translation for ERT Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: ERT Appointment 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/ert-appointment/issues\n"
+"POT-Creation-Date: 2025-06-01 00:00+0000\n"
+"PO-Revision-Date: 2025-06-01 00:00+0000\n"
+"Last-Translator: ERT Appointment Team\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Appointments"
+msgstr ""
+
+msgid "Departments"
+msgstr ""
+
+msgid "Providers"
+msgstr "الموظفون"
+
+msgid "Forms"
+msgstr ""
+
+msgid "Working Hours"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Next"
+msgstr "التالي"
+
+msgid "Prev"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Loading…"
+msgstr "جارٍ التحميل…"
+
+msgid "Saved."
+msgstr ""
+
+msgid "An error occurred."
+msgstr ""
+
+msgid "Are you sure you want to delete this item?"
+msgstr ""
+
+msgid "Are you sure you want to cancel this appointment?"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Phone"
+msgstr "الهاتف"
+
+msgid "Description"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Date & Time"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Notes"
+msgstr "ملاحظات"
+
+msgid "Type"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Payment"
+msgstr ""
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Slot Duration (minutes)"
+msgstr ""
+
+msgid "Buffer Before (minutes)"
+msgstr ""
+
+msgid "Buffer After (minutes)"
+msgstr ""
+
+msgid "Arrival Buffer (minutes)"
+msgstr ""
+
+msgid "Booking Start Date"
+msgstr ""
+
+msgid "Booking End Date"
+msgstr ""
+
+msgid "Arrival Reminder"
+msgstr ""
+
+msgid "Appointment Location"
+msgstr ""
+
+msgid "Booking Form Intro"
+msgstr ""
+
+msgid "Booking Form Intro Box Color"
+msgstr ""
+
+msgid "Post Booking Instructions"
+msgstr ""
+
+msgid "Post Booking Instructions Box Color"
+msgstr ""
+
+msgid "Allow General Booking"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Note: Please arrive at least %d minutes before your appointment."
+msgstr ""
+
+msgid ""
+"Note: Please be in front of %1$s at least %2$d minutes before your "
+"appointment."
+msgstr ""
+
+msgid "Minimum Notice (hours)"
+msgstr ""
+
+msgid "How many hours in advance a booking must be made."
+msgstr ""
+
+msgid "Maximum Advance (days)"
+msgstr ""
+
+msgid "Auto-confirm bookings"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Require payment to confirm"
+msgstr ""
+
+msgid "Payment Amount"
+msgstr ""
+
+msgid "Payment Gateway"
+msgstr ""
+
+msgid "Settings saved."
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+#, fuzzy
+msgid "Select Department"
+msgstr "اختر القسم"
+
+#, fuzzy
+msgid "Select Provider"
+msgstr "اختر مقدم الخدمة"
+
+msgid "Installation Checklist"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
+
+msgid "Missing"
+msgstr ""
+
+msgid "Installation check passed: tables, roles and capabilities are ready."
+msgstr ""
+
+msgid ""
+"Installation issues detected: some tables/roles/capabilities are missing."
+msgstr ""
+
+msgid "Recheck"
+msgstr ""
+
+msgid "Repair Now"
+msgstr ""
+
+msgid "This area is available in Pro version."
+msgstr ""
+
+msgid "This tab can be edited in Pro version."
+msgstr ""
+
+#, fuzzy
+msgid "Please select a scope item first."
+msgstr "يرجى اختيار قسم عندما يكون النوع وحدة."
+
+msgid "OAuth Client ID"
+msgstr ""
+
+msgid "OAuth Client Secret"
+msgstr ""
+
+msgid "Account ID"
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "Merchant ID"
+msgstr ""
+
+msgid "Merchant Key"
+msgstr ""
+
+msgid "Merchant Salt"
+msgstr ""
+
+msgid "TRY — Turkish Lira"
+msgstr ""
+
+msgid "USD — US Dollar"
+msgstr ""
+
+msgid "EUR — Euro"
+msgstr ""
+
+msgid "GBP — Pound"
+msgstr ""
+
+msgid "Stripe"
+msgstr ""
+
+msgid "PayPal"
+msgstr ""
+
+msgid "PayTR"
+msgstr ""
+
+msgid "İyzico"
+msgstr ""
+
+msgid "PayTR Merchant ID"
+msgstr ""
+
+msgid "PayTR Merchant Key"
+msgstr ""
+
+msgid "PayTR Merchant Salt"
+msgstr ""
+
+msgid "PayTR Test Mode"
+msgstr ""
+
+msgid "Stripe Secret Key"
+msgstr ""
+
+msgid "Stripe Webhook Secret"
+msgstr ""
+
+msgid "İyzico API Key"
+msgstr ""
+
+msgid "İyzico Secret Key"
+msgstr ""
+
+msgid "İyzico Sandbox"
+msgstr ""
+
+#, fuzzy
+msgid "Zoom"
+msgstr "الانضمام إلى Zoom"
+
+msgid "Google connection failed."
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Confirmed"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
+msgid "Appointment"
+msgstr ""
+
+msgid "New Appointment"
+msgstr ""
+
+msgid "No appointments found."
+msgstr ""
+
+msgid "All Statuses"
+msgstr ""
+
+msgid "Search customer…"
+msgstr ""
+
+msgid "Cancel Appointment"
+msgstr ""
+
+msgid "Reason for cancellation…"
+msgstr ""
+
+msgid "Today's Appointments"
+msgstr ""
+
+msgid "Upcoming Appointments"
+msgstr ""
+
+msgid "No upcoming appointments."
+msgstr ""
+
+msgid "This Month"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "New Department"
+msgstr ""
+
+msgid "Add Department"
+msgstr ""
+
+msgid "Edit Department"
+msgstr ""
+
+msgid "No departments found."
+msgstr ""
+
+msgid "Provider"
+msgstr "الخبير"
+
+msgid "Customer"
+msgstr "العميل"
+
+msgid "New Provider"
+msgstr "خبير جديد"
+
+msgid "Add Provider"
+msgstr "إضافة خبير"
+
+msgid "Edit Provider"
+msgstr "تعديل الخبير"
+
+msgid "No providers found."
+msgstr "لم يتم العثور على موظفين."
+
+msgid "New Form"
+msgstr ""
+
+msgid "Edit Form"
+msgstr ""
+
+msgid "No forms found."
+msgstr ""
+
+msgid "Form Name"
+msgstr ""
+
+msgid "Fields"
+msgstr ""
+
+msgid "Add Field"
+msgstr ""
+
+msgid "Field Label"
+msgstr ""
+
+msgid "Field ID"
+msgstr ""
+
+msgid "Placeholder"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Help Text"
+msgstr ""
+
+msgid "Optional help text shown below the field…"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Option Label"
+msgstr ""
+
+msgid "Option Value"
+msgstr ""
+
+msgid "Add Option"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "No fields added yet."
+msgstr ""
+
+msgid "Untitled Field"
+msgstr ""
+
+msgid "Global"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Edit Scope"
+msgstr ""
+
+msgid "These hours apply to all providers by default."
+msgstr ""
+
+msgid "These hours override the global hours for this department."
+msgstr ""
+
+msgid "These hours override department and global hours for this provider."
+msgstr ""
+
+msgid "Set the days and hours when appointments can be booked."
+msgstr ""
+
+msgid "Breaks block off time within working hours (e.g. lunch)."
+msgstr ""
+
+msgid "Special days override regular hours for a specific date."
+msgstr ""
+
+msgid "Breaks"
+msgstr ""
+
+msgid "Special Days"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Every Day"
+msgstr ""
+
+msgid "Break Name"
+msgstr ""
+
+msgid "New Break"
+msgstr ""
+
+msgid "Add Break"
+msgstr ""
+
+msgid "No breaks defined."
+msgstr ""
+
+msgid "Special Day Name"
+msgstr ""
+
+msgid "Add Special Day"
+msgstr ""
+
+msgid "No special days defined."
+msgstr ""
+
+msgid "Custom Hours"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Callback URL"
+msgstr ""
+
+msgid "Connected"
+msgstr ""
+
+msgid "Not connected"
+msgstr ""
+
+msgid "Configured"
+msgstr ""
+
+msgid "Not configured"
+msgstr ""
+
+msgid "Connect Google Account"
+msgstr ""
+
+msgid "Google Calendar"
+msgstr ""
+
+msgid "Connected as"
+msgstr "متصل كـ"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "مزامنة المواعيد تلقائياً مع تقويم Google للمزود."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "أنشئ بيانات اعتماد OAuth 2.0 في Google Cloud Console."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "أضف هذا URI إلى عناوين إعادة التوجيه المسموح بها في Google OAuth."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr "تعذر الحصول على رابط مصادقة Google. تحقق من بيانات الاعتماد."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "إنشاء اجتماعات Zoom تلقائياً للمواعيد المؤكدة."
+
+msgid "Accept online payments via PayTR."
+msgstr "قبول المدفوعات الإلكترونية عبر PayTR."
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Connection successful."
+msgstr ""
+
+msgid "Connection failed. Check your credentials."
+msgstr ""
+
+msgid "Auto-create Zoom meetings"
+msgstr ""
+
+msgid "Automatically create a Zoom meeting when an appointment is confirmed."
+msgstr ""
+
+msgid "Test / Sandbox Mode"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Body"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Recipient"
+msgstr ""
+
+msgid "No notification templates found."
+msgstr ""
+
+msgid "Available Placeholders"
+msgstr ""
+
+msgid "Click to insert"
+msgstr ""
+
+msgid "Use the placeholders above to personalise the message."
+msgstr ""
+
+msgid "Enter email subject…"
+msgstr "أدخل موضوع البريد الإلكتروني…"
+
+msgid "Total Appointments"
+msgstr ""
+
+msgid "Cancellation Rate"
+msgstr ""
+
+msgid "Revenue"
+msgstr ""
+
+msgid "Top Providers"
+msgstr ""
+
+msgid "Detailed analytics are available with ERT Appointment Pro."
+msgstr ""
+
+msgid "Pro Feature"
+msgstr ""
+
+msgid "Upgrade to Pro"
+msgstr ""
+
+msgid "Select a Department"
+msgstr "اختر القسم"
+
+msgid "Select a Provider"
+msgstr "اختر مقدم الخدمة"
+
+msgid "Choose a Date"
+msgstr "اختر تاريخاً"
+
+msgid "Choose a Time"
+msgstr "اختر وقتاً"
+
+msgid "Your Details"
+msgstr "بياناتك"
+
+msgid "Book Now"
+msgstr "احجز الآن"
+
+msgid "Submit"
+msgstr ""
+
+msgid "Your appointment has been booked!"
+msgstr "تم حجز موعدك!"
+
+msgid "A confirmation email has been sent to you."
+msgstr ""
+
+msgid "Book Another Appointment"
+msgstr ""
+
+msgid "Book Again"
+msgstr ""
+
+msgid "Go to Payment"
+msgstr ""
+
+msgid "Complete Payment"
+msgstr ""
+
+msgid "Redirecting to payment…"
+msgstr ""
+
+msgid "No available slots on this day."
+msgstr "لا توجد مواعيد متاحة في هذا اليوم."
+
+msgid "Something went wrong. Please try again."
+msgstr "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "هذا الموعد لم يعد متاحاً. يرجى اختيار آخر."
+
+msgid "This field is required."
+msgstr "هذا الحقل مطلوب."
+
+msgid "Please enter a valid email address."
+msgstr "يرجى إدخال بريد إلكتروني صحيح."
+
+msgid "My Appointments"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "You have no appointments."
+msgstr ""
+
+msgid "Reschedule"
+msgstr "إعادة الجدولة"
+
+msgid "Reschedule Appointment"
+msgstr ""
+
+msgid "New Date & Time"
+msgstr ""
+
+msgid "ERT Appointment"
+msgstr ""
+
+msgid "Please enable JavaScript to use the appointment booking system."
+msgstr ""
+
+msgid "Loading booking form…"
+msgstr ""
+
+msgid "Please %s to view and manage your appointments."
+msgstr ""
+
+msgid "log in"
+msgstr ""
+
+msgid "Loading your appointments…"
+msgstr ""
+
+msgid "Appointment #%d not found."
+msgstr ""
+
+msgid "Field \"%s\" is required."
+msgstr ""
+
+msgid "Department not found."
+msgstr ""
+
+msgid ""
+"Cannot delete department with assigned providers. Reassign or delete "
+"providers first."
+msgstr ""
+
+msgid "Name is required."
+msgstr ""
+
+msgid "Invalid status."
+msgstr ""
+
+msgid "Provider not found."
+msgstr ""
+
+msgid "Invalid user_id."
+msgstr ""
+
+msgid "Invalid email address."
+msgstr ""
+
+msgid "Invalid event."
+msgstr ""
+
+msgid "Invalid channel."
+msgstr ""
+
+msgid "Invalid recipient."
+msgstr ""
+
+msgid "Invalid payload."
+msgstr ""
+
+msgid "settings must be an object."
+msgstr ""
+
+msgid "wp_mail failed to deliver email to \"%s\"."
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Phone Number"
+msgstr ""
+
+msgid "Select Date"
+msgstr ""
+
+msgid "Date and time selector – renders the booking calendar widget"
+msgstr ""
+
+msgid "This feature requires ERT Appointment Pro."
+msgstr "هذه الميزة تتطلب ERT Appointment Pro."
+
+msgid "Appointment: %s"
+msgstr "موعد: %s"
+
+msgid "Join Zoom"
+msgstr "الانضمام إلى Zoom"
+
+msgid "Password"
+msgstr "كلمة المرور"
+
+msgid "Host link"
+msgstr "رابط المضيف"
+
+msgid "Managed by"
+msgstr "تتم إدارته بواسطة"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "تم تأكيد موعدك – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "تم إلغاء موعدك"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "تم إعادة جدولة موعدك – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "تذكير: موعدك غداً"
+
+msgid "Your booking request has been received"
+msgstr "تم استلام طلب الحجز"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "موعد جديد محجوز – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "تم إلغاء الموعد – {{customer_name}}"
+
+msgid "My Panel"
+msgstr ""
+
+msgid "Add Template"
+msgstr "إضافة قالب"
+
+msgid "Quick Template Combos"
+msgstr "قوالب سريعة جاهزة"
+
+msgid "Create Customer + Admin Email"
+msgstr "إنشاء بريد العميل + المدير"
+
+msgid "Template Group"
+msgstr "مجموعة القالب"
+
+msgid "Template Channel"
+msgstr "قناة القالب"
+
+msgid "Template Recipient"
+msgstr "مستلم القالب"
+
+msgid "New Booking (Pending)"
+msgstr ""
+
+msgid "Booking Confirmed"
+msgstr ""
+
+msgid "Booking Cancelled"
+msgstr ""
+
+msgid "Booking Rescheduled"
+msgstr ""
+
+msgid "No-Show Marked"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "24h Reminder"
+msgstr ""
+
+msgid "1h Reminder"
+msgstr ""
+
+msgid "Waitlist Slot Available"
+msgstr ""
+
+msgid "Staff"
+msgstr "الموظفون"
+
+msgid "Staff Member"
+msgstr "الخبير"
+
+msgid "New Staff Member"
+msgstr "خبير جديد"
+
+msgid "Add Staff Member"
+msgstr "إضافة خبير"
+
+msgid "Edit Staff Member"
+msgstr "تعديل الخبير"
+
+msgid "No staff members found."
+msgstr "لم يتم العثور على موظفين."
+
+msgid "Please select a department when type is Unit."
+msgstr "يرجى اختيار قسم عندما يكون النوع وحدة."
+
+msgid "Individual"
+msgstr "فردي"
+
+msgid "Unit"
+msgstr "وحدة"

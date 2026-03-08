@@ -6,6 +6,7 @@ namespace ERTAppointment;
 
 use ERTAppointment\Admin\AdminMenu;
 use ERTAppointment\Core\Assets;
+use ERTAppointment\Core\Blocks;
 use ERTAppointment\Core\Installer;
 use ERTAppointment\Core\RestApiRegistrar;
 use ERTAppointment\Core\Shortcodes;
@@ -194,6 +195,14 @@ final class Plugin {
 		);
 
 		$this->container->singleton(
+			Blocks::class,
+			fn( Container $c ) => new Blocks(
+				$c->make( Assets::class ),
+				$c->make( Shortcodes::class )
+			)
+		);
+
+		$this->container->singleton(
 			RestApiRegistrar::class,
 			fn( Container $c ) => new RestApiRegistrar( $c )
 		);
@@ -263,6 +272,7 @@ final class Plugin {
 
 		$hooks->add( 'init', array( $this->container->make( RestApiRegistrar::class ), 'register' ) );
 		$hooks->add( 'init', array( $this->container->make( Shortcodes::class ), 'register' ) );
+		$hooks->add( 'init', array( $this->container->make( Blocks::class ), 'register' ) );
 		$hooks->add( 'init', array( $this->container->make( Installer::class ), 'maybeRepairInstallation' ), 1 );
 
 		$hooks->add( 'admin_menu', array( $this->container->make( AdminMenu::class ), 'register' ) );

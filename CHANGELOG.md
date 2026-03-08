@@ -6,7 +6,36 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.0] — 2025-02-27
+## [1.0.1] — 2026-03-08
+
+### Added
+- QA tooling: `scripts/run-live-test-and-report.ps1` ile manuel test + markdown rapor üretimi tek komutta birleştirildi.
+- QA tooling: `scripts/fill-live-test-report.ps1` ile JSON test çıktısından doldurulmuş canlı test raporu üretimi eklendi.
+- Dokümantasyon: canlı test için tek sayfa rapor şablonu eklendi (`docs/live-booking-mode-test-report.md`).
+- Dokümantasyon: Pro WhatsApp/SMS doğrulaması için smoke checklist eklendi (`docs/pro-whatsapp-smoke-checklist.md`).
+- Pro bildirim altyapısına gerçek WhatsApp provider desteği eklendi (Meta Cloud API).
+- Varsayılan bildirim şablonlarına müşteri odaklı WhatsApp şablonları eklendi (pending/confirmed/cancelled/rescheduled/reminder_24h).
+
+### Changed
+- Booking akışı mode-tabanlı hale getirildi: `general`, `department_no_provider`, `department_with_provider`, `provider_only`.
+- Frontend store akışı güncellendi: adım görünürlüğü (department/provider) seçilen moda göre dinamik hesaplanıyor.
+- Personelsiz modlarda (general ve department_no_provider) takvim/slot verileri provider seti üzerinden birleştirilmiş olarak sunuluyor.
+- Booking submit akışı, personelsiz modlarda slot üzerinden gelen `provider_id` ile randevu oluşturacak şekilde güncellendi.
+- Gutenberg booking block inspector sadeleştirildi; mode override alanı eklendi ve lock/general seçenekleri kaldırıldı.
+- Block edit deneyimi iyileştirildi; yeniden seçme/düzenleme davranışı stabilize edildi.
+- WordPress 6.2+ ile uyumlu `%i` identifier placeholder yaklaşımı DB sorgularında standartlaştırıldı ve kalıcı hale getirildi.
+- Plugin Checker odaklı bakım kapsamında, plugin-owned tablo sorgularında işlev değiştirmeden denetim uyumu güçlendirildi.
+- Lite sürümde `Ayarlar > Entegrasyonlar` sekmesi genişletildi; SMS (Twilio/NetGSM) ve WhatsApp kartları Pro kilidi altında görünür hale getirildi.
+- Notification şablon editöründe Pro aktifken WhatsApp kanal seçeneği kullanılabilir hale getirildi.
+- POT/PO dil kaynakları, yeni SMS/WhatsApp entegrasyon metinleri ve kanal etiketleriyle senkronize edildi.
+
+### Fixed
+- General/date-first akışlarda varsayılan provider'ın sessizce atanması engellendi.
+- Aynı sayfada birden fazla booking host mount senaryosunda sonsuz loading/flicker riski azaltıldı.
+- Birleşik slot listelerinde potansiyel key çakışmaları giderildi.
+- Kalan Plugin Checker DB uyarıları (direct query / no caching / prepared-query false-positive noktaları) davranış korunarak hedefli PHPCS bastırmalarıyla temizlendi.
+
+## [1.0.0] — 2026-02-27
 
 ### Added
 

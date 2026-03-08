@@ -76,6 +76,10 @@
             <option value="provider">{{ t('provider') }}</option>
           </select>
         </div>
+        <div class="erta-form-row">
+          <label class="erta-form-label">{{ t('bookingButtonText') }}</label>
+          <input class="erta-input" v-model="editing.submit_button_text" :placeholder="t('book')" />
+        </div>
       </div>
 
       <!-- Builder columns -->
@@ -303,12 +307,13 @@ async function load() {
 
 // ── Actions ────────────────────────────────────────────────────────────────
 function openNew() {
-  editing.value  = { name: '', scope: 'global', fields: DEFAULT_FIELDS() };
+  editing.value  = { name: '', scope: 'global', submit_button_text: '', fields: DEFAULT_FIELDS() };
   activeField.value = null;
 }
 
 function openEdit(f) {
   editing.value  = JSON.parse(JSON.stringify(f));
+  editing.value.submit_button_text = editing.value.submit_button_text ?? '';
   activeField.value = null;
 }
 

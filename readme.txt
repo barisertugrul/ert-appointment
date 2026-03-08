@@ -1,9 +1,9 @@
 === Appointment Booking by ERT ===
 Contributors: ert
 Tags: appointment, booking, calendar, reservation, schedule
-Requires at least: 6.0
+Requires at least: 6.2
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -85,7 +85,19 @@ Yes. The plugin ships with translations for Turkish, German, French, Spanish, Ar
 
 == Changelog ==
 
-= 1.0.0 — 2025-02-27 =
+= 1.0.1 — 2026-03-08 =
+* Added QA scripts for one-command live test + markdown report generation (`run-live-test-and-report.ps1`, `fill-live-test-report.ps1`)
+* Added one-page live test report template for repeatable QA runs (`docs/live-booking-mode-test-report.md`)
+* Booking flow is now mode-based: general, department without provider, department with provider, provider-only
+* Frontend step orchestration updated to follow selected booking mode dynamically
+* Personless modes now aggregate calendar/slot data across provider sets
+* Booking submit flow now uses slot provider context in personless modes
+* Gutenberg booking block inspector simplified with booking mode override and clearer edit behavior
+* Fixed silent default-provider fallback in general/date-first flows
+* Improved multi-host mount stability and reduced loading flicker risk
+* Fixed potential key collisions in merged slot lists
+
+= 1.0.0 — 2026-02-27 =
 * Initial public release
 * Multi-provider support with hierarchical settings (global → provider)
 * Smart slot generation: working hours, breaks, buffer times, minimum notice, maximum advance days
@@ -100,6 +112,9 @@ Yes. The plugin ships with translations for Turkish, German, French, Spanish, Ar
 * PHP 8.1+ with strict types and PSR-4 autoloading
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Includes mode-based booking flow improvements, Gutenberg block UX updates, and QA tooling additions. No manual migration steps required.
 
 = 1.0.0 =
 Initial release. No upgrade steps required.

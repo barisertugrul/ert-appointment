@@ -1,6 +1,6 @@
 {
-  "_pinia-CcsZZMhg.js": {
-    "file": "chunks/pinia-CcsZZMhg.js",
+  "_pinia-DQPvVbQX.js": {
+    "file": "chunks/pinia-DQPvVbQX.js",
     "name": "pinia"
   },
   "_useAdminApi-Dg4v4pC0.js": {
@@ -8,92 +8,92 @@
     "name": "useAdminApi"
   },
   "assets/js/admin/components/pages/AppointmentsPage.vue": {
-    "file": "chunks/AppointmentsPage-D-iuQomx.js",
+    "file": "chunks/AppointmentsPage-DdxRpZIz.js",
     "name": "AppointmentsPage",
     "src": "assets/js/admin/components/pages/AppointmentsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/DashboardPage.vue": {
-    "file": "chunks/DashboardPage-BSxy8Sw1.js",
+    "file": "chunks/DashboardPage-ChJex6Vp.js",
     "name": "DashboardPage",
     "src": "assets/js/admin/components/pages/DashboardPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/DepartmentsPage.vue": {
-    "file": "chunks/DepartmentsPage-BYDGZ2nL.js",
+    "file": "chunks/DepartmentsPage-Bdmw5QGS.js",
     "name": "DepartmentsPage",
     "src": "assets/js/admin/components/pages/DepartmentsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/FormsPage.vue": {
-    "file": "chunks/FormsPage-Bnd2TucW.js",
+    "file": "chunks/FormsPage-kmrZuxud.js",
     "name": "FormsPage",
     "src": "assets/js/admin/components/pages/FormsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/NotificationsPage.vue": {
-    "file": "chunks/NotificationsPage-aME0M4Ql.js",
+    "file": "chunks/NotificationsPage-Brl7T-Ou.js",
     "name": "NotificationsPage",
     "src": "assets/js/admin/components/pages/NotificationsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/ProvidersPage.vue": {
-    "file": "chunks/ProvidersPage-CQpbBbcY.js",
+    "file": "chunks/ProvidersPage-BikBE4B-.js",
     "name": "ProvidersPage",
     "src": "assets/js/admin/components/pages/ProvidersPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/ReportsPage.vue": {
-    "file": "chunks/ReportsPage-CfWw_M9w.js",
+    "file": "chunks/ReportsPage-BoAd2Ygj.js",
     "name": "ReportsPage",
     "src": "assets/js/admin/components/pages/ReportsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/SettingsPage.vue": {
-    "file": "chunks/SettingsPage-DP8IAi19.js",
+    "file": "chunks/SettingsPage-WjdY0h_j.js",
     "name": "SettingsPage",
     "src": "assets/js/admin/components/pages/SettingsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
   "assets/js/admin/components/pages/WorkingHoursPage.vue": {
-    "file": "chunks/WorkingHoursPage-vuS1L22r.js",
+    "file": "chunks/WorkingHoursPage-DwZavOU4.js",
     "name": "WorkingHoursPage",
     "src": "assets/js/admin/components/pages/WorkingHoursPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js",
+      "_pinia-DQPvVbQX.js",
       "_useAdminApi-Dg4v4pC0.js"
     ]
   },
@@ -103,7 +103,7 @@
     "src": "assets/js/admin/main.js",
     "isEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js"
+      "_pinia-DQPvVbQX.js"
     ],
     "dynamicImports": [
       "assets/js/admin/components/pages/DashboardPage.vue",
@@ -125,7 +125,7 @@
     "src": "assets/js/frontend/main.js",
     "isEntry": true,
     "imports": [
-      "_pinia-CcsZZMhg.js"
+      "_pinia-DQPvVbQX.js"
     ]
   }
 }

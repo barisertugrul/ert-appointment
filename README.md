@@ -176,6 +176,19 @@ do_action('erta_rest_api_init', Container $container);
 
 ## Geliştirici Notları
 
+### QA / Live Test Quick Start
+
+Tek komutla manuel test + otomatik rapor üretimi:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run-live-test-and-report.ps1 -Tester "Ad Soyad" -Environment "stage"
+```
+
+Çıktılar `test-results/` altında oluşur:
+
+- `scope-override-YYYYMMDD-HHMMSS.json`
+- `live-report-YYYYMMDD-HHMMSS.md`
+
 ### Servis Katmanı
 
 ```

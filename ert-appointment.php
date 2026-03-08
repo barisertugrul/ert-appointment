@@ -3,8 +3,8 @@
  * Plugin Name:       Appointment Booking by ERT
  * Plugin URI:        https://www.ertyazilim.com/ert-appointment/
  * Description:       A powerful, extensible appointment booking system for WordPress. Manage departments, providers, working hours, custom forms and email notifications.
- * Version:           1.0.0
- * Requires at least: 6.0
+ * Version:           1.0.1
+ * Requires at least: 6.2
  * Requires PHP:      8.1
  * Author:            ERT
  * Author URI:        https://www.ertyazilim.com/
@@ -32,17 +32,17 @@ if (version_compare(PHP_VERSION, '8.1', '<')) {
 }
 
 // WordPress version guard.
-if (version_compare(get_bloginfo('version'), '6.0', '<')) {
+if (version_compare(get_bloginfo('version'), '6.2', '<')) {
     add_action('admin_notices', function () {
         echo '<div class="notice notice-error"><p>'
-            . esc_html__('ERT Appointment requires WordPress 6.0 or higher.', 'ert-appointment')
+            . esc_html__('ERT Appointment requires WordPress 6.2 or higher.', 'ert-appointment')
             . '</p></div>';
     });
     return;
 }
 
 // Plugin constants.
-define('ERTA_VERSION', '1.0.0');
+define('ERTA_VERSION', '1.0.1');
 define('ERTA_FILE', __FILE__);
 define('ERTA_PATH', plugin_dir_path(__FILE__));
 define('ERTA_URL', plugin_dir_url(__FILE__));

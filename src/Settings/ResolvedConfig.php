@@ -165,12 +165,40 @@ final class ResolvedConfig {
 		return $this->getString( 'booking_form_intro', '' );
 	}
 
+	public function bookingFormIntroColor(): string {
+		return $this->getString( 'booking_form_intro_color', '' );
+	}
+
 	public function postBookingInstructions(): string {
 		return $this->getString( 'post_booking_instructions', '' );
 	}
 
+	public function postBookingInstructionsColor(): string {
+		return $this->getString( 'post_booking_instructions_color', '' );
+	}
+
 	public function allowGeneralBooking(): bool {
 		return $this->getBool( 'allow_general_booking', false );
+	}
+
+	public function bookingMode(): string {
+		$mode = $this->getString( 'booking_mode', '' );
+		$allowed = array(
+			'general',
+			'department_no_provider',
+			'department_with_provider',
+			'provider_only',
+		);
+
+		if ( in_array( $mode, $allowed, true ) ) {
+			return $mode;
+		}
+
+		if ( $this->allowGeneralBooking() ) {
+			return 'general';
+		}
+
+		return 'department_with_provider';
 	}
 
 	public function generalProviderId(): int {

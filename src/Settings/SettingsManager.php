@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Settings;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- settings manager performs intentional reads/writes on plugin-owned custom tables.
+
 use ERTAppointment\Infrastructure\Cache\TransientCache;
 
 /**
@@ -103,17 +105,19 @@ final class SettingsManager {
 
 		$encoded = is_array( $value ) || is_object( $value )
 			? wp_json_encode( $value )
-			: (string) $value;
+			: ( is_bool( $value ) ? ( $value ? 'true' : 'false' ) : (string) $value );
 
-		$table = $wpdb->prefix . 'erta_settings';
+		$table    = $wpdb->prefix . 'erta_settings';
+		$tableSql = $table;
 
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT id FROM {$table}
+				'SELECT id FROM %i
 				 WHERE scope = %s
 				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
 				   AND setting_key = %s
-				 ORDER BY id DESC",
+				 ORDER BY id DESC',
+				$tableSql,
 				$scope,
 				$scopeId,
 				$scopeId,
@@ -135,10 +139,17 @@ final class SettingsManager {
 
 			if ( count( $ids ) > 1 ) {
 				$extraIds = array_map( 'intval', array_slice( $ids, 1 ) );
-				$in       = implode( ',', $extraIds );
 
-				if ( $in !== '' ) {
-					$wpdb->query( "DELETE FROM {$table} WHERE id IN ({$in})" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				if ( ! empty( $extraIds ) ) {
+					foreach ( $extraIds as $extraId ) {
+						$wpdb->query(
+							$wpdb->prepare(
+								'DELETE FROM %i WHERE id = %d',
+								$tableSql,
+								$extraId
+							)
+						);
+					}
 				}
 			}
 		} else {
@@ -188,13 +199,15 @@ final class SettingsManager {
 			return;
 		}
 		$table   = $wpdb->prefix . 'erta_settings';
+		$tableSql = $table;
 
 		$wpdb->query(
 			$wpdb->prepare(
-				"DELETE FROM {$table}
+				'DELETE FROM %i
 				 WHERE scope = %s
 				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
-				   AND setting_key = %s",
+				   AND setting_key = %s',
+				$tableSql,
 				$scope,
 				$scopeId,
 				$scopeId,
@@ -237,13 +250,15 @@ final class SettingsManager {
 		// Query database.
 		global $wpdb;
 		$table = $wpdb->prefix . 'erta_settings';
+		$tableSql = $table;
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT setting_key, setting_value FROM {$table}
+				'SELECT setting_key, setting_value FROM %i
 				 WHERE scope = %s
 				   AND (scope_id = %d OR (scope_id IS NULL AND %d = 0))
-				 ORDER BY id ASC",
+				 ORDER BY id ASC',
+				$tableSql,
 				$scope,
 				$scopeId,
 				$scopeId
@@ -269,10 +284,13 @@ final class SettingsManager {
 	 */
 	private function loadProviderMeta( int $providerId ): array {
 		global $wpdb;
+		$table = $wpdb->prefix . 'erta_providers';
+		$tableSql = $table;
 
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT department_id FROM {$wpdb->prefix}erta_providers WHERE id = %d",
+				'SELECT department_id FROM %i WHERE id = %d',
+				$tableSql,
 				$providerId
 			),
 			\ARRAY_A
@@ -338,3 +356,5 @@ final class SettingsManager {
 		return max( 0, (int) ( $scopeId ?? 0 ) );
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

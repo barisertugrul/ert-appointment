@@ -1,0 +1,935 @@
+# Turkish translation for ERT Appointment
+msgid ""
+msgstr ""
+"Project-Id-Version: ERT Appointment 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/ert-appointment/issues\n"
+"POT-Creation-Date: 2025-06-01 00:00+0000\n"
+"PO-Revision-Date: 2025-06-01 00:00+0000\n"
+"Last-Translator: ERT Appointment Team\n"
+"Language-Team: Turkish\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ert-appointment\n"
+
+msgid "Dashboard"
+msgstr "Gösterge Paneli"
+
+msgid "Appointments"
+msgstr "Randevular"
+
+msgid "Departments"
+msgstr "Bölümler"
+
+msgid "Providers"
+msgstr "Personel"
+
+msgid "Forms"
+msgstr "Formlar"
+
+msgid "Working Hours"
+msgstr "Çalışma Saatleri"
+
+msgid "Notifications"
+msgstr "Bildirimler"
+
+msgid "Reports"
+msgstr "Raporlar"
+
+msgid "Settings"
+msgstr "Ayarlar"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Confirm"
+msgstr "Onayla"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Back"
+msgstr "Geri"
+
+msgid "Next"
+msgstr "İleri"
+
+msgid "Prev"
+msgstr "Önceki"
+
+msgid "Apply"
+msgstr "Uygula"
+
+msgid "Select"
+msgstr "Seç"
+
+msgid "Loading…"
+msgstr "Yükleniyor…"
+
+msgid "Saved."
+msgstr "Kaydedildi."
+
+msgid "An error occurred."
+msgstr "Bir hata oluştu."
+
+msgid "Are you sure you want to delete this item?"
+msgstr "Bu öğeyi silmek istediğinizden emin misiniz?"
+
+msgid "Are you sure you want to cancel this appointment?"
+msgstr "Bu randevuyu iptal etmek istediğinizden emin misiniz?"
+
+msgid "Name"
+msgstr "Ad"
+
+msgid "Email"
+msgstr "E-posta"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Description"
+msgstr "Açıklama"
+
+msgid "Status"
+msgstr "Durum"
+
+msgid "Actions"
+msgstr "İşlemler"
+
+msgid "Date"
+msgstr "Tarih"
+
+msgid "Time"
+msgstr "Saat"
+
+msgid "Date & Time"
+msgstr "Tarih & Saat"
+
+msgid "Day"
+msgstr "Gün"
+
+msgid "Notes"
+msgstr "Notlar"
+
+msgid "Type"
+msgstr "Tür"
+
+msgid "Duration"
+msgstr "Süre"
+
+msgid "Page"
+msgstr "Sayfa"
+
+msgid "General"
+msgstr "Genel"
+
+msgid "Payment"
+msgstr "Ödeme"
+
+msgid "Integrations"
+msgstr "Entegrasyonlar"
+
+msgid "Slot Duration (minutes)"
+msgstr "Slot Süresi (dakika)"
+
+msgid "Buffer Before (minutes)"
+msgstr "Önceki Tampon (dakika)"
+
+msgid "Buffer After (minutes)"
+msgstr "Sonraki Tampon (dakika)"
+
+msgid "Arrival Buffer (minutes)"
+msgstr "Erken Geliş Tamponu (dakika)"
+
+msgid "Booking Start Date"
+msgstr "Randevu Başlangıç Tarihi"
+
+msgid "Booking End Date"
+msgstr "Randevu Bitiş Tarihi"
+
+msgid "Arrival Reminder"
+msgstr "Erken Geliş Hatırlatması"
+
+msgid "Appointment Location"
+msgstr "Randevu Lokasyonu"
+
+msgid "Booking Form Intro"
+msgstr "Randevu Formu Giriş Metni"
+
+msgid "Booking Form Intro Box Color"
+msgstr "Randevu Formu Giriş Kutusu Rengi"
+
+msgid "Post Booking Instructions"
+msgstr "Randevu Sonrası Talimatlar"
+
+msgid "Post Booking Instructions Box Color"
+msgstr "Randevu Sonrası Talimat Kutusu Rengi"
+
+msgid "Allow General Booking"
+msgstr "Genel Randevuya İzin Ver"
+
+msgid "Note"
+msgstr "Not"
+
+msgid "Note: Please arrive at least %d minutes before your appointment."
+msgstr "Not: Lütfen randevunuzdan en az %d dakika önce geliniz."
+
+msgid ""
+"Note: Please be in front of %1$s at least %2$d minutes before your "
+"appointment."
+msgstr "Not: Lütfen randevunuzdan en az %2$d dakika önce %1$s önünde olunuz."
+
+msgid "Minimum Notice (hours)"
+msgstr "Min. İhbar Süresi (saat)"
+
+msgid "How many hours in advance a booking must be made."
+msgstr "Rezervasyonun kaç saat öncesine kadar yapılabileceği."
+
+msgid "Maximum Advance (days)"
+msgstr "Maks. İleri Tarih (gün)"
+
+msgid "Auto-confirm bookings"
+msgstr "Randevuları otomatik onayla"
+
+msgid "Currency"
+msgstr "Para Birimi"
+
+msgid "Require payment to confirm"
+msgstr "Onay için ödeme zorunlu"
+
+msgid "Payment Amount"
+msgstr "Ödeme Tutarı"
+
+msgid "Payment Gateway"
+msgstr "Ödeme Altyapısı"
+
+msgid "Settings saved."
+msgstr "Ayarlar kaydedildi."
+
+msgid "Message"
+msgstr "Mesaj"
+
+msgid "Select Department"
+msgstr "Bölüm Seç"
+
+msgid "Select Provider"
+msgstr "Personel Seç"
+
+msgid "Installation Checklist"
+msgstr "Kurulum Kontrol Listesi"
+
+msgid "Ready"
+msgstr "Hazır"
+
+msgid "Missing"
+msgstr "Eksik"
+
+msgid "Installation check passed: tables, roles and capabilities are ready."
+msgstr "Kurulum kontrolü başarılı: tablolar, roller ve yetkiler hazır."
+
+msgid ""
+"Installation issues detected: some tables/roles/capabilities are missing."
+msgstr ""
+"Kurulum eksikleri tespit edildi: bazı tablo/rol/yetkiler oluşturulmamış."
+
+msgid "Recheck"
+msgstr "Yeniden Kontrol Et"
+
+msgid "Repair Now"
+msgstr "Şimdi Onar"
+
+msgid "This area is available in Pro version."
+msgstr "Bu alan Pro sürümde aktiftir."
+
+msgid "This tab can be edited in Pro version."
+msgstr "Bu sekme Pro sürümde düzenlenebilir."
+
+msgid "Please select a scope item first."
+msgstr "Lütfen önce bir kapsam öğesi seçin."
+
+msgid "OAuth Client ID"
+msgstr "OAuth Client ID"
+
+msgid "OAuth Client Secret"
+msgstr "OAuth Client Secret"
+
+msgid "Account ID"
+msgstr "Hesap ID"
+
+msgid "Client ID"
+msgstr "Client ID"
+
+msgid "Client Secret"
+msgstr "Client Secret"
+
+msgid "Merchant ID"
+msgstr "Merchant ID"
+
+msgid "Merchant Key"
+msgstr "Merchant Key"
+
+msgid "Merchant Salt"
+msgstr "Merchant Salt"
+
+msgid "TRY — Turkish Lira"
+msgstr "TRY — Türk Lirası"
+
+msgid "USD — US Dollar"
+msgstr "USD — ABD Doları"
+
+msgid "EUR — Euro"
+msgstr "EUR — Euro"
+
+msgid "GBP — Pound"
+msgstr "GBP — Sterlin"
+
+msgid "Stripe"
+msgstr "Stripe"
+
+msgid "PayPal"
+msgstr "PayPal"
+
+msgid "PayTR"
+msgstr "PayTR"
+
+msgid "İyzico"
+msgstr "İyzico"
+
+msgid "PayTR Merchant ID"
+msgstr "PayTR Merchant ID"
+
+msgid "PayTR Merchant Key"
+msgstr "PayTR Merchant Key"
+
+msgid "PayTR Merchant Salt"
+msgstr "PayTR Merchant Salt"
+
+msgid "PayTR Test Mode"
+msgstr "PayTR Test Modu"
+
+msgid "Stripe Secret Key"
+msgstr "Stripe Secret Key"
+
+msgid "Stripe Webhook Secret"
+msgstr "Stripe Webhook Secret"
+
+msgid "İyzico API Key"
+msgstr "İyzico API Key"
+
+msgid "İyzico Secret Key"
+msgstr "İyzico Secret Key"
+
+msgid "İyzico Sandbox"
+msgstr "İyzico Sandbox"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Google connection failed."
+msgstr "Google bağlantısı başarısız oldu."
+
+msgid "Pending"
+msgstr "Beklemede"
+
+msgid "Confirmed"
+msgstr "Onaylandı"
+
+msgid "Cancelled"
+msgstr "İptal Edildi"
+
+msgid "Completed"
+msgstr "Tamamlandı"
+
+msgid "Paid"
+msgstr "Ödendi"
+
+msgid "Appointment"
+msgstr "Randevu"
+
+msgid "New Appointment"
+msgstr "Yeni Randevu"
+
+msgid "No appointments found."
+msgstr "Randevu bulunamadı."
+
+msgid "All Statuses"
+msgstr "Tüm Durumlar"
+
+msgid "Search customer…"
+msgstr "Müşteri ara…"
+
+msgid "Cancel Appointment"
+msgstr "Randevuyu İptal Et"
+
+msgid "Reason for cancellation…"
+msgstr "İptal nedeni…"
+
+msgid "Today's Appointments"
+msgstr "Bugünkü Randevular"
+
+msgid "Upcoming Appointments"
+msgstr "Yaklaşan Randevular"
+
+msgid "No upcoming appointments."
+msgstr "Yaklaşan randevu yok."
+
+msgid "This Month"
+msgstr "Bu Ay"
+
+msgid "Department"
+msgstr "Bölüm"
+
+msgid "New Department"
+msgstr "Yeni Bölüm"
+
+msgid "Add Department"
+msgstr "Bölüm Ekle"
+
+msgid "Edit Department"
+msgstr "Bölümü Düzenle"
+
+msgid "No departments found."
+msgstr "Bölüm bulunamadı."
+
+msgid "Provider"
+msgstr "Uzman"
+
+msgid "Customer"
+msgstr "Müşteri"
+
+msgid "New Provider"
+msgstr "Yeni Uzman"
+
+msgid "Add Provider"
+msgstr "Uzman Ekle"
+
+msgid "Edit Provider"
+msgstr "Uzmanı Düzenle"
+
+msgid "No providers found."
+msgstr "Personel bulunamadı."
+
+msgid "New Form"
+msgstr "Yeni Form"
+
+msgid "Edit Form"
+msgstr "Formu Düzenle"
+
+msgid "No forms found."
+msgstr "Form bulunamadı."
+
+msgid "Form Name"
+msgstr "Form Adı"
+
+msgid "Fields"
+msgstr "Alanlar"
+
+msgid "Add Field"
+msgstr "Alan Ekle"
+
+msgid "Field Label"
+msgstr "Alan Etiketi"
+
+msgid "Field ID"
+msgstr "Alan ID"
+
+msgid "Placeholder"
+msgstr "Yer Tutucu"
+
+msgid "Required"
+msgstr "Zorunlu"
+
+msgid "Help Text"
+msgstr "Yardım Metni"
+
+msgid "Optional help text shown below the field…"
+msgstr "Alanın altında gösterilecek yardım metni…"
+
+msgid "Options"
+msgstr "Seçenekler"
+
+msgid "Option Label"
+msgstr "Seçenek Etiketi"
+
+msgid "Option Value"
+msgstr "Seçenek Değeri"
+
+msgid "Add Option"
+msgstr "Seçenek Ekle"
+
+msgid "Preview"
+msgstr "Önizleme"
+
+msgid "No fields added yet."
+msgstr "Henüz alan eklenmedi."
+
+msgid "Untitled Field"
+msgstr "Adsız Alan"
+
+msgid "Global"
+msgstr "Genel"
+
+msgid "Scope"
+msgstr "Kapsam"
+
+msgid "Edit Scope"
+msgstr "Kapsam Düzenle"
+
+msgid "These hours apply to all providers by default."
+msgstr "Bu saatler varsayılan olarak tüm sağlayıcılara uygulanır."
+
+msgid "These hours override the global hours for this department."
+msgstr "Bu saatler bu bölüm için genel saatleri geçersiz kılar."
+
+msgid "These hours override department and global hours for this provider."
+msgstr "Bu saatler bu sağlayıcı için bölüm ve genel saatleri geçersiz kılar."
+
+msgid "Set the days and hours when appointments can be booked."
+msgstr "Randevu alınabilecek gün ve saatleri ayarlayın."
+
+msgid "Breaks block off time within working hours (e.g. lunch)."
+msgstr "Molalar çalışma saatleri içinde zaman bloğu oluşturur (öğle vb.)."
+
+msgid "Special days override regular hours for a specific date."
+msgstr "Özel günler belirli bir tarih için normal saatleri geçersiz kılar."
+
+msgid "Breaks"
+msgstr "Molalar"
+
+msgid "Special Days"
+msgstr "Özel Günler"
+
+msgid "Closed"
+msgstr "Kapalı"
+
+msgid "Every Day"
+msgstr "Her Gün"
+
+msgid "Break Name"
+msgstr "Mola Adı"
+
+msgid "New Break"
+msgstr "Yeni Mola"
+
+msgid "Add Break"
+msgstr "Mola Ekle"
+
+msgid "No breaks defined."
+msgstr "Mola tanımlanmadı."
+
+msgid "Special Day Name"
+msgstr "Özel Gün Adı"
+
+msgid "Add Special Day"
+msgstr "Özel Gün Ekle"
+
+msgid "No special days defined."
+msgstr "Özel gün tanımlanmadı."
+
+msgid "Custom Hours"
+msgstr "Özel Saatler"
+
+msgid "Calendar"
+msgstr "Takvim"
+
+msgid "Callback URL"
+msgstr "Callback URL"
+
+msgid "Connected"
+msgstr "Bağlı"
+
+msgid "Not connected"
+msgstr "Bağlı Değil"
+
+msgid "Configured"
+msgstr "Yapılandırıldı"
+
+msgid "Not configured"
+msgstr "Yapılandırılmadı"
+
+msgid "Connect Google Account"
+msgstr "Google Hesabı Bağla"
+
+msgid "Google Calendar"
+msgstr "Google Takvim"
+
+msgid "Connected as"
+msgstr "Bağlı hesap:"
+
+msgid "Sync appointments to provider Google Calendars automatically."
+msgstr "Randevuları sağlayıcı Google Takvimlerine otomatik senkronize edin."
+
+msgid "Create OAuth 2.0 credentials in Google Cloud Console."
+msgstr "Google Cloud Console'da OAuth 2.0 kimlik bilgileri oluşturun."
+
+msgid "Add this URI to your Google OAuth allowed redirect URIs."
+msgstr "Bu URI'yi Google OAuth izin verilen yönlendirme URI'lerine ekleyin."
+
+msgid "Could not get Google auth URL. Check credentials and try again."
+msgstr ""
+"Google auth URL alınamadı. Kimlik bilgilerini kontrol edip tekrar deneyin."
+
+msgid "Automatically create Zoom meetings for confirmed appointments."
+msgstr "Onaylanan randevular için otomatik Zoom toplantısı oluşturun."
+
+msgid "Accept online payments via PayTR."
+msgstr "PayTR ile online ödeme alın."
+
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+msgid "Test Connection"
+msgstr "Bağlantıyı Test Et"
+
+msgid "Connection successful."
+msgstr "Bağlantı başarılı."
+
+msgid "Connection failed. Check your credentials."
+msgstr "Bağlantı başarısız. Kimlik bilgilerinizi kontrol edin."
+
+msgid "Auto-create Zoom meetings"
+msgstr "Otomatik Zoom toplantısı oluştur"
+
+msgid "Automatically create a Zoom meeting when an appointment is confirmed."
+msgstr "Randevu onaylandığında otomatik Zoom toplantısı oluştur."
+
+msgid "Test / Sandbox Mode"
+msgstr "Test / Sandbox Modu"
+
+msgid "Subject"
+msgstr "Konu"
+
+msgid "Body"
+msgstr "İçerik"
+
+msgid "Active"
+msgstr "Aktif"
+
+msgid "Event"
+msgstr "Olay"
+
+msgid "Channel"
+msgstr "Kanal"
+
+msgid "Recipient"
+msgstr "Alıcı"
+
+msgid "No notification templates found."
+msgstr "Bildirim şablonu bulunamadı."
+
+msgid "Available Placeholders"
+msgstr "Kullanılabilir Yer Tutucular"
+
+msgid "Click to insert"
+msgstr "Eklemek için tıklayın"
+
+msgid "Use the placeholders above to personalise the message."
+msgstr "Mesajı kişiselleştirmek için yukarıdaki yer tutucuları kullanın."
+
+msgid "Enter email subject…"
+msgstr "E-posta konusunu girin…"
+
+msgid "Total Appointments"
+msgstr "Toplam Randevu"
+
+msgid "Cancellation Rate"
+msgstr "İptal Oranı"
+
+msgid "Revenue"
+msgstr "Gelir"
+
+msgid "Top Providers"
+msgstr "En İyi Sağlayıcılar"
+
+msgid "Detailed analytics are available with ERT Appointment Pro."
+msgstr "Detaylı analitikler ERT Appointment Pro ile kullanılabilir."
+
+msgid "Pro Feature"
+msgstr "Pro Özelliği"
+
+msgid "Upgrade to Pro"
+msgstr "Pro'ya Yükselt"
+
+msgid "Select a Department"
+msgstr "Bölüm Seçin"
+
+msgid "Select a Provider"
+msgstr "Sağlayıcı Seçin"
+
+msgid "Choose a Date"
+msgstr "Tarih Seçin"
+
+msgid "Choose a Time"
+msgstr "Saat Seçin"
+
+msgid "Your Details"
+msgstr "Bilgileriniz"
+
+msgid "Book Now"
+msgstr "Rezervasyon Yap"
+
+msgid "Submit"
+msgstr "Gönder"
+
+msgid "Your appointment has been booked!"
+msgstr "Randevunuz alındı!"
+
+msgid "A confirmation email has been sent to you."
+msgstr "Onay e-postası gönderildi."
+
+msgid "Book Another Appointment"
+msgstr "Yeni Randevu Al"
+
+msgid "Book Again"
+msgstr "Tekrar Rezervasyon Yap"
+
+msgid "Go to Payment"
+msgstr "Ödemeye Git"
+
+msgid "Complete Payment"
+msgstr "Ödemeyi Tamamla"
+
+msgid "Redirecting to payment…"
+msgstr "Ödeme sayfasına yönlendiriliyor…"
+
+msgid "No available slots on this day."
+msgstr "Bu günde müsait slot yok."
+
+msgid "Something went wrong. Please try again."
+msgstr "Bir hata oluştu. Lütfen tekrar deneyin."
+
+msgid "This slot is no longer available. Please choose another."
+msgstr "Bu slot artık müsait değil. Başka birini seçin."
+
+msgid "This field is required."
+msgstr "Bu alan zorunludur."
+
+msgid "Please enter a valid email address."
+msgstr "Geçerli bir e-posta adresi girin."
+
+msgid "My Appointments"
+msgstr "Randevularım"
+
+msgid "Upcoming"
+msgstr "Yaklaşan"
+
+msgid "Past"
+msgstr "Geçmiş"
+
+msgid "You have no appointments."
+msgstr "Randevunuz bulunmamaktadır."
+
+msgid "Reschedule"
+msgstr "Yeniden Planla"
+
+msgid "Reschedule Appointment"
+msgstr "Randevuyu Yeniden Planla"
+
+msgid "New Date & Time"
+msgstr "Yeni Tarih & Saat"
+
+msgid "ERT Appointment"
+msgstr "ERT Randevu"
+
+msgid "Please enable JavaScript to use the appointment booking system."
+msgstr "Rezervasyon sistemini kullanmak için JavaScript'i etkinleştirin."
+
+msgid "Loading booking form…"
+msgstr "Rezervasyon formu yükleniyor…"
+
+msgid "Please %s to view and manage your appointments."
+msgstr "Randevularınızı görmek ve yönetmek için %s."
+
+msgid "log in"
+msgstr "giriş yapın"
+
+msgid "Loading your appointments…"
+msgstr "Randevularınız yükleniyor…"
+
+msgid "Appointment #%d not found."
+msgstr "#%d numaralı randevu bulunamadı."
+
+msgid "Field \"%s\" is required."
+msgstr "\"%s\" alanı zorunludur."
+
+msgid "Department not found."
+msgstr "Bölüm bulunamadı."
+
+msgid ""
+"Cannot delete department with assigned providers. Reassign or delete "
+"providers first."
+msgstr ""
+"Atanmış sağlayıcıları olan bölüm silinemez. Önce sağlayıcıları yeniden "
+"atayın veya silin."
+
+msgid "Name is required."
+msgstr "Ad zorunludur."
+
+msgid "Invalid status."
+msgstr "Geçersiz durum."
+
+msgid "Provider not found."
+msgstr "Sağlayıcı bulunamadı."
+
+msgid "Invalid user_id."
+msgstr "Geçersiz kullanıcı ID."
+
+msgid "Invalid email address."
+msgstr "Geçersiz e-posta adresi."
+
+msgid "Invalid event."
+msgstr "Geçersiz olay."
+
+msgid "Invalid channel."
+msgstr "Geçersiz kanal."
+
+msgid "Invalid recipient."
+msgstr "Geçersiz alıcı."
+
+msgid "Invalid payload."
+msgstr "Geçersiz veri."
+
+msgid "settings must be an object."
+msgstr "settings bir nesne olmalıdır."
+
+msgid "wp_mail failed to deliver email to \"%s\"."
+msgstr "\"%s\" adresine e-posta gönderilemedi."
+
+msgid "Full Name"
+msgstr "Ad Soyad"
+
+msgid "Email Address"
+msgstr "E-posta Adresi"
+
+msgid "Phone Number"
+msgstr "Telefon Numarası"
+
+msgid "Select Date"
+msgstr "Tarih Seçin"
+
+msgid "Date and time selector – renders the booking calendar widget"
+msgstr "Tarih ve saat seçici – rezervasyon takvim widgetını gösterir"
+
+msgid "This feature requires ERT Appointment Pro."
+msgstr "Bu özellik ERT Appointment Pro gerektirir."
+
+msgid "Appointment: %s"
+msgstr "Randevu: %s"
+
+msgid "Join Zoom"
+msgstr "Zoom'a Katıl"
+
+msgid "Password"
+msgstr "Şifre"
+
+msgid "Host link"
+msgstr "Host Linki"
+
+msgid "Managed by"
+msgstr "Yönetici:"
+
+msgid "Your appointment is confirmed – {{appointment_date}}"
+msgstr "Randevunuz onaylandı – {{appointment_date}}"
+
+msgid "Your appointment has been cancelled"
+msgstr "Randevunuz iptal edildi"
+
+msgid "Your appointment has been rescheduled – {{appointment_date}}"
+msgstr "Randevunuz yeniden planlandı – {{appointment_date}}"
+
+msgid "Reminder: Your appointment is tomorrow"
+msgstr "Hatırlatma: Randevunuz yarın"
+
+msgid "Your booking request has been received"
+msgstr "Rezervasyon talebiniz alındı"
+
+msgid "New appointment booked – {{customer_name}}"
+msgstr "Yeni randevu oluşturuldu – {{customer_name}}"
+
+msgid "Appointment cancelled – {{customer_name}}"
+msgstr "Randevu iptal edildi – {{customer_name}}"
+
+msgid "My Panel"
+msgstr "Panelim"
+
+msgid "Add Template"
+msgstr "Şablon Ekle"
+
+msgid "Quick Template Combos"
+msgstr "Hızlı Şablon Kombinasyonları"
+
+msgid "Create Customer + Admin Email"
+msgstr "Müşteri + Yönetici E-postası Oluştur"
+
+msgid "Template Group"
+msgstr "Şablon Grubu"
+
+msgid "Template Channel"
+msgstr "Şablon Kanalı"
+
+msgid "Template Recipient"
+msgstr "Şablon Alıcısı"
+
+msgid "New Booking (Pending)"
+msgstr "Yeni Rezervasyon (Beklemede)"
+
+msgid "Booking Confirmed"
+msgstr "Rezervasyon Onaylandı"
+
+msgid "Booking Cancelled"
+msgstr "Rezervasyon İptal Edildi"
+
+msgid "Booking Rescheduled"
+msgstr "Rezervasyon Yeniden Planlandı"
+
+msgid "No-Show Marked"
+msgstr "Gelmedi Olarak İşaretlendi"
+
+msgid "Reminder"
+msgstr "Hatırlatma"
+
+msgid "24h Reminder"
+msgstr "24 Saat Hatırlatma"
+
+msgid "1h Reminder"
+msgstr "1 Saat Hatırlatma"
+
+msgid "Waitlist Slot Available"
+msgstr "Bekleme Listesi Slotu Müsait"
+
+msgid "Staff"
+msgstr "Personel"
+
+msgid "Staff Member"
+msgstr "Uzman"
+
+msgid "New Staff Member"
+msgstr "Yeni Uzman"
+
+msgid "Add Staff Member"
+msgstr "Uzman Ekle"
+
+msgid "Edit Staff Member"
+msgstr "Uzmanı Düzenle"
+
+msgid "No staff members found."
+msgstr "Personel bulunamadı."
+
+msgid "Please select a department when type is Unit."
+msgstr "Tür Birim ise lütfen bir bölüm seçin."
+
+msgid "Individual"
+msgstr "Bireysel"
+
+msgid "Unit"
+msgstr "Birim"

@@ -45,7 +45,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { formatMonthYearSafe } from '../../utils/locale.js';
 
 const props = defineProps({
-  provider:      { type: Object, required: true },
+  provider:      { type: Object, default: null },
   availableDates: { type: Array, default: () => [] },
 });
 
@@ -110,7 +110,7 @@ function nextMonth() {
 }
 
 function loadMonth() {
-  emit('load-month', { providerId: props.provider.id, year: currentYear.value, month: currentMonth.value });
+  emit('load-month', { year: currentYear.value, month: currentMonth.value });
 }
 
 function selectDay(day) {

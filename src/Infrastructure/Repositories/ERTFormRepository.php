@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 namespace ERTAppointment\Infrastructure\Repositories;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- repository performs intentional reads on plugin-owned custom tables.
+
 use ERTAppointment\Domain\Form\Form;
 use ERTAppointment\Domain\Form\FormRepository;
 
@@ -17,12 +19,12 @@ final class ERTFormRepository implements FormRepository {
 
 	public function findForScope( string $scope, ?int $scopeId ): ?Form {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		// Priority: exact scope → fall back to global.
 		if ( $scope !== 'global' && $scopeId !== null ) {
 			$row = $wpdb->get_row(
-				$wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE scope=%s AND scope_id=%d AND is_active=1 LIMIT 1', $scope, $scopeId ),
+				$wpdb->prepare( 'SELECT * FROM %i WHERE scope=%s AND scope_id=%d AND is_active=1 LIMIT 1', $table, $scope, $scopeId ),
 				ARRAY_A
 			);
 			if ( $row ) {
@@ -30,7 +32,7 @@ final class ERTFormRepository implements FormRepository {
 			}
 		}
 		$row = $wpdb->get_row(
-			$wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE scope=%s AND is_active=1 LIMIT 1', 'global' ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE scope=%s AND is_active=1 LIMIT 1', $table, 'global' ),
 			ARRAY_A
 		);
 		return $row ? Form::fromRow( $row ) : null;
@@ -38,8 +40,8 @@ final class ERTFormRepository implements FormRepository {
 
 	public function findById( int $id ): ?Form {
 		global $wpdb;
-		$table = $this->tableSql();
-		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE id=%d', $id ), ARRAY_A );
+		$table = $this->table();
+		$row   = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id=%d', $table, $id ), ARRAY_A );
 		return $row ? Form::fromRow( $row ) : null;
 	}
 
@@ -59,3 +61,5 @@ final class ERTFormRepository implements FormRepository {
 		return (bool) $wpdb->delete( $this->table(), array( 'id' => $id ) );
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

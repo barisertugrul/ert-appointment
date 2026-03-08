@@ -15,9 +15,9 @@
       <label>{{ t('scope') }}</label>
       <div class="erta-scope-grid">
         <select class="erta-input" v-model="scope" @change="onScopeChanged">
-          <option value="global">Global</option>
-          <option value="department">Department</option>
-          <option value="provider">Provider</option>
+          <option value="global">{{ t('global') }}</option>
+          <option value="department">{{ t('department') }}</option>
+          <option value="provider">{{ t('provider') }}</option>
         </select>
 
         <select
@@ -26,7 +26,7 @@
           v-model.number="scopeId"
           @change="onScopeIdChanged"
         >
-          <option :value="0">— Select Department —</option>
+          <option :value="0">— {{ t('selectDepartment') }} —</option>
           <option v-for="item in departments" :key="item.id" :value="item.id">
             {{ item.name }}
           </option>
@@ -38,7 +38,7 @@
           v-model.number="scopeId"
           @change="onScopeIdChanged"
         >
-          <option :value="0">— Select Provider —</option>
+          <option :value="0">— {{ t('selectProvider') }} —</option>
           <option v-for="item in providers" :key="item.id" :value="item.id">
             {{ item.name }}
           </option>
@@ -53,9 +53,9 @@
         @click="checklistOpen = !checklistOpen"
       >
         <span>
-          Kurulum Kontrolü
+          {{ t('installationChecklist') }}
           <span class="erta-badge" :class="installation.all_ok ? 'erta-badge--confirmed' : 'erta-badge--cancelled'">
-            {{ installation.all_ok ? 'Hazır' : 'Eksik Var' }}
+            {{ installation.all_ok ? t('ready') : t('missing') }}
           </span>
         </span>
         <span>{{ checklistOpen ? '▾' : '▸' }}</span>
@@ -67,8 +67,8 @@
           :class="installation.all_ok ? 'erta-alert--success' : 'erta-alert--error'"
         >
           {{ installation.all_ok
-            ? 'Kurulum kontrolü başarılı: tablolar, roller ve yetkiler hazır.'
-            : 'Kurulum eksikleri tespit edildi: bazı tablo/rol/yetkiler oluşturulmamış.' }}
+            ? t('installationOkMessage')
+            : t('installationMissingMessage') }}
         </div>
 
         <div class="erta-install-checklist__actions">
@@ -78,7 +78,7 @@
             @click="refreshInstallationChecklist"
           >
             <span v-if="checkingInstallation" class="erta-spinner erta-spinner--sm"></span>
-            Yeniden Kontrol Et
+            {{ t('recheck') }}
           </button>
 
           <button
@@ -88,7 +88,7 @@
             @click="repairInstallationNow"
           >
             <span v-if="repairingInstallation" class="erta-spinner erta-spinner--sm"></span>
-            Şimdi Onar
+            {{ t('repairNow') }}
           </button>
         </div>
 
@@ -96,7 +96,7 @@
           <div v-for="item in installation.items" :key="item.key" class="erta-install-checklist__item">
             <span>{{ item.label }}</span>
             <span class="erta-badge" :class="item.ok ? 'erta-badge--confirmed' : 'erta-badge--cancelled'">
-              {{ item.ok ? 'OK' : 'Eksik' }}
+              {{ item.ok ? 'OK' : t('missingShort') }}
             </span>
           </div>
         </div>
@@ -130,12 +130,12 @@
           </div>
         </div>
         <div class="erta-form-row">
-          <label>{{ t('bufferBefore') }}</label>
-          <input class="erta-input" type="number" v-model.number="form.buffer_before_minutes" min="0" />
-        </div>
-        <div class="erta-form-row">
           <label>{{ t('bufferAfter') }}</label>
           <input class="erta-input" type="number" v-model.number="form.buffer_after_minutes" min="0" />
+        </div>
+        <div class="erta-form-row">
+          <label>{{ t('arrivalBuffer') }}</label>
+          <input class="erta-input" type="number" v-model.number="form.arrival_buffer" min="0" />
         </div>
         <div class="erta-form-row">
           <label>{{ t('minNotice') }}</label>
@@ -158,60 +158,61 @@
         <div class="erta-form-row">
           <label>{{ t('currency') }}</label>
           <select class="erta-input" v-model="form.currency">
-            <option value="TRY">TRY — Türk Lirası</option>
-            <option value="USD">USD — US Dollar</option>
-            <option value="EUR">EUR — Euro</option>
-            <option value="GBP">GBP — Pound</option>
+            <option value="TRY">{{ t('currencyTRY') }}</option>
+            <option value="USD">{{ t('currencyUSD') }}</option>
+            <option value="EUR">{{ t('currencyEUR') }}</option>
+            <option value="GBP">{{ t('currencyGBP') }}</option>
           </select>
         </div>
         <div class="erta-form-row">
-          <label>Booking Start Date</label>
+          <label>{{ t('bookingStartDate') }}</label>
           <input class="erta-input" type="date" v-model="form.booking_start_date" />
         </div>
         <div class="erta-form-row">
-          <label>Booking End Date</label>
+          <label>{{ t('bookingEndDate') }}</label>
           <input class="erta-input" type="date" v-model="form.booking_end_date" />
         </div>
         <div class="erta-form-row">
-          <label>Arrival Reminder</label>
+          <label>{{ t('arrivalReminder') }}</label>
           <label class="erta-toggle">
             <input type="checkbox" v-model="form.show_arrival_reminder" />
             <span class="erta-toggle__slider"></span>
           </label>
         </div>
         <div class="erta-form-row">
-          <label>Appointment Location</label>
+          <label>{{ t('bookingMode') }}</label>
+          <select class="erta-input" v-model="form.booking_mode">
+            <option value="general">{{ t('bookingModeGeneral') }}</option>
+            <option value="department_no_provider">{{ t('bookingModeDeptOnly') }}</option>
+            <option value="department_with_provider">{{ t('bookingModeDeptProvider') }}</option>
+            <option value="provider_only">{{ t('bookingModeProvider') }}</option>
+          </select>
+        </div>
+        <div class="erta-form-row">
+          <label>{{ t('appointmentLocation') }}</label>
           <input class="erta-input" type="text" v-model="form.appointment_location" />
         </div>
         <div class="erta-form-row">
-          <label>Booking Form Intro</label>
+          <label>{{ t('bookingFormIntro') }}</label>
           <textarea class="erta-input" rows="3" v-model="form.booking_form_intro"></textarea>
         </div>
         <div class="erta-form-row">
-          <label>Post Booking Instructions</label>
+          <label>{{ t('bookingFormIntroColor') }}</label>
+          <input class="erta-input" type="color" v-model="form.booking_form_intro_color" />
+        </div>
+        <div class="erta-form-row">
+          <label>{{ t('postBookingInstructions') }}</label>
           <textarea class="erta-input" rows="3" v-model="form.post_booking_instructions"></textarea>
         </div>
         <div class="erta-form-row">
-          <label>Allow General Booking</label>
-          <label class="erta-toggle">
-            <input type="checkbox" v-model="form.allow_general_booking" />
-            <span class="erta-toggle__slider"></span>
-          </label>
-        </div>
-        <div class="erta-form-row" v-if="form.allow_general_booking">
-          <label>General Provider</label>
-          <select class="erta-input" v-model.number="form.general_provider_id">
-            <option :value="0">— Auto (first available) —</option>
-            <option v-for="item in providers" :key="item.id" :value="item.id">
-              {{ item.name }}
-            </option>
-          </select>
+          <label>{{ t('postBookingInstructionsColor') }}</label>
+          <input class="erta-input" type="color" v-model="form.post_booking_instructions_color" />
         </div>
       </template>
 
       <!-- Payment -->
       <template v-if="activeTab === 'payment'">
-        <div v-if="!isPro" class="erta-alert erta-alert--info">Bu alan Pro sürümde aktiftir.</div>
+        <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('proOnlyArea') }}</div>
         <fieldset :disabled="!isPro" class="erta-fieldset-reset" :class="{ 'erta-pro-gate': !isPro }">
         <div class="erta-form-row">
           <label>{{ t('paymentRequired') }}</label>
@@ -227,29 +228,29 @@
         <div class="erta-form-row">
           <label>{{ t('paymentGateway') }}</label>
           <select class="erta-input" v-model="form.payment_gateway">
-            <option value="stripe">Stripe</option>
-            <option value="paypal">PayPal</option>
-            <option value="paytr">PayTR</option>
-            <option value="iyzico">İyzico</option>
+            <option value="stripe">{{ t('gatewayStripe') }}</option>
+            <option value="paypal">{{ t('gatewayPaypal') }}</option>
+            <option value="paytr">{{ t('gatewayPaytr') }}</option>
+            <option value="iyzico">{{ t('gatewayIyzico') }}</option>
           </select>
         </div>
 
         <!-- PayTR fields -->
         <template v-if="form.payment_gateway === 'paytr'">
           <div class="erta-form-row">
-            <label>PayTR Merchant ID</label>
+            <label>{{ t('paytrMerchantId') }}</label>
             <input class="erta-input" type="text" v-model="form.paytr_merchant_id" />
           </div>
           <div class="erta-form-row">
-            <label>PayTR Merchant Key</label>
+            <label>{{ t('paytrMerchantKey') }}</label>
             <input class="erta-input" type="password" v-model="form.paytr_merchant_key" />
           </div>
           <div class="erta-form-row">
-            <label>PayTR Merchant Salt</label>
+            <label>{{ t('paytrMerchantSalt') }}</label>
             <input class="erta-input" type="password" v-model="form.paytr_merchant_salt" />
           </div>
           <div class="erta-form-row">
-            <label>PayTR Test Modu</label>
+            <label>{{ t('paytrTestMode') }}</label>
             <label class="erta-toggle">
               <input type="checkbox" v-model="form.paytr_test_mode" />
               <span class="erta-toggle__slider"></span>
@@ -260,11 +261,11 @@
         <!-- Stripe fields -->
         <template v-if="form.payment_gateway === 'stripe'">
           <div class="erta-form-row">
-            <label>Stripe Secret Key</label>
+            <label>{{ t('stripeSecretKey') }}</label>
             <input class="erta-input" type="password" v-model="form.stripe_secret_key" />
           </div>
           <div class="erta-form-row">
-            <label>Stripe Webhook Secret</label>
+            <label>{{ t('stripeWebhookSecret') }}</label>
             <input class="erta-input" type="password" v-model="form.stripe_webhook_secret" />
           </div>
         </template>
@@ -272,15 +273,15 @@
         <!-- İyzico fields -->
         <template v-if="form.payment_gateway === 'iyzico'">
           <div class="erta-form-row">
-            <label>İyzico API Key</label>
+            <label>{{ t('iyzicoApiKey') }}</label>
             <input class="erta-input" type="password" v-model="form.iyzico_api_key" />
           </div>
           <div class="erta-form-row">
-            <label>İyzico Secret Key</label>
+            <label>{{ t('iyzicoSecretKey') }}</label>
             <input class="erta-input" type="password" v-model="form.iyzico_secret_key" />
           </div>
           <div class="erta-form-row">
-            <label>İyzico Sandbox</label>
+            <label>{{ t('iyzicoSandbox') }}</label>
             <label class="erta-toggle">
               <input type="checkbox" v-model="form.iyzico_sandbox" />
               <span class="erta-toggle__slider"></span>
@@ -292,7 +293,7 @@
 
       <!-- Integrations (Google Calendar + Zoom + PayTR) -->
       <template v-if="activeTab === 'integrations'">
-        <div v-if="!isPro" class="erta-alert erta-alert--info">Bu alan Pro sürümde aktiftir.</div>
+        <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('proOnlyArea') }}</div>
         <fieldset :disabled="!isPro" class="erta-fieldset-reset" :class="{ 'erta-pro-gate': !isPro }">
 
         <!-- ── Google Calendar ──────────────────────────────────────────── -->
@@ -300,7 +301,7 @@
           <div class="erta-integration-card__header">
             <span class="erta-integration-card__icon">📅</span>
             <div>
-              <h3 class="erta-integration-card__title">Google Calendar</h3>
+              <h3 class="erta-integration-card__title">{{ t('googleCalendar') }}</h3>
               <p class="erta-integration-card__desc">{{ t('googleCalendarDesc') }}</p>
             </div>
             <span
@@ -311,14 +312,14 @@
 
           <div class="erta-integration-card__body">
             <div class="erta-form-row">
-              <label>OAuth Client ID</label>
+              <label>{{ t('oauthClientId') }}</label>
               <div>
                 <input class="erta-input" v-model="form.google_client_id" placeholder="*.apps.googleusercontent.com" />
                 <p class="description">{{ t('googleClientIdHelp') }}</p>
               </div>
             </div>
             <div class="erta-form-row">
-              <label>OAuth Client Secret</label>
+              <label>{{ t('oauthClientSecret') }}</label>
               <input class="erta-input" type="password" v-model="form.google_client_secret" />
             </div>
             <div class="erta-form-row">
@@ -350,7 +351,7 @@
           <div class="erta-integration-card__header">
             <span class="erta-integration-card__icon">🎥</span>
             <div>
-              <h3 class="erta-integration-card__title">Zoom</h3>
+              <h3 class="erta-integration-card__title">{{ t('zoom') }}</h3>
               <p class="erta-integration-card__desc">{{ t('zoomDesc') }}</p>
             </div>
             <span
@@ -361,15 +362,15 @@
 
           <div class="erta-integration-card__body">
             <div class="erta-form-row">
-              <label>Account ID</label>
+              <label>{{ t('accountId') }}</label>
               <input class="erta-input" v-model="form.zoom_account_id" placeholder="xxxxxxxxxxxx" />
             </div>
             <div class="erta-form-row">
-              <label>Client ID</label>
+              <label>{{ t('clientId') }}</label>
               <input class="erta-input" v-model="form.zoom_client_id" />
             </div>
             <div class="erta-form-row">
-              <label>Client Secret</label>
+              <label>{{ t('clientSecret') }}</label>
               <input class="erta-input" type="password" v-model="form.zoom_client_secret" />
             </div>
             <div class="erta-form-row">
@@ -398,26 +399,109 @@
           </div>
         </div>
 
+        <!-- ── SMS (Twilio / NetGSM) ───────────────────────────────────── -->
+        <div class="erta-integration-card">
+          <div class="erta-integration-card__header">
+            <span class="erta-integration-card__icon">💬</span>
+            <div>
+              <h3 class="erta-integration-card__title">{{ t('smsIntegrationsTitle') }}</h3>
+              <p class="erta-integration-card__desc">{{ t('smsIntegrationsDesc') }}</p>
+            </div>
+          </div>
+
+          <div class="erta-integration-card__body">
+            <div class="erta-form-row">
+              <label>{{ t('smsProvider') }}</label>
+              <select class="erta-input" v-model="form.sms_provider">
+                <option value="twilio">Twilio</option>
+                <option value="netgsm">NetGSM</option>
+              </select>
+            </div>
+
+            <template v-if="form.sms_provider === 'twilio'">
+              <div class="erta-form-row">
+                <label>{{ t('twilioAccountSid') }}</label>
+                <input class="erta-input" v-model="form.twilio_account_sid" />
+              </div>
+              <div class="erta-form-row">
+                <label>{{ t('twilioAuthToken') }}</label>
+                <input class="erta-input" type="password" v-model="form.twilio_auth_token" />
+              </div>
+              <div class="erta-form-row">
+                <label>{{ t('twilioFromNumber') }}</label>
+                <input class="erta-input" v-model="form.twilio_from_number" placeholder="+90555..." />
+              </div>
+            </template>
+
+            <template v-else>
+              <div class="erta-form-row">
+                <label>{{ t('netgsmUsercode') }}</label>
+                <input class="erta-input" v-model="form.netgsm_usercode" />
+              </div>
+              <div class="erta-form-row">
+                <label>{{ t('netgsmPassword') }}</label>
+                <input class="erta-input" type="password" v-model="form.netgsm_password" />
+              </div>
+              <div class="erta-form-row">
+                <label>{{ t('netgsmHeader') }}</label>
+                <input class="erta-input" v-model="form.netgsm_header" />
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ── WhatsApp (Meta Cloud API) ──────────────────────────────── -->
+        <div class="erta-integration-card">
+          <div class="erta-integration-card__header">
+            <span class="erta-integration-card__icon">🟢</span>
+            <div>
+              <h3 class="erta-integration-card__title">{{ t('whatsappTitle') }}</h3>
+              <p class="erta-integration-card__desc">{{ t('whatsappDesc') }}</p>
+            </div>
+          </div>
+
+          <div class="erta-integration-card__body">
+            <div class="erta-form-row">
+              <label>{{ t('whatsappProvider') }}</label>
+              <select class="erta-input" v-model="form.whatsapp_provider">
+                <option value="meta_cloud">Meta Cloud API</option>
+              </select>
+            </div>
+            <div class="erta-form-row">
+              <label>{{ t('whatsappPhoneNumberId') }}</label>
+              <input class="erta-input" v-model="form.whatsapp_phone_number_id" />
+            </div>
+            <div class="erta-form-row">
+              <label>{{ t('whatsappAccessToken') }}</label>
+              <input class="erta-input" type="password" v-model="form.whatsapp_access_token" />
+            </div>
+            <div class="erta-form-row">
+              <label>{{ t('whatsappApiVersion') }}</label>
+              <input class="erta-input" v-model="form.whatsapp_api_version" placeholder="v21.0" />
+            </div>
+          </div>
+        </div>
+
         <!-- ── PayTR ─────────────────────────────────────────────────────── -->
         <div class="erta-integration-card">
           <div class="erta-integration-card__header">
             <span class="erta-integration-card__icon">💳</span>
             <div>
-              <h3 class="erta-integration-card__title">PayTR</h3>
+              <h3 class="erta-integration-card__title">{{ t('paytr') }}</h3>
               <p class="erta-integration-card__desc">{{ t('paytrDesc') }}</p>
             </div>
           </div>
           <div class="erta-integration-card__body">
             <div class="erta-form-row">
-              <label>Merchant ID</label>
+              <label>{{ t('merchantId') }}</label>
               <input class="erta-input" v-model="form.paytr_merchant_id" />
             </div>
             <div class="erta-form-row">
-              <label>Merchant Key</label>
+              <label>{{ t('merchantKey') }}</label>
               <input class="erta-input" type="password" v-model="form.paytr_merchant_key" />
             </div>
             <div class="erta-form-row">
-              <label>Merchant Salt</label>
+              <label>{{ t('merchantSalt') }}</label>
               <input class="erta-input" type="password" v-model="form.paytr_merchant_salt" />
             </div>
             <div class="erta-form-row">
@@ -506,14 +590,28 @@ const defaultForm = {
   zoom_client_id: '',
   zoom_client_secret: '',
   zoom_auto_create: false,
+  sms_provider: 'twilio',
+  twilio_account_sid: '',
+  twilio_auth_token: '',
+  twilio_from_number: '',
+  netgsm_usercode: '',
+  netgsm_password: '',
+  netgsm_header: '',
+  whatsapp_provider: 'meta_cloud',
+  whatsapp_phone_number_id: '',
+  whatsapp_access_token: '',
+  whatsapp_api_version: 'v21.0',
   booking_start_date: '',
   booking_end_date: '',
+  arrival_buffer: 0,
+  booking_mode: 'department_with_provider',
   show_arrival_reminder: false,
   appointment_location: '',
   booking_form_intro: '',
+  booking_form_intro_color: '#dbeafe',
   post_booking_instructions: '',
+  post_booking_instructions_color: '#f3f4f6',
   allow_general_booking: false,
-  general_provider_id: 0,
 };
 
 const form = ref({ ...defaultForm });
@@ -537,7 +635,7 @@ onMounted(async () => {
     history.replaceState({}, '', window.location.pathname + '?page=erta-settings');
   }
   if (urlParams.get('google') === 'error') {
-    error.value = decodeURIComponent(urlParams.get('msg') ?? 'Google connection failed.');
+    error.value = decodeURIComponent(urlParams.get('msg') ?? t('googleConnectionFailed'));
     activeTab.value = 'integrations';
   }
 
@@ -562,7 +660,38 @@ async function loadSettings() {
   if (data) {
     Object.assign(form.value, defaultForm);
     Object.assign(form.value, data.settings ?? data ?? {});
+    normalizeBooleanSettings();
     installation.value = data.installation ?? null;
+  }
+}
+
+function normalizeBooleanSettings() {
+  const booleanKeys = [
+    'auto_confirm',
+    'allow_general_booking',
+    'show_arrival_reminder',
+    'payment_required',
+    'paytr_test_mode',
+    'iyzico_sandbox',
+    'zoom_auto_create',
+  ];
+
+  for (const key of booleanKeys) {
+    const value = form.value[key];
+    if (typeof value === 'boolean') continue;
+
+    if (typeof value === 'number') {
+      form.value[key] = value === 1;
+      continue;
+    }
+
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      form.value[key] = normalized === '1' || normalized === 'true' || normalized === 'yes';
+      continue;
+    }
+
+    form.value[key] = Boolean(value);
   }
 }
 
@@ -654,7 +783,7 @@ async function repairInstallationNow() {
 // ── Save ───────────────────────────────────────────────────────────────────
 async function save() {
   if (isActiveProTabLocked.value) {
-    error.value = 'Bu sekme Pro sürümde düzenlenebilir.';
+    error.value = t('proTabLockedMessage');
     return;
   }
 
@@ -665,7 +794,7 @@ async function save() {
 
   if (currentScope !== 'global' && !currentScopeId) {
     saving.value = false;
-    error.value = 'Please select a scope item first.';
+    error.value = t('selectScopeItemFirst');
     return;
   }
 

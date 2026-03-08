@@ -87,6 +87,7 @@ final class WorkingHoursApiController {
 		global $wpdb;
 		[$scope, $scopeId] = $this->parseScope( $request );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional read on plugin table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_working_hours
@@ -115,6 +116,7 @@ final class WorkingHoursApiController {
 		$table = $wpdb->prefix . 'erta_working_hours';
 
 		// Delete existing records for this scope, then re-insert.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional cleanup for scope overwrite.
 		$wpdb->delete(
 			$table,
 			array(
@@ -124,6 +126,7 @@ final class WorkingHoursApiController {
 		);
 
 		foreach ( $hours as $row ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- intentional insert into plugin table.
 			$wpdb->insert(
 				$table,
 				array(
@@ -149,6 +152,7 @@ final class WorkingHoursApiController {
 		global $wpdb;
 		[$scope, $scopeId] = $this->parseScope( $request );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional read on plugin table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_breaks
@@ -173,6 +177,7 @@ final class WorkingHoursApiController {
 		}
 
 		$table = $wpdb->prefix . 'erta_breaks';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional cleanup for scope overwrite.
 		$wpdb->delete(
 			$table,
 			array(
@@ -182,6 +187,7 @@ final class WorkingHoursApiController {
 		);
 
 		foreach ( $breaks as $brk ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- intentional insert into plugin table.
 			$wpdb->insert(
 				$table,
 				array(
@@ -208,6 +214,7 @@ final class WorkingHoursApiController {
 		global $wpdb;
 		[$scope, $scopeId] = $this->parseScope( $request );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional read on plugin table.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_special_days
@@ -232,6 +239,7 @@ final class WorkingHoursApiController {
 		}
 
 		$table = $wpdb->prefix . 'erta_special_days';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional cleanup for scope overwrite.
 		$wpdb->delete(
 			$table,
 			array(
@@ -246,6 +254,7 @@ final class WorkingHoursApiController {
 				continue;   // skip invalid dates
 			}
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- intentional insert into plugin table.
 			$wpdb->insert(
 				$table,
 				array(
@@ -293,6 +302,7 @@ final class WorkingHoursApiController {
 			? "erta_slots_{$scopeId}_"
 			: 'erta_slots_';
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- batch transient invalidation by prefix.
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",

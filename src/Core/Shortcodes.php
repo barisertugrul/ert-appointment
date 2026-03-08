@@ -53,6 +53,7 @@ final class Shortcodes {
 				'department' => '',
 				'provider'   => '',
 				'form'       => '',
+				'booking_mode' => '',
 				'general_booking' => '0',
 				'lock_department' => '0',
 				'lock_provider'   => '0',
@@ -60,6 +61,28 @@ final class Shortcodes {
 			$atts,
 			'erta_booking'
 		);
+
+		$shortcodeGeneralBooking = ! empty( $atts['general_booking'] ) && in_array( strtolower( (string) $atts['general_booking'] ), array( '1', 'true', 'yes' ), true );
+		$legacyGeneralBooking    = (bool) $this->settings->getGlobal( 'allow_general_booking', false );
+		$settingsMode            = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
+		$shortcodeMode           = sanitize_key( (string) $atts['booking_mode'] );
+
+		$allowedModes = array(
+			'general',
+			'department_no_provider',
+			'department_with_provider',
+			'provider_only',
+		);
+
+		if ( in_array( $shortcodeMode, $allowedModes, true ) ) {
+			$effectiveMode = $shortcodeMode;
+		} elseif ( $shortcodeGeneralBooking || $legacyGeneralBooking ) {
+			$effectiveMode = 'general';
+		} elseif ( in_array( $settingsMode, $allowedModes, true ) ) {
+			$effectiveMode = $settingsMode;
+		} else {
+			$effectiveMode = 'department_with_provider';
+		}
 
 		// Build data attributes for the Vue app to pick up.
 		$dataAttrs = '';
@@ -73,9 +96,7 @@ final class Shortcodes {
 			$dataAttrs .= ' data-form="' . esc_attr( $atts['form'] ) . '"';
 		}
 
-		if ( ! empty( $atts['general_booking'] ) && in_array( strtolower( (string) $atts['general_booking'] ), array( '1', 'true', 'yes' ), true ) ) {
-			$dataAttrs .= ' data-general-booking="1"';
-		}
+		$dataAttrs .= ' data-booking-mode="' . esc_attr( $effectiveMode ) . '"';
 
 		if ( ! empty( $atts['lock_department'] ) && in_array( strtolower( (string) $atts['lock_department'] ), array( '1', 'true', 'yes' ), true ) ) {
 			$dataAttrs .= ' data-lock-department="1"';

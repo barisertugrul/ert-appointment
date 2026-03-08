@@ -136,19 +136,58 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
-msgid "Slot Duration (minutes)"
+msgid "Appointment Duration (minutes)"
 msgstr ""
 
-msgid "Buffer Before (minutes)"
+msgid "Early Arrival Time (minutes)"
 msgstr ""
 
-msgid "Buffer After (minutes)"
+msgid "Gap Between Appointments (minutes)"
 msgstr ""
 
-msgid "Minimum Notice (hours)"
+msgid "Arrival Buffer (minutes)"
 msgstr ""
 
-msgid "How many hours in advance a booking must be made."
+msgid "Booking Start Date"
+msgstr ""
+
+msgid "Booking End Date"
+msgstr ""
+
+msgid "Arrival Reminder"
+msgstr ""
+
+msgid "Appointment Location"
+msgstr ""
+
+msgid "Booking Form Intro"
+msgstr ""
+
+msgid "Booking Form Intro Box Color"
+msgstr ""
+
+msgid "Post Booking Instructions"
+msgstr ""
+
+msgid "Post Booking Instructions Box Color"
+msgstr ""
+
+msgid "Allow General Booking"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Note: Please arrive at least %d minutes before your appointment."
+msgstr ""
+
+msgid "Note: Please be in front of %1$s at least %2$d minutes before your appointment."
+msgstr ""
+
+msgid "Booking Cutoff (hours)"
+msgstr ""
+
+msgid "How many hours before the appointment the booking window closes."
 msgstr ""
 
 msgid "Maximum Advance (days)"
@@ -173,6 +212,123 @@ msgid "Settings saved."
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+msgid "Select Department"
+msgstr ""
+
+msgid "Select Provider"
+msgstr ""
+
+msgid "Installation Checklist"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
+
+msgid "Missing"
+msgstr ""
+
+msgid "Installation check passed: tables, roles and capabilities are ready."
+msgstr ""
+
+msgid "Installation issues detected: some tables/roles/capabilities are missing."
+msgstr ""
+
+msgid "Recheck"
+msgstr ""
+
+msgid "Repair Now"
+msgstr ""
+
+msgid "This area is available in Pro version."
+msgstr ""
+
+msgid "This tab can be edited in Pro version."
+msgstr ""
+
+msgid "Please select a scope item first."
+msgstr ""
+
+msgid "OAuth Client ID"
+msgstr ""
+
+msgid "OAuth Client Secret"
+msgstr ""
+
+msgid "Account ID"
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "Merchant ID"
+msgstr ""
+
+msgid "Merchant Key"
+msgstr ""
+
+msgid "Merchant Salt"
+msgstr ""
+
+msgid "TRY — Turkish Lira"
+msgstr ""
+
+msgid "USD — US Dollar"
+msgstr ""
+
+msgid "EUR — Euro"
+msgstr ""
+
+msgid "GBP — Pound"
+msgstr ""
+
+msgid "Stripe"
+msgstr ""
+
+msgid "PayPal"
+msgstr ""
+
+msgid "PayTR"
+msgstr ""
+
+msgid "İyzico"
+msgstr ""
+
+msgid "PayTR Merchant ID"
+msgstr ""
+
+msgid "PayTR Merchant Key"
+msgstr ""
+
+msgid "PayTR Merchant Salt"
+msgstr ""
+
+msgid "PayTR Test Mode"
+msgstr ""
+
+msgid "Stripe Secret Key"
+msgstr ""
+
+msgid "Stripe Webhook Secret"
+msgstr ""
+
+msgid "İyzico API Key"
+msgstr ""
+
+msgid "İyzico Secret Key"
+msgstr ""
+
+msgid "İyzico Sandbox"
+msgstr ""
+
+msgid "Zoom"
+msgstr ""
+
+msgid "Google connection failed."
 msgstr ""
 
 msgid "Pending"
@@ -765,4 +921,91 @@ msgid "Individual"
 msgstr ""
 
 msgid "Unit"
+msgstr ""
+
+msgid "Booking Block Settings"
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Booking Mode Override"
+msgstr ""
+
+msgid "Auto (Global/Scope Resolution)"
+msgstr ""
+
+msgid "Auto (from plugin settings)"
+msgstr ""
+
+msgid "Selected form:"
+msgstr ""
+
+msgid "Selected form: automatic resolution (global/department/provider)."
+msgstr ""
+
+msgid "Booking Mode"
+msgstr ""
+
+msgid "General booking (no department, no provider)"
+msgstr ""
+
+msgid "Department-based (without provider selection)"
+msgstr ""
+
+msgid "Department-based (with provider selection)"
+msgstr ""
+
+msgid "Provider-based (without department step)"
+msgstr ""
+
+msgid "Booking Button Text"
+msgstr ""
+
+msgid "SMS (Twilio / NetGSM)"
+msgstr ""
+
+msgid "Configure SMS provider credentials for notification templates."
+msgstr ""
+
+msgid "SMS Provider"
+msgstr ""
+
+msgid "Twilio Account SID"
+msgstr ""
+
+msgid "Twilio Auth Token"
+msgstr ""
+
+msgid "Twilio From Number"
+msgstr ""
+
+msgid "NetGSM Usercode"
+msgstr ""
+
+msgid "NetGSM Password"
+msgstr ""
+
+msgid "NetGSM Header"
+msgstr ""
+
+msgid "WhatsApp (Meta Cloud API)"
+msgstr ""
+
+msgid "Send WhatsApp notifications via Meta Cloud API in Pro version."
+msgstr ""
+
+msgid "WhatsApp Provider"
+msgstr ""
+
+msgid "Phone Number ID"
+msgstr ""
+
+msgid "Access Token"
+msgstr ""
+
+msgid "Graph API Version"
+msgstr ""
+
+msgid "WhatsApp"
 msgstr ""

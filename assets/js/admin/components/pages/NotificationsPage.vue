@@ -115,6 +115,7 @@
             <select class="erta-input" v-model="editing.channel">
               <option value="email">{{ channelLabel('email') }}</option>
               <option value="sms">{{ channelLabel('sms') }}</option>
+              <option v-if="isPro" value="whatsapp">{{ channelLabel('whatsapp') }}</option>
             </select>
           </div>
 
@@ -206,6 +207,7 @@ import { useAdminApi } from '../../composables/useAdminApi.js';
 
 const api = useAdminApi();
 const t   = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
+const isPro = Boolean(window.ertaAdminData?.isPro);
 
 const loading   = ref(true);
 const saving    = ref(false);
@@ -279,6 +281,7 @@ function eventIcon(event)  { return EVENT_ICONS[event]  ?? '📧'; }
 function channelLabel(channel) {
   if (channel === 'email') return t('channelEmail');
   if (channel === 'sms') return t('channelSms');
+  if (channel === 'whatsapp') return t('channelWhatsapp');
   return channel;
 }
 
@@ -436,6 +439,32 @@ async function createCustomerAdminEmailPair(event) {
 
     templates.value.push(data);
     created += 1;
+  }
+
+  if (isPro) {
+    const existsWhatsAppCustomer = templates.value.some((tpl) => {
+      const tplEvent = tpl.event || tpl.event_type;
+      const tplRecipient = tpl.recipient || tpl.recipient_type;
+      return tplEvent === event && tpl.channel === 'whatsapp' && tplRecipient === 'customer';
+    });
+
+    if (!existsWhatsAppCustomer) {
+      const { data, error: err } = await api.saveTemplate({
+        event,
+        channel: 'whatsapp',
+        recipient: 'customer',
+        subject: '',
+        body: '',
+        is_active: 0,
+      });
+
+      if (err) {
+        error.value = err;
+      } else {
+        templates.value.push(data);
+        created += 1;
+      }
+    }
   }
 
   saving.value = false;

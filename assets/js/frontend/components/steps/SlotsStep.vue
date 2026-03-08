@@ -7,8 +7,8 @@
 
     <div class="erta-slot-grid">
       <button
-        v-for="slot in slots"
-        :key="slot.time"
+        v-for="(slot, index) in slots"
+        :key="`${slot.time}-${slot.provider_id || 'none'}-${index}`"
         class="erta-slot"
         :class="{ 'erta-slot--selected': selectedTime === slot.time }"
         :disabled="!slot.available"

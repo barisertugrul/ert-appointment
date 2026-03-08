@@ -300,6 +300,7 @@ final class AppointmentService {
 
 		// Check if actor is an assigned provider user.
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional permission check on mapping table.
 		$isProvider = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}erta_provider_users

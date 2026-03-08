@@ -9,6 +9,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 use ERTAppointment\Domain\Schedule\AvailabilityService;
+use ERTAppointment\Settings\ResolvedConfig;
 use ERTAppointment\Settings\SettingsManager;
 
 /**
@@ -42,7 +43,7 @@ final class AvailabilityApiController {
 		}
 
 		$slots = $this->availabilityService->getAvailableSlots( $providerId, $date );
-		$config = $this->settings->resolveForProvider( $providerId );
+		$config = $this->resolveMetaConfig( $providerId );
 
 		return new WP_REST_Response(
 			array(
@@ -82,7 +83,7 @@ final class AvailabilityApiController {
 		}
 
 		$calendar = $this->availabilityService->getAvailabilityCalendar( $providerId, $from, $to );
-		$config = $this->settings->resolveForProvider( $providerId );
+		$config = $this->resolveMetaConfig( $providerId );
 
 		return new WP_REST_Response(
 			array(
@@ -102,11 +103,25 @@ final class AvailabilityApiController {
 			'booking_end_date'         => $config->bookingEndDate(),
 			'appointment_location'     => $config->appointmentLocation(),
 			'booking_form_intro'       => $config->bookingFormIntro(),
+			'booking_form_intro_color' => $config->bookingFormIntroColor(),
 			'post_booking_instructions'=> $config->postBookingInstructions(),
+			'post_booking_instructions_color' => $config->postBookingInstructionsColor(),
 			'show_arrival_reminder'    => $config->showArrivalReminder(),
+			'booking_mode'             => $config->bookingMode(),
 			'arrival_buffer'           => $config->arrivalBuffer(),
 			'allow_general_booking'    => $config->allowGeneralBooking(),
 			'general_provider_id'      => $config->generalProviderId(),
 		);
+	}
+
+	private function resolveMetaConfig( int $providerId ) {
+		$globalMode = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
+
+		if ( $globalMode === 'general' ) {
+			$global = $this->settings->getAll( 'global', null );
+			return new ResolvedConfig( $global, null );
+		}
+
+		return $this->settings->resolveForProvider( $providerId );
 	}
 }

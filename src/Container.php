@@ -142,19 +142,23 @@ final class Container {
 		} catch ( \ReflectionException $e ) {
 			$class_name = sanitize_text_field( $class );
 			$error_text = sanitize_text_field( $e->getMessage() );
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- exception messages are not rendered as HTML output.
 			throw new RuntimeException(
 				sprintf( 'Cannot reflect class [%s]: %s', $class_name, $error_text ),
 				0,
 				$e
 			);
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		if ( ! $reflector->isInstantiable() ) {
 			$class_name = sanitize_text_field( $class );
+			// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- exception messages are not rendered as HTML output.
 			throw new RuntimeException(
 				sprintf( 'Class [%s] is not instantiable. ', $class_name )
 				. 'Did you forget to register a concrete binding for an interface?'
 			);
+			// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		$constructor = $reflector->getConstructor();
@@ -187,6 +191,7 @@ final class Container {
 
 		$param_name = sanitize_text_field( $param->getName() );
 		$class_name = sanitize_text_field( $class );
+		// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- exception messages are not rendered as HTML output.
 		throw new RuntimeException(
 			sprintf(
 				'Cannot resolve primitive parameter [$%s] in class [%s]. Please use a factory closure for this binding.',
@@ -194,5 +199,6 @@ final class Container {
 				$class_name
 			)
 		);
+		// phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 	}
 }

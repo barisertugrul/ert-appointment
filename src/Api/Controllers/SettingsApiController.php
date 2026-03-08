@@ -41,11 +41,14 @@ final class SettingsApiController {
 		'booking_start_date',
 		'booking_end_date',
 		'show_arrival_reminder',
+		'booking_mode',
 		'allow_general_booking',
 		'general_provider_id',
 		'appointment_location',
 		'booking_form_intro',
+		'booking_form_intro_color',
 		'post_booking_instructions',
+		'post_booking_instructions_color',
 
 		// Payment
 		'payment_required',
@@ -76,6 +79,10 @@ final class SettingsApiController {
 		'netgsm_usercode',
 		'netgsm_password',
 		'netgsm_header',
+		'whatsapp_provider',
+		'whatsapp_phone_number_id',
+		'whatsapp_access_token',
+		'whatsapp_api_version',
 
 		// Integrations
 		'google_client_id',
@@ -193,14 +200,23 @@ final class SettingsApiController {
 						'paypal_client_secret',
 						'twilio_auth_token',
 						'netgsm_password',
+						'whatsapp_access_token',
 						'iyzico_secret_key',
 					), true
 				)
 					=> sanitize_text_field( (string) $value ),   // sensitive — no URL/HTML
+				in_array( $key, array( 'booking_form_intro_color', 'post_booking_instructions_color' ), true )
+					=> $this->sanitizeColor( (string) $value ),
 				default                                                 => sanitize_text_field( (string) $value ),
 			};
 		}
 		return $out;
+	}
+
+	private function sanitizeColor( string $value ): string {
+		$normalized = \sanitize_hex_color( $value );
+
+		return $normalized ?: '';
 	}
 
 	private function normalizeScopeId( string $scope, int $scopeId ): ?int {

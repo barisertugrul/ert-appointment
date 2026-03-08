@@ -2,6 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ERT Appointment 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/ert-appointment/issues\n"
+"POT-Creation-Date: 2025-06-01 00:00+0000\n"
 "PO-Revision-Date: 2025-06-01 00:00+0000\n"
 "Last-Translator: ERT Appointment Team\n"
 "Language-Team: Turkish\n"
@@ -137,20 +139,61 @@ msgstr "Ödeme"
 msgid "Integrations"
 msgstr "Entegrasyonlar"
 
-msgid "Slot Duration (minutes)"
-msgstr "Slot Süresi (dakika)"
+msgid "Appointment Duration (minutes)"
+msgstr "Randevu Süresi (dakika)"
 
-msgid "Buffer Before (minutes)"
-msgstr "Önceki Tampon (dakika)"
+msgid "Early Arrival Time (minutes)"
+msgstr "Erken Geliş Süresi (dakika)"
 
-msgid "Buffer After (minutes)"
-msgstr "Sonraki Tampon (dakika)"
+msgid "Gap Between Appointments (minutes)"
+msgstr "Randevular Arası Bekleme Süresi (dakika)"
 
-msgid "Minimum Notice (hours)"
-msgstr "Min. İhbar Süresi (saat)"
+msgid "Arrival Buffer (minutes)"
+msgstr "Erken Geliş Tamponu (dakika)"
 
-msgid "How many hours in advance a booking must be made."
-msgstr "Rezervasyonun kaç saat öncesine kadar yapılabileceği."
+msgid "Booking Start Date"
+msgstr "Randevu Başlangıç Tarihi"
+
+msgid "Booking End Date"
+msgstr "Randevu Bitiş Tarihi"
+
+msgid "Arrival Reminder"
+msgstr "Erken Geliş Hatırlatması"
+
+msgid "Appointment Location"
+msgstr "Randevu Lokasyonu"
+
+msgid "Booking Form Intro"
+msgstr "Randevu Formu Giriş Metni"
+
+msgid "Booking Form Intro Box Color"
+msgstr "Randevu Formu Giriş Kutusu Rengi"
+
+msgid "Post Booking Instructions"
+msgstr "Randevu Sonrası Talimatlar"
+
+msgid "Post Booking Instructions Box Color"
+msgstr "Randevu Sonrası Talimat Kutusu Rengi"
+
+msgid "Allow General Booking"
+msgstr "Genel Randevuya İzin Ver"
+
+msgid "Note"
+msgstr "Not"
+
+msgid "Note: Please arrive at least %d minutes before your appointment."
+msgstr "Not: Lütfen randevunuzdan en az %d dakika önce geliniz."
+
+msgid ""
+"Note: Please be in front of %1$s at least %2$d minutes before your "
+"appointment."
+msgstr "Not: Lütfen randevunuzdan en az %2$d dakika önce %1$s önünde olunuz."
+
+msgid "Booking Cutoff (hours)"
+msgstr "Rezervasyon Kapanış Süresi (saat)"
+
+msgid "How many hours before the appointment the booking window closes."
+msgstr "Rezervasyonun, randevu saatinden en geç kaç saat öncesine kadar yapılabileceğini belirler."
 
 msgid "Maximum Advance (days)"
 msgstr "Maks. İleri Tarih (gün)"
@@ -175,6 +218,125 @@ msgstr "Ayarlar kaydedildi."
 
 msgid "Message"
 msgstr "Mesaj"
+
+msgid "Select Department"
+msgstr "Bölüm Seç"
+
+msgid "Select Provider"
+msgstr "Personel Seç"
+
+msgid "Installation Checklist"
+msgstr "Kurulum Kontrol Listesi"
+
+msgid "Ready"
+msgstr "Hazır"
+
+msgid "Missing"
+msgstr "Eksik"
+
+msgid "Installation check passed: tables, roles and capabilities are ready."
+msgstr "Kurulum kontrolü başarılı: tablolar, roller ve yetkiler hazır."
+
+msgid ""
+"Installation issues detected: some tables/roles/capabilities are missing."
+msgstr ""
+"Kurulum eksikleri tespit edildi: bazı tablo/rol/yetkiler oluşturulmamış."
+
+msgid "Recheck"
+msgstr "Yeniden Kontrol Et"
+
+msgid "Repair Now"
+msgstr "Şimdi Onar"
+
+msgid "This area is available in Pro version."
+msgstr "Bu alan Pro sürümde aktiftir."
+
+msgid "This tab can be edited in Pro version."
+msgstr "Bu sekme Pro sürümde düzenlenebilir."
+
+msgid "Please select a scope item first."
+msgstr "Lütfen önce bir kapsam öğesi seçin."
+
+msgid "OAuth Client ID"
+msgstr "OAuth Client ID"
+
+msgid "OAuth Client Secret"
+msgstr "OAuth Client Secret"
+
+msgid "Account ID"
+msgstr "Hesap ID"
+
+msgid "Client ID"
+msgstr "Client ID"
+
+msgid "Client Secret"
+msgstr "Client Secret"
+
+msgid "Merchant ID"
+msgstr "Merchant ID"
+
+msgid "Merchant Key"
+msgstr "Merchant Key"
+
+msgid "Merchant Salt"
+msgstr "Merchant Salt"
+
+msgid "TRY — Turkish Lira"
+msgstr "TRY — Türk Lirası"
+
+msgid "USD — US Dollar"
+msgstr "USD — ABD Doları"
+
+msgid "EUR — Euro"
+msgstr "EUR — Euro"
+
+msgid "GBP — Pound"
+msgstr "GBP — Sterlin"
+
+msgid "Stripe"
+msgstr "Stripe"
+
+msgid "PayPal"
+msgstr "PayPal"
+
+msgid "PayTR"
+msgstr "PayTR"
+
+msgid "İyzico"
+msgstr "İyzico"
+
+msgid "PayTR Merchant ID"
+msgstr "PayTR Merchant ID"
+
+msgid "PayTR Merchant Key"
+msgstr "PayTR Merchant Key"
+
+msgid "PayTR Merchant Salt"
+msgstr "PayTR Merchant Salt"
+
+msgid "PayTR Test Mode"
+msgstr "PayTR Test Modu"
+
+msgid "Stripe Secret Key"
+msgstr "Stripe Secret Key"
+
+msgid "Stripe Webhook Secret"
+msgstr "Stripe Webhook Secret"
+
+msgid "İyzico API Key"
+msgstr "İyzico API Key"
+
+msgid "İyzico Secret Key"
+msgstr "İyzico Secret Key"
+
+msgid "İyzico Sandbox"
+msgstr "İyzico Sandbox"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Google connection failed."
+msgstr "Google bağlantısı başarısız oldu."
 
 msgid "Pending"
 msgstr "Beklemede"
@@ -414,7 +576,8 @@ msgid "Add this URI to your Google OAuth allowed redirect URIs."
 msgstr "Bu URI'yi Google OAuth izin verilen yönlendirme URI'lerine ekleyin."
 
 msgid "Could not get Google auth URL. Check credentials and try again."
-msgstr "Google auth URL alınamadı. Kimlik bilgilerini kontrol edip tekrar deneyin."
+msgstr ""
+"Google auth URL alınamadı. Kimlik bilgilerini kontrol edip tekrar deneyin."
 
 msgid "Automatically create Zoom meetings for confirmed appointments."
 msgstr "Onaylanan randevular için otomatik Zoom toplantısı oluşturun."
@@ -513,7 +676,7 @@ msgid "Your Details"
 msgstr "Bilgileriniz"
 
 msgid "Book Now"
-msgstr "Rezervasyon Yap"
+msgstr "Randevu Al"
 
 msgid "Submit"
 msgstr "Gönder"
@@ -602,8 +765,12 @@ msgstr "\"%s\" alanı zorunludur."
 msgid "Department not found."
 msgstr "Bölüm bulunamadı."
 
-msgid "Cannot delete department with assigned providers. Reassign or delete providers first."
-msgstr "Atanmış sağlayıcıları olan bölüm silinemez. Önce sağlayıcıları yeniden atayın veya silin."
+msgid ""
+"Cannot delete department with assigned providers. Reassign or delete "
+"providers first."
+msgstr ""
+"Atanmış sağlayıcıları olan bölüm silinemez. Önce sağlayıcıları yeniden "
+"atayın veya silin."
 
 msgid "Name is required."
 msgstr "Ad zorunludur."
@@ -692,7 +859,6 @@ msgstr "Yeni randevu oluşturuldu – {{customer_name}}"
 msgid "Appointment cancelled – {{customer_name}}"
 msgstr "Randevu iptal edildi – {{customer_name}}"
 
-
 msgid "My Panel"
 msgstr "Panelim"
 
@@ -767,3 +933,90 @@ msgstr "Bireysel"
 
 msgid "Unit"
 msgstr "Birim"
+
+msgid "Booking Block Settings"
+msgstr "Randevu Blok Ayarları"
+
+msgid "Form"
+msgstr "Form"
+
+msgid "Booking Mode Override"
+msgstr "Randevu Modu Geçersiz Kılma"
+
+msgid "Auto (Global/Scope Resolution)"
+msgstr "Otomatik (Global/Kapsam Çözümleme)"
+
+msgid "Auto (from plugin settings)"
+msgstr "Otomatik (eklenti ayarlarından)"
+
+msgid "Selected form:"
+msgstr "Seçili form:"
+
+msgid "Selected form: automatic resolution (global/department/provider)."
+msgstr "Seçili form: otomatik çözümleme (global/bölüm/personel)."
+
+msgid "Booking Mode"
+msgstr "Randevu Modu"
+
+msgid "General booking (no department, no provider)"
+msgstr "Genel randevu (bölüm yok, personel yok)"
+
+msgid "Department-based (without provider selection)"
+msgstr "Bölüm bazlı (personel seçimi olmadan)"
+
+msgid "Department-based (with provider selection)"
+msgstr "Bölüm bazlı (personel seçimi ile)"
+
+msgid "Provider-based (without department step)"
+msgstr "Personel bazlı (bölüm adımı olmadan)"
+
+msgid "Booking Button Text"
+msgstr "Randevu Butonu Metni"
+
+msgid "SMS (Twilio / NetGSM)"
+msgstr "SMS (Twilio / NetGSM)"
+
+msgid "Configure SMS provider credentials for notification templates."
+msgstr "Bildirim şablonları için SMS sağlayıcı kimlik bilgilerini yapılandırın."
+
+msgid "SMS Provider"
+msgstr "SMS Sağlayıcı"
+
+msgid "Twilio Account SID"
+msgstr "Twilio Hesap SID"
+
+msgid "Twilio Auth Token"
+msgstr "Twilio Yetkilendirme Token'ı"
+
+msgid "Twilio From Number"
+msgstr "Twilio Gönderen Numarası"
+
+msgid "NetGSM Usercode"
+msgstr "NetGSM Kullanıcı Kodu"
+
+msgid "NetGSM Password"
+msgstr "NetGSM Şifresi"
+
+msgid "NetGSM Header"
+msgstr "NetGSM Başlık"
+
+msgid "WhatsApp (Meta Cloud API)"
+msgstr "WhatsApp (Meta Cloud API)"
+
+msgid "Send WhatsApp notifications via Meta Cloud API in Pro version."
+msgstr "Pro sürümde Meta Cloud API üzerinden WhatsApp bildirimleri gönderin."
+
+msgid "WhatsApp Provider"
+msgstr "WhatsApp Sağlayıcı"
+
+msgid "Phone Number ID"
+msgstr "Telefon Numarası ID"
+
+msgid "Access Token"
+msgstr "Erişim Token'ı"
+
+msgid "Graph API Version"
+msgstr "Graph API Sürümü"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"

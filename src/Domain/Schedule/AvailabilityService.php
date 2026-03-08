@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Domain\Schedule;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- availability calculation intentionally reads plugin-owned custom tables.
+
 use DateTimeImmutable;
 use ERTAppointment\Domain\Appointment\AppointmentRepository;
 use ERTAppointment\Infrastructure\Cache\TransientCache;
+use ERTAppointment\Settings\ResolvedConfig;
 use ERTAppointment\Settings\SettingsManager;
 
 /**
@@ -45,7 +48,13 @@ final class AvailabilityService {
 			$cacheKey,
 			120,
 			function () use ( $providerId, $date, $dateStr ) {
-				$config = $this->settings->resolveForProvider( $providerId );
+				$config = $this->resolveAvailabilityConfig( $providerId );
+				$slotDuration = $config->slotDuration();
+				$bufferAfter  = $config->bufferAfter();
+				$effectiveSlotInterval = max(
+					$config->slotInterval(),
+					$slotDuration + max( 0, $bufferAfter )
+				);
 
 				if ( ! $this->isWithinBookingWindow( $date, $config ) ) {
 					return array();
@@ -83,10 +92,10 @@ final class AvailabilityService {
 					date:           $date,
 					openTime:       $hours['start'],
 					closeTime:      $hours['end'],
-					slotDuration:   $config->slotDuration(),
-					slotInterval:   $config->slotInterval(),
-					bufferBefore:   $config->bufferBefore(),
-					bufferAfter:    $config->bufferAfter(),
+					slotDuration:   $slotDuration,
+					slotInterval:   $effectiveSlotInterval,
+					bufferBefore:   0,
+					bufferAfter:    $bufferAfter,
 					minimumNotice:  $config->minimumNotice(),
 					breaks:         $breaks,
 					bookedBlocks:   $bookedBlocks,
@@ -103,6 +112,17 @@ final class AvailabilityService {
 				return apply_filters( 'erta_available_slots', $slots, $providerId, $dateStr );
 			}
 		);
+	}
+
+	private function resolveAvailabilityConfig( int $providerId ) {
+		$globalMode = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
+
+		if ( $globalMode === 'general' ) {
+			$global = $this->settings->getAll( 'global', null );
+			return new ResolvedConfig( $global, null );
+		}
+
+		return $this->settings->resolveForProvider( $providerId );
 	}
 
 	private function isWithinBookingWindow( DateTimeImmutable $date, $config ): bool {
@@ -156,7 +176,7 @@ final class AvailabilityService {
 	 */
 	private function loadSpecialDay( int $providerId, DateTimeImmutable $date, $config ): ?array {
 		global $wpdb;
-		$table   = esc_sql( $wpdb->prefix . 'erta_special_days' );
+		$table   = $wpdb->prefix . 'erta_special_days';
 		$dateStr = $date->format( 'Y-m-d' );
 
 		// Priority: provider > department > global.
@@ -173,9 +193,10 @@ final class AvailabilityService {
 
 			$row = $wpdb->get_row(
 				$wpdb->prepare(
-					'SELECT * FROM ' . $table . '
+					'SELECT * FROM %i
                      WHERE scope = %s AND scope_id <=> %d AND date = %s
                      LIMIT 1',
+					$table,
 					$scope,
 					$scopeId,
 					$dateStr
@@ -198,7 +219,7 @@ final class AvailabilityService {
 	 */
 	private function loadBreaks( int $providerId, DateTimeImmutable $date, $config, int $dayOfWeek ): array {
 		global $wpdb;
-		$table = esc_sql( $wpdb->prefix . 'erta_breaks' );
+		$table = $wpdb->prefix . 'erta_breaks';
 
 		$scopeParts = array(
 			array( 'global', null ),
@@ -215,9 +236,10 @@ final class AvailabilityService {
 
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
-					'SELECT * FROM ' . $table . '
+					'SELECT * FROM %i
                      WHERE scope = %s AND scope_id <=> %d
                        AND (day_of_week IS NULL OR day_of_week = %d)',
+					$table,
 					$scope,
 					$scopeId,
 					$dayOfWeek
@@ -236,3 +258,5 @@ final class AvailabilityService {
 		return $allBreaks;
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

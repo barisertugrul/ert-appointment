@@ -46,7 +46,7 @@ final class NotificationService {
 				continue;
 			}
 
-			$recipient = $this->resolveRecipient( $rule['recipient_type'], $appointment );
+			$recipient = $this->resolveRecipient( $rule['recipient_type'], $appointment, (string) ( $rule['channel'] ?? 'email' ) );
 			if ( $recipient === null ) {
 				continue;
 			}
@@ -90,6 +90,7 @@ final class NotificationService {
 	private function loadRules( string $event ): array {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional read from plugin templates table.
 		return $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_notification_templates
@@ -116,7 +117,16 @@ final class NotificationService {
 	/**
 	 * Resolves the notification recipient address (email or phone).
 	 */
-	private function resolveRecipient( string $type, Appointment $appointment ): ?string {
+	private function resolveRecipient( string $type, Appointment $appointment, string $channel = 'email' ): ?string {
+		if ( in_array( $channel, array( 'sms', 'whatsapp' ), true ) ) {
+			return match ( $type ) {
+				'customer' => $appointment->customerPhone ?: null,
+				'provider' => $this->loadProviderPhone( $appointment->providerId ),
+				'admin'    => null,
+				default    => null,
+			};
+		}
+
 		return match ( $type ) {
 			'customer' => $appointment->customerEmail ?: null,
 			'provider' => $this->loadProviderEmail( $appointment->providerId ),
@@ -213,6 +223,7 @@ final class NotificationService {
 
 	private function loadProviderName( int $providerId ): string {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider display name.
 		return (string) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT name FROM {$wpdb->prefix}erta_providers WHERE id = %d",
@@ -223,6 +234,7 @@ final class NotificationService {
 
 	private function loadProviderEmail( int $providerId ): ?string {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider email.
 		$email = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT email FROM {$wpdb->prefix}erta_providers WHERE id = %d",
@@ -232,6 +244,7 @@ final class NotificationService {
 
 		// Fall back to the first assigned user's email.
 		if ( ! $email ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional fallback lookup in mapping table.
 			$userId = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT user_id FROM {$wpdb->prefix}erta_provider_users
@@ -248,6 +261,19 @@ final class NotificationService {
 		return $email ?: null;
 	}
 
+	private function loadProviderPhone( int $providerId ): ?string {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider phone.
+		$phone = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT phone FROM {$wpdb->prefix}erta_providers WHERE id = %d",
+				$providerId
+			)
+		);
+
+		return $phone ? (string) $phone : null;
+	}
+
 	/**
 	 * Writes a delivery record to the notification log.
 	 */
@@ -261,6 +287,7 @@ final class NotificationService {
 	): void {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- intentional insert into plugin notification log table.
 		$wpdb->insert(
 			$wpdb->prefix . 'erta_notification_logs',
 			array(

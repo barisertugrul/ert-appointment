@@ -77,7 +77,8 @@ final class ProviderMenu {
 	}
 
 	public function printHideSubmenuCss(): void {
-		echo '<style>#toplevel_page_erta-provider-dashboard .wp-submenu{display:none !important;}</style>';
+		$css = '#toplevel_page_erta-provider-dashboard .wp-submenu{display:none !important;}';
+		echo '<style>' . esc_html( $css ) . '</style>';
 	}
 
 	/**
@@ -86,8 +87,9 @@ final class ProviderMenu {
 	 */
 	public function renderProviderShell(): void {
 		$page = 'erta-provider-dashboard';
-		if ( isset( $_GET['page'] ) ) {
-			$page = sanitize_key( wp_unslash( (string) $_GET['page'] ) );
+		$pageParam = filter_input( INPUT_GET, 'page', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( is_string( $pageParam ) && $pageParam !== '' ) {
+			$page = sanitize_key( wp_unslash( $pageParam ) );
 		}
 		?>
 		<div id="erta-provider-app"

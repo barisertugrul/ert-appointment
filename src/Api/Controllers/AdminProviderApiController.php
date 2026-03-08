@@ -237,6 +237,7 @@ final class AdminProviderApiController {
 		// Attach department name for display.
 		if ( $p->departmentId ) {
 			global $wpdb;
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup on plugin table.
 			$row['department_name'] = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT name FROM {$wpdb->prefix}erta_departments WHERE id = %d",
@@ -251,6 +252,7 @@ final class AdminProviderApiController {
 	private function getAssignedUsers( int $providerId ): array {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional join for provider-user mapping.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT pu.user_id, pu.role, u.display_name, u.user_email
@@ -268,6 +270,7 @@ final class AdminProviderApiController {
 
 	private function hasUpcomingAppointments( int $providerId ): bool {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional count query for safe delete guard.
 		return (bool) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}erta_appointments

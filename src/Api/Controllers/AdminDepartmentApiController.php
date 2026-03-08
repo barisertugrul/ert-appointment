@@ -176,20 +176,24 @@ final class AdminDepartmentApiController {
 		$counter = 1;
 
 		while ( true ) {
-			$exists = $excludeId
-				? $wpdb->get_var(
+			if ( $excludeId ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional uniqueness check on plugin table.
+				$exists = $wpdb->get_var(
 					$wpdb->prepare(
 						"SELECT id FROM {$wpdb->prefix}erta_departments WHERE slug = %s AND id != %d",
 						$slug,
 						$excludeId
 					)
-				)
-				: $wpdb->get_var(
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional uniqueness check on plugin table.
+				$exists = $wpdb->get_var(
 					$wpdb->prepare(
 						"SELECT id FROM {$wpdb->prefix}erta_departments WHERE slug = %s",
 						$slug
 					)
 				);
+			}
 
 			if ( ! $exists ) {
 				break;
@@ -204,6 +208,7 @@ final class AdminDepartmentApiController {
 
 	private function hasProviders( int $departmentId ): bool {
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional count query on plugin table.
 		return (bool) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}erta_providers WHERE department_id = %d AND status != 'deleted'",

@@ -293,12 +293,28 @@
 
 .erta-datetime-badge {
   display: inline-flex;
+  align-items: center;
+  gap: 10px;
   padding: 8px 14px;
   background: #dbeafe;
   color: var(--erta-primary);
   border-radius: 6px;
   font-weight: 600;
   font-size: .9rem;
+}
+
+.erta-datetime-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.erta-datetime-icon {
+  line-height: 1;
+}
+
+.erta-datetime-sep {
+  color: #60a5fa;
 }
 
 .erta-check-label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
@@ -314,6 +330,17 @@
   color: var(--erta-gray-800);
   margin-bottom: 20px;
   flex-wrap: wrap;
+}
+
+.erta-info-box {
+  --erta-info-box-bg: #dbeafe;
+  background: var(--erta-info-box-bg);
+  border-radius: var(--erta-radius);
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  color: var(--erta-gray-800);
+  font-size: .92rem;
+  line-height: 1.5;
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */

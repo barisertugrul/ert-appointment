@@ -2,6 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ERT Appointment 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/ert-appointment/issues\n"
+"POT-Creation-Date: 2025-06-01 00:00+0000\n"
 "PO-Revision-Date: 2025-06-01 00:00+0000\n"
 "Last-Translator: ERT Appointment Team\n"
 "Language-Team: German\n"
@@ -33,51 +35,6 @@ msgid "Notifications"
 msgstr ""
 
 msgid "Reports"
-msgstr ""
-
-msgid "Add Template"
-msgstr "Vorlage hinzufügen"
-
-msgid "Quick Template Combos"
-msgstr "Schnellvorlagen-Kombinationen"
-
-msgid "Create Customer + Admin Email"
-msgstr "Kunden- + Admin-E-Mail erstellen"
-
-msgid "Template Group"
-msgstr "Vorlagengruppe"
-
-msgid "Template Channel"
-msgstr "Vorlagenkanal"
-
-msgid "Template Recipient"
-msgstr "Vorlagenempfänger"
-
-msgid "New Booking (Pending)"
-msgstr ""
-
-msgid "Booking Confirmed"
-msgstr ""
-
-msgid "Booking Cancelled"
-msgstr ""
-
-msgid "Booking Rescheduled"
-msgstr ""
-
-msgid "No-Show Marked"
-msgstr ""
-
-msgid "Reminder"
-msgstr ""
-
-msgid "24h Reminder"
-msgstr ""
-
-msgid "1h Reminder"
-msgstr ""
-
-msgid "Waitlist Slot Available"
 msgstr ""
 
 msgid "Settings"
@@ -182,20 +139,61 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
-msgid "Slot Duration (minutes)"
+msgid "Appointment Duration (minutes)"
+msgstr "Appointment Duration (minutes)"
+
+msgid "Early Arrival Time (minutes)"
+msgstr "Early Arrival Time (minutes)"
+
+msgid "Gap Between Appointments (minutes)"
+msgstr "Gap Between Appointments (minutes)"
+
+msgid "Arrival Buffer (minutes)"
 msgstr ""
 
-msgid "Buffer Before (minutes)"
+msgid "Booking Start Date"
 msgstr ""
 
-msgid "Buffer After (minutes)"
+msgid "Booking End Date"
 msgstr ""
 
-msgid "Minimum Notice (hours)"
+msgid "Arrival Reminder"
 msgstr ""
 
-msgid "How many hours in advance a booking must be made."
+msgid "Appointment Location"
 msgstr ""
+
+msgid "Booking Form Intro"
+msgstr ""
+
+msgid "Booking Form Intro Box Color"
+msgstr ""
+
+msgid "Post Booking Instructions"
+msgstr ""
+
+msgid "Post Booking Instructions Box Color"
+msgstr ""
+
+msgid "Allow General Booking"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Note: Please arrive at least %d minutes before your appointment."
+msgstr ""
+
+msgid ""
+"Note: Please be in front of %1$s at least %2$d minutes before your "
+"appointment."
+msgstr ""
+
+msgid "Booking Cutoff (hours)"
+msgstr "Booking Cutoff (hours)"
+
+msgid "How many hours before the appointment the booking window closes."
+msgstr "How many hours before the appointment the booking window closes."
 
 msgid "Maximum Advance (days)"
 msgstr ""
@@ -219,6 +217,128 @@ msgid "Settings saved."
 msgstr ""
 
 msgid "Message"
+msgstr ""
+
+#, fuzzy
+msgid "Select Department"
+msgstr "Abteilung wählen"
+
+#, fuzzy
+msgid "Select Provider"
+msgstr "Anbieter wählen"
+
+msgid "Installation Checklist"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
+
+msgid "Missing"
+msgstr ""
+
+msgid "Installation check passed: tables, roles and capabilities are ready."
+msgstr ""
+
+msgid ""
+"Installation issues detected: some tables/roles/capabilities are missing."
+msgstr ""
+
+msgid "Recheck"
+msgstr ""
+
+msgid "Repair Now"
+msgstr ""
+
+msgid "This area is available in Pro version."
+msgstr ""
+
+msgid "This tab can be edited in Pro version."
+msgstr ""
+
+#, fuzzy
+msgid "Please select a scope item first."
+msgstr "Bitte wählen Sie eine Abteilung, wenn der Typ Einheit ist."
+
+msgid "OAuth Client ID"
+msgstr ""
+
+msgid "OAuth Client Secret"
+msgstr ""
+
+msgid "Account ID"
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "Merchant ID"
+msgstr ""
+
+msgid "Merchant Key"
+msgstr ""
+
+msgid "Merchant Salt"
+msgstr ""
+
+msgid "TRY — Turkish Lira"
+msgstr ""
+
+msgid "USD — US Dollar"
+msgstr ""
+
+msgid "EUR — Euro"
+msgstr ""
+
+msgid "GBP — Pound"
+msgstr ""
+
+msgid "Stripe"
+msgstr ""
+
+msgid "PayPal"
+msgstr ""
+
+msgid "PayTR"
+msgstr ""
+
+msgid "İyzico"
+msgstr ""
+
+msgid "PayTR Merchant ID"
+msgstr ""
+
+msgid "PayTR Merchant Key"
+msgstr ""
+
+msgid "PayTR Merchant Salt"
+msgstr ""
+
+msgid "PayTR Test Mode"
+msgstr ""
+
+msgid "Stripe Secret Key"
+msgstr ""
+
+msgid "Stripe Webhook Secret"
+msgstr ""
+
+msgid "İyzico API Key"
+msgstr ""
+
+msgid "İyzico Secret Key"
+msgstr ""
+
+msgid "İyzico Sandbox"
+msgstr ""
+
+#, fuzzy
+msgid "Zoom"
+msgstr "Zoom beitreten"
+
+msgid "Google connection failed."
 msgstr ""
 
 msgid "Pending"
@@ -301,33 +421,6 @@ msgstr "Experten bearbeiten"
 
 msgid "No providers found."
 msgstr "Keine Mitarbeitenden gefunden."
-
-msgid "Staff"
-msgstr "Personal"
-
-msgid "Staff Member"
-msgstr "Experte"
-
-msgid "New Staff Member"
-msgstr "Neuer Experte"
-
-msgid "Add Staff Member"
-msgstr "Experten hinzufügen"
-
-msgid "Edit Staff Member"
-msgstr "Experten bearbeiten"
-
-msgid "No staff members found."
-msgstr "Keine Mitarbeitenden gefunden."
-
-msgid "Please select a department when type is Unit."
-msgstr "Bitte wählen Sie eine Abteilung, wenn der Typ Einheit ist."
-
-msgid "Individual"
-msgstr "Einzeln"
-
-msgid "Unit"
-msgstr "Einheit"
 
 msgid "New Form"
 msgstr ""
@@ -483,7 +576,8 @@ msgid "Create OAuth 2.0 credentials in Google Cloud Console."
 msgstr "OAuth 2.0-Anmeldedaten in der Google Cloud Console erstellen."
 
 msgid "Add this URI to your Google OAuth allowed redirect URIs."
-msgstr "Diese URI zu den erlaubten Weiterleitungs-URIs in Google OAuth hinzufügen."
+msgstr ""
+"Diese URI zu den erlaubten Weiterleitungs-URIs in Google OAuth hinzufügen."
 
 msgid "Could not get Google auth URL. Check credentials and try again."
 msgstr "Google-Auth-URL konnte nicht abgerufen werden. Anmeldedaten prüfen."
@@ -618,7 +712,8 @@ msgid "Something went wrong. Please try again."
 msgstr "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 
 msgid "This slot is no longer available. Please choose another."
-msgstr "Dieser Termin ist nicht mehr verfügbar. Bitte wählen Sie einen anderen."
+msgstr ""
+"Dieser Termin ist nicht mehr verfügbar. Bitte wählen Sie einen anderen."
 
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
@@ -674,7 +769,9 @@ msgstr ""
 msgid "Department not found."
 msgstr ""
 
-msgid "Cannot delete department with assigned providers. Reassign or delete providers first."
+msgid ""
+"Cannot delete department with assigned providers. Reassign or delete "
+"providers first."
 msgstr ""
 
 msgid "Name is required."
@@ -763,3 +860,165 @@ msgstr "Neuer Termin gebucht – {{customer_name}}"
 
 msgid "Appointment cancelled – {{customer_name}}"
 msgstr "Termin storniert – {{customer_name}}"
+
+msgid "My Panel"
+msgstr ""
+
+msgid "Add Template"
+msgstr "Vorlage hinzufügen"
+
+msgid "Quick Template Combos"
+msgstr "Schnellvorlagen-Kombinationen"
+
+msgid "Create Customer + Admin Email"
+msgstr "Kunden- + Admin-E-Mail erstellen"
+
+msgid "Template Group"
+msgstr "Vorlagengruppe"
+
+msgid "Template Channel"
+msgstr "Vorlagenkanal"
+
+msgid "Template Recipient"
+msgstr "Vorlagenempfänger"
+
+msgid "New Booking (Pending)"
+msgstr ""
+
+msgid "Booking Confirmed"
+msgstr ""
+
+msgid "Booking Cancelled"
+msgstr ""
+
+msgid "Booking Rescheduled"
+msgstr ""
+
+msgid "No-Show Marked"
+msgstr ""
+
+msgid "Reminder"
+msgstr ""
+
+msgid "24h Reminder"
+msgstr ""
+
+msgid "1h Reminder"
+msgstr ""
+
+msgid "Waitlist Slot Available"
+msgstr ""
+
+msgid "Staff"
+msgstr "Personal"
+
+msgid "Staff Member"
+msgstr "Experte"
+
+msgid "New Staff Member"
+msgstr "Neuer Experte"
+
+msgid "Add Staff Member"
+msgstr "Experten hinzufügen"
+
+msgid "Edit Staff Member"
+msgstr "Experten bearbeiten"
+
+msgid "No staff members found."
+msgstr "Keine Mitarbeitenden gefunden."
+
+msgid "Please select a department when type is Unit."
+msgstr "Bitte wählen Sie eine Abteilung, wenn der Typ Einheit ist."
+
+msgid "Individual"
+msgstr "Einzeln"
+
+msgid "Unit"
+msgstr "Einheit"
+
+msgid "Booking Block Settings"
+msgstr "Booking Block Settings"
+
+msgid "Form"
+msgstr "Form"
+
+msgid "Booking Mode Override"
+msgstr "Booking Mode Override"
+
+msgid "Auto (Global/Scope Resolution)"
+msgstr "Auto (Global/Scope Resolution)"
+
+msgid "Auto (from plugin settings)"
+msgstr "Auto (from plugin settings)"
+
+msgid "Selected form:"
+msgstr "Selected form:"
+
+msgid "Selected form: automatic resolution (global/department/provider)."
+msgstr "Selected form: automatic resolution (global/department/provider)."
+
+msgid "Booking Mode"
+msgstr "Booking Mode"
+
+msgid "General booking (no department, no provider)"
+msgstr "General booking (no department, no provider)"
+
+msgid "Department-based (without provider selection)"
+msgstr "Department-based (without provider selection)"
+
+msgid "Department-based (with provider selection)"
+msgstr "Department-based (with provider selection)"
+
+msgid "Provider-based (without department step)"
+msgstr "Provider-based (without department step)"
+
+msgid "Booking Button Text"
+msgstr "Booking Button Text"
+
+msgid "SMS (Twilio / NetGSM)"
+msgstr "SMS (Twilio / NetGSM)"
+
+msgid "Configure SMS provider credentials for notification templates."
+msgstr "Configure SMS provider credentials for notification templates."
+
+msgid "SMS Provider"
+msgstr "SMS Provider"
+
+msgid "Twilio Account SID"
+msgstr "Twilio Account SID"
+
+msgid "Twilio Auth Token"
+msgstr "Twilio Auth Token"
+
+msgid "Twilio From Number"
+msgstr "Twilio From Number"
+
+msgid "NetGSM Usercode"
+msgstr "NetGSM Usercode"
+
+msgid "NetGSM Password"
+msgstr "NetGSM Password"
+
+msgid "NetGSM Header"
+msgstr "NetGSM Header"
+
+msgid "WhatsApp (Meta Cloud API)"
+msgstr "WhatsApp (Meta Cloud API)"
+
+msgid "Send WhatsApp notifications via Meta Cloud API in Pro version."
+msgstr "Send WhatsApp notifications via Meta Cloud API in Pro version."
+
+msgid "WhatsApp Provider"
+msgstr "WhatsApp Provider"
+
+msgid "Phone Number ID"
+msgstr "Phone Number ID"
+
+msgid "Access Token"
+msgstr "Access Token"
+
+msgid "Graph API Version"
+msgstr "Graph API Version"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"

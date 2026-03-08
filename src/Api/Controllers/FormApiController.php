@@ -22,11 +22,21 @@ final class FormApiController {
 
 		return new WP_REST_Response(
 			array(
-				'id'     => $form->id,
-				'name'   => $form->name,
-				'scope'  => $form->scope,
-				'fields' => $form->fields,
+				'id'                 => $form->id,
+				'name'               => $form->name,
+				'scope'              => $form->scope,
+				'fields'             => $form->fields,
+				'submit_button_text' => $this->getSubmitButtonText( $form->id ),
 			)
 		);
+	}
+
+	private function getSubmitButtonText( ?int $formId ): string {
+		if ( ! $formId || $formId <= 0 ) {
+			return '';
+		}
+
+		$value = get_option( 'erta_form_submit_button_' . (int) $formId, '' );
+		return is_string( $value ) ? sanitize_text_field( $value ) : '';
 	}
 }

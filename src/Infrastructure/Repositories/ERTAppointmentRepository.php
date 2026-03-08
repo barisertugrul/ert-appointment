@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Infrastructure\Repositories;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- repository performs intentional reads on plugin-owned custom tables.
+
 use DateTimeImmutable;
 use RuntimeException;
 use ERTAppointment\Domain\Appointment\Appointment;
@@ -30,10 +32,10 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 
 	public function findById( int $id ): ?Appointment {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		$row = $wpdb->get_row(
-			$wpdb->prepare( 'SELECT * FROM ' . $table . ' WHERE id = %d', $id ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $table, $id ),
 			ARRAY_A
 		);
 
@@ -44,11 +46,7 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$appointment = $this->findById( $id );
 
 		if ( $appointment === null ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-			throw new RuntimeException(
-				/* translators: %d appointment ID */
-				sprintf( esc_html__( 'Appointment #%d not found.', 'ert-appointment' ), $id )
-			);
+			throw new RuntimeException( esc_html__( 'Appointment not found.', 'ert-appointment' ) );
 		}
 
 		return $appointment;
@@ -60,14 +58,15 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		DateTimeImmutable $to
 	): array {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM ' . $table . '
+				'SELECT * FROM %i
                  WHERE provider_id = %d
                    AND start_datetime BETWEEN %s AND %s
                  ORDER BY start_datetime ASC',
+				$table,
 				$providerId,
 				$from->format( 'Y-m-d H:i:s' ),
 				$to->format( 'Y-m-d H:i:s' )
@@ -81,16 +80,17 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 	public function findBookedBlocks( int $providerId, DateTimeImmutable $date ): array {
 		global $wpdb;
 
-		$table   = $this->tableSql();
+		$table   = $this->table();
 		$dateStr = $date->format( 'Y-m-d' );
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT start_datetime, end_datetime FROM ' . $table . '
+				'SELECT start_datetime, end_datetime FROM %i
                  WHERE provider_id = %d
                    AND DATE(start_datetime) = %s
                    AND status NOT IN (\'cancelled\', \'rescheduled\', \'no_show\')
                  ORDER BY start_datetime ASC',
+				$table,
 				$providerId,
 				$dateStr
 			),
@@ -109,42 +109,78 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 	public function findByCustomerEmail( string $email, ?array $statuses = null ): array {
 		global $wpdb;
 
-		$table  = $this->tableSql();
-		$sql    = 'SELECT * FROM ' . $table . ' WHERE customer_email = %s';
-		$params = array( $email );
+		$table = $this->table();
 
-		if ( $statuses !== null && count( $statuses ) > 0 ) {
-			$placeholders = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
-			$sql         .= ' AND status IN (' . $placeholders . ')';
-			$params       = array_merge(
-				$params,
+		if ( $statuses === null || count( $statuses ) === 0 ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT * FROM %i WHERE customer_email = %s ORDER BY start_datetime DESC',
+					$table,
+					$email
+				),
+				ARRAY_A
+			);
+		} else {
+			$normalized = array_values(
 				array_map(
 					fn( $status ) => $status instanceof AppointmentStatus ? $status->value : sanitize_key( (string) $status ),
 					$statuses
 				)
 			);
+
+			if ( count( $normalized ) === 1 ) {
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						'SELECT * FROM %i WHERE customer_email = %s AND status = %s ORDER BY start_datetime DESC',
+						$table,
+						$email,
+						$normalized[0]
+					),
+					ARRAY_A
+				);
+			} elseif ( count( $normalized ) === 2 ) {
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						'SELECT * FROM %i WHERE customer_email = %s AND status IN (%s, %s) ORDER BY start_datetime DESC',
+						$table,
+						$email,
+						$normalized[0],
+						$normalized[1]
+					),
+					ARRAY_A
+				);
+			} else {
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						'SELECT * FROM %i WHERE customer_email = %s AND status IN (%s, %s, %s) ORDER BY start_datetime DESC',
+						$table,
+						$email,
+						$normalized[0],
+						$normalized[1],
+						$normalized[2]
+					),
+					ARRAY_A
+				);
+			}
 		}
-
-		$sql .= ' ORDER BY start_datetime DESC';
-
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
 
 		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
 	}
 
 	public function findUpcoming( int $limit = 50 ): array {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		$now = current_time( 'mysql' );
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM ' . $table . '
+				'SELECT * FROM %i
                  WHERE start_datetime > %s
                    AND status IN (\'pending\', \'confirmed\')
                  ORDER BY start_datetime ASC
                  LIMIT %d',
+				$table,
 				$now,
 				$limit
 			),
@@ -156,14 +192,15 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 
 	public function countByStatus( DateTimeImmutable $from, DateTimeImmutable $to ): array {
 		global $wpdb;
-		$table = $this->tableSql();
+		$table = $this->table();
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT status, COUNT(*) AS cnt
-                 FROM ' . $table . '
+                 FROM %i
                  WHERE start_datetime BETWEEN %s AND %s
                  GROUP BY status',
+				$table,
 				$from->format( 'Y-m-d H:i:s' ),
 				$to->format( 'Y-m-d H:i:s' )
 			),
@@ -180,20 +217,88 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 
 	public function paginate( int $page, int $perPage, array $filters = array() ): array {
 		global $wpdb;
-		$table  = $this->tableSql();
+		$table  = $this->table();
 		$offset = ( $page - 1 ) * $perPage;
 
-		list( $where, $params ) = $this->buildWhere( $filters );
-		$countSql = 'SELECT COUNT(*) FROM ' . $table . ' ' . $where;
-		$listSql  = 'SELECT * FROM ' . $table . ' ' . $where . ' ORDER BY start_datetime DESC LIMIT %d OFFSET %d';
+		$providerId   = (int) ( $filters['provider_id'] ?? 0 );
+		$departmentId = (int) ( $filters['department_id'] ?? 0 );
+		$statusList   = array_values( array_map( 'sanitize_key', (array) ( $filters['status'] ?? array() ) ) );
+		$status1      = $statusList[0] ?? '';
+		$status2      = $statusList[1] ?? '';
+		$status3      = $statusList[2] ?? '';
+		$dateFrom     = (string) ( $filters['date_from'] ?? '' );
+		$dateTo       = (string) ( $filters['date_to'] ?? '' );
+		$search       = (string) ( $filters['search'] ?? '' );
+		$like         = '%' . $wpdb->esc_like( $search ) . '%';
 
-		if ( count( $params ) > 0 ) {
-			$total = (int) $wpdb->get_var( $wpdb->prepare( $countSql, $params ) );
-		} else {
-			$total = (int) $wpdb->get_var( $countSql );
-		}
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i
+				 WHERE (%d = 0 OR provider_id = %d)
+				   AND (%d = 0 OR department_id = %d)
+				   AND (%s = %s OR status = %s OR status = %s OR status = %s)
+				   AND (%s = %s OR start_datetime >= %s)
+				   AND (%s = %s OR start_datetime <= %s)
+				   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)',
+				$table,
+				$providerId,
+				$providerId,
+				$departmentId,
+				$departmentId,
+				$status1,
+				'',
+				$status1,
+				$status2,
+				$status3,
+				$dateFrom,
+				'',
+				$dateFrom,
+				$dateTo,
+				'',
+				$dateTo,
+				$search,
+				'',
+				$like,
+				$like
+			)
+		);
 
-		$rows = $wpdb->get_results( $wpdb->prepare( $listSql, array_merge( $params, array( $perPage, $offset ) ) ), ARRAY_A );
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT * FROM %i
+				 WHERE (%d = 0 OR provider_id = %d)
+				   AND (%d = 0 OR department_id = %d)
+				   AND (%s = %s OR status = %s OR status = %s OR status = %s)
+				   AND (%s = %s OR start_datetime >= %s)
+				   AND (%s = %s OR start_datetime <= %s)
+				   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+				 ORDER BY start_datetime DESC
+				 LIMIT %d OFFSET %d',
+				$table,
+				$providerId,
+				$providerId,
+				$departmentId,
+				$departmentId,
+				$status1,
+				'',
+				$status1,
+				$status2,
+				$status3,
+				$dateFrom,
+				'',
+				$dateFrom,
+				$dateTo,
+				'',
+				$dateTo,
+				$search,
+				'',
+				$like,
+				$like,
+				$perPage,
+				$offset
+			),
+			ARRAY_A
+		);
 
 		return array(
 			'items' => array_map( fn( $row ) => Appointment::fromRow( $row ), $rows ),
@@ -236,54 +341,6 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 	// Query builder helpers
 	// -------------------------------------------------------------------------
 
-	/**
-	 * Builds a WHERE clause from a filter map.
-	 *
-	 * @param array<string, mixed> $filters
-	 * @return array{string, list<mixed>}
-	 */
-	private function buildWhere( array $filters ): array {
-		global $wpdb;
-
-		$conditions = array( '1=1' );
-		$params     = array();
-
-		if ( ! empty( $filters['provider_id'] ) ) {
-			$conditions[] = 'provider_id = %d';
-			$params[]     = (int) $filters['provider_id'];
-		}
-
-		if ( ! empty( $filters['department_id'] ) ) {
-			$conditions[] = 'department_id = %d';
-			$params[]     = (int) $filters['department_id'];
-		}
-
-		if ( ! empty( $filters['status'] ) ) {
-			$statuses     = (array) $filters['status'];
-			$pls          = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
-			$conditions[] = 'status IN (' . $pls . ')';
-			$params       = array_merge( $params, array_map( fn( $status ) => sanitize_key( (string) $status ), $statuses ) );
-		}
-
-		if ( ! empty( $filters['date_from'] ) ) {
-			$conditions[] = 'start_datetime >= %s';
-			$params[]     = $filters['date_from'];
-		}
-
-		if ( ! empty( $filters['date_to'] ) ) {
-			$conditions[] = 'start_datetime <= %s';
-			$params[]     = $filters['date_to'];
-		}
-
-		if ( ! empty( $filters['search'] ) ) {
-			$conditions[] = '(customer_name LIKE %s OR customer_email LIKE %s)';
-			$like         = '%' . $wpdb->esc_like( (string) $filters['search'] ) . '%';
-			$params[]     = $like;
-			$params[]     = $like;
-		}
-
-		$where = 'WHERE ' . implode( ' AND ', $conditions );
-
-		return array( $where, $params );
-	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

@@ -21,7 +21,18 @@ final class Assets {
 	 * Scripts are only enqueued when the booking shortcode is present on the page.
 	 */
 	public function enqueueFrontend(): void {
-		if ( ! $this->pageHasBookingShortcode() ) {
+		$this->enqueueFrontendInternal( false );
+	}
+
+	/**
+	 * Enqueues frontend assets regardless of content detection.
+	 */
+	public function enqueueFrontendForced(): void {
+		$this->enqueueFrontendInternal( true );
+	}
+
+	private function enqueueFrontendInternal( bool $force ): void {
+		if ( ! $force && ! $this->pageHasBookingShortcode() ) {
 			return;
 		}
 
@@ -149,6 +160,10 @@ final class Assets {
 			return false;
 		}
 
+		if ( has_block( 'ert-appointment/booking', $post ) ) {
+			return true;
+		}
+
 		return has_shortcode( $post->post_content, 'erta_booking' )
 			|| has_shortcode( $post->post_content, 'erta-booking' )
 			|| has_shortcode( $post->post_content, 'erta_my_appointments' )
@@ -212,6 +227,9 @@ final class Assets {
 			'slotUnavailable'       => __( 'This slot is no longer available. Please choose another.', 'ert-appointment' ),
 			'required'              => __( 'This field is required.', 'ert-appointment' ),
 			'invalidEmail'          => __( 'Please enter a valid email address.', 'ert-appointment' ),
+			'fullName'              => __( 'Full Name', 'ert-appointment' ),
+			'emailAddress'          => __( 'Email Address', 'ert-appointment' ),
+			'phoneNumber'           => __( 'Phone Number', 'ert-appointment' ),
 
 			// ── My Appointments ────────────────────────────────────────────
 			'myAppointments'        => __( 'My Appointments', 'ert-appointment' ),
@@ -223,6 +241,7 @@ final class Assets {
 			'cancelAppointment'     => __( 'Cancel Appointment', 'ert-appointment' ),
 			'cancelReason'          => __( 'Reason for cancellation…', 'ert-appointment' ),
 			'newDateTime'           => __( 'New Date & Time', 'ert-appointment' ),
+			'note'                  => __( 'Note', 'ert-appointment' ),
 
 			// ── Common fields in success / detail ─────────────────────────
 			'date'                  => __( 'Date', 'ert-appointment' ),
@@ -264,8 +283,11 @@ final class Assets {
 			'back'                    => __( 'Back', 'ert-appointment' ),
 			'next'                    => __( 'Next', 'ert-appointment' ),
 			'prev'                    => __( 'Prev', 'ert-appointment' ),
+			'book'                    => __( 'Book Now', 'ert-appointment' ),
 			'apply'                   => __( 'Apply', 'ert-appointment' ),
 			'select'                  => __( 'Select', 'ert-appointment' ),
+			'selectDepartment'        => __( 'Select Department', 'ert-appointment' ),
+			'selectProvider'          => __( 'Select Provider', 'ert-appointment' ),
 			'loading'                 => __( 'Loading…', 'ert-appointment' ),
 			'saved'                   => __( 'Saved.', 'ert-appointment' ),
 			'error'                   => __( 'An error occurred.', 'ert-appointment' ),
@@ -292,19 +314,90 @@ final class Assets {
 			'general'                 => __( 'General', 'ert-appointment' ),
 			'payment'                 => __( 'Payment', 'ert-appointment' ),
 			'integrations'            => __( 'Integrations', 'ert-appointment' ),
-			'slotDuration'            => __( 'Slot Duration (minutes)', 'ert-appointment' ),
-			'bufferBefore'            => __( 'Buffer Before (minutes)', 'ert-appointment' ),
-			'bufferAfter'             => __( 'Buffer After (minutes)', 'ert-appointment' ),
-			'minNotice'               => __( 'Minimum Notice (hours)', 'ert-appointment' ),
-			'minNoticeDesc'           => __( 'How many hours in advance a booking must be made.', 'ert-appointment' ),
+			'slotDuration'            => __( 'Appointment Duration (minutes)', 'ert-appointment' ),
+			'bufferBefore'            => __( 'Early Arrival Time (minutes)', 'ert-appointment' ),
+			'bufferAfter'             => __( 'Gap Between Appointments (minutes)', 'ert-appointment' ),
+			'arrivalBuffer'           => __( 'Early Arrival Time (minutes)', 'ert-appointment' ),
+			'minNotice'               => __( 'Booking Cutoff (hours)', 'ert-appointment' ),
+			'minNoticeDesc'           => __( 'How many hours before the appointment the booking window closes.', 'ert-appointment' ),
 			'maxAdvance'              => __( 'Maximum Advance (days)', 'ert-appointment' ),
 			'autoConfirm'             => __( 'Auto-confirm bookings', 'ert-appointment' ),
 			'currency'                => __( 'Currency', 'ert-appointment' ),
+			'currencyTRY'             => __( 'TRY — Turkish Lira', 'ert-appointment' ),
+			'currencyUSD'             => __( 'USD — US Dollar', 'ert-appointment' ),
+			'currencyEUR'             => __( 'EUR — Euro', 'ert-appointment' ),
+			'currencyGBP'             => __( 'GBP — Pound', 'ert-appointment' ),
+			'bookingStartDate'        => __( 'Booking Start Date', 'ert-appointment' ),
+			'bookingEndDate'          => __( 'Booking End Date', 'ert-appointment' ),
+			'arrivalReminder'         => __( 'Arrival Reminder', 'ert-appointment' ),
+			'appointmentLocation'     => __( 'Appointment Location', 'ert-appointment' ),
+			'bookingFormIntro'        => __( 'Booking Form Intro', 'ert-appointment' ),
+			'bookingFormIntroColor'   => __( 'Booking Form Intro Box Color', 'ert-appointment' ),
+			'postBookingInstructions' => __( 'Post Booking Instructions', 'ert-appointment' ),
+			'postBookingInstructionsColor' => __( 'Post Booking Instructions Box Color', 'ert-appointment' ),
+			'allowGeneralBooking'     => __( 'Allow General Booking', 'ert-appointment' ),
+			'bookingMode'             => __( 'Booking Mode', 'ert-appointment' ),
+			'bookingModeGeneral'      => __( 'General booking (no department, no provider)', 'ert-appointment' ),
+			'bookingModeDeptOnly'     => __( 'Department-based (without provider selection)', 'ert-appointment' ),
+			'bookingModeDeptProvider' => __( 'Department-based (with provider selection)', 'ert-appointment' ),
+			'bookingModeProvider'     => __( 'Provider-based (without department step)', 'ert-appointment' ),
 			'paymentRequired'         => __( 'Require payment to confirm', 'ert-appointment' ),
 			'paymentAmount'           => __( 'Payment Amount', 'ert-appointment' ),
 			'paymentGateway'          => __( 'Payment Gateway', 'ert-appointment' ),
+			'gatewayStripe'           => __( 'Stripe', 'ert-appointment' ),
+			'gatewayPaypal'           => __( 'PayPal', 'ert-appointment' ),
+			'gatewayPaytr'            => __( 'PayTR', 'ert-appointment' ),
+			'gatewayIyzico'           => __( 'İyzico', 'ert-appointment' ),
+			'paytrMerchantId'         => __( 'PayTR Merchant ID', 'ert-appointment' ),
+			'paytrMerchantKey'        => __( 'PayTR Merchant Key', 'ert-appointment' ),
+			'paytrMerchantSalt'       => __( 'PayTR Merchant Salt', 'ert-appointment' ),
+			'paytrTestMode'           => __( 'PayTR Test Mode', 'ert-appointment' ),
+			'stripeSecretKey'         => __( 'Stripe Secret Key', 'ert-appointment' ),
+			'stripeWebhookSecret'     => __( 'Stripe Webhook Secret', 'ert-appointment' ),
+			'iyzicoApiKey'            => __( 'İyzico API Key', 'ert-appointment' ),
+			'iyzicoSecretKey'         => __( 'İyzico Secret Key', 'ert-appointment' ),
+			'iyzicoSandbox'           => __( 'İyzico Sandbox', 'ert-appointment' ),
+			'googleCalendar'          => __( 'Google Calendar', 'ert-appointment' ),
+			'zoom'                    => __( 'Zoom', 'ert-appointment' ),
+			'smsIntegrationsTitle'    => __( 'SMS (Twilio / NetGSM)', 'ert-appointment' ),
+			'smsIntegrationsDesc'     => __( 'Configure SMS provider credentials for notification templates.', 'ert-appointment' ),
+			'smsProvider'             => __( 'SMS Provider', 'ert-appointment' ),
+			'twilioAccountSid'        => __( 'Twilio Account SID', 'ert-appointment' ),
+			'twilioAuthToken'         => __( 'Twilio Auth Token', 'ert-appointment' ),
+			'twilioFromNumber'        => __( 'Twilio From Number', 'ert-appointment' ),
+			'netgsmUsercode'          => __( 'NetGSM Usercode', 'ert-appointment' ),
+			'netgsmPassword'          => __( 'NetGSM Password', 'ert-appointment' ),
+			'netgsmHeader'            => __( 'NetGSM Header', 'ert-appointment' ),
+			'whatsappTitle'           => __( 'WhatsApp (Meta Cloud API)', 'ert-appointment' ),
+			'whatsappDesc'            => __( 'Send WhatsApp notifications via Meta Cloud API in Pro version.', 'ert-appointment' ),
+			'whatsappProvider'        => __( 'WhatsApp Provider', 'ert-appointment' ),
+			'whatsappPhoneNumberId'   => __( 'Phone Number ID', 'ert-appointment' ),
+			'whatsappAccessToken'     => __( 'Access Token', 'ert-appointment' ),
+			'whatsappApiVersion'      => __( 'Graph API Version', 'ert-appointment' ),
+			'paytr'                   => __( 'PayTR', 'ert-appointment' ),
+			'googleConnectionFailed'  => __( 'Google connection failed.', 'ert-appointment' ),
 			'settingsSaved'           => __( 'Settings saved.', 'ert-appointment' ),
 			'msg'                     => __( 'Message', 'ert-appointment' ),
+			'global'                  => __( 'Global', 'ert-appointment' ),
+			'installationChecklist'   => __( 'Installation Checklist', 'ert-appointment' ),
+			'ready'                   => __( 'Ready', 'ert-appointment' ),
+			'missing'                 => __( 'Missing', 'ert-appointment' ),
+			'missingShort'            => __( 'Missing', 'ert-appointment' ),
+			'installationOkMessage'   => __( 'Installation check passed: tables, roles and capabilities are ready.', 'ert-appointment' ),
+			'installationMissingMessage' => __( 'Installation issues detected: some tables/roles/capabilities are missing.', 'ert-appointment' ),
+			'recheck'                 => __( 'Recheck', 'ert-appointment' ),
+			'repairNow'               => __( 'Repair Now', 'ert-appointment' ),
+			'proOnlyArea'             => __( 'This area is available in Pro version.', 'ert-appointment' ),
+			'proTabLockedMessage'     => __( 'This tab can be edited in Pro version.', 'ert-appointment' ),
+			'selectScopeItemFirst'    => __( 'Please select a scope item first.', 'ert-appointment' ),
+			'oauthClientId'           => __( 'OAuth Client ID', 'ert-appointment' ),
+			'oauthClientSecret'       => __( 'OAuth Client Secret', 'ert-appointment' ),
+			'accountId'               => __( 'Account ID', 'ert-appointment' ),
+			'clientId'                => __( 'Client ID', 'ert-appointment' ),
+			'clientSecret'            => __( 'Client Secret', 'ert-appointment' ),
+			'merchantId'              => __( 'Merchant ID', 'ert-appointment' ),
+			'merchantKey'             => __( 'Merchant Key', 'ert-appointment' ),
+			'merchantSalt'            => __( 'Merchant Salt', 'ert-appointment' ),
 
 			// ── Appointment statuses ───────────────────────────────────────
 			'pending'                 => __( 'Pending', 'ert-appointment' ),
@@ -353,6 +446,7 @@ final class Assets {
 			'editForm'                => __( 'Edit Form', 'ert-appointment' ),
 			'noForms'                 => __( 'No forms found.', 'ert-appointment' ),
 			'formName'                => __( 'Form Name', 'ert-appointment' ),
+			'bookingButtonText'       => __( 'Booking Button Text', 'ert-appointment' ),
 			'fields'                  => __( 'Fields', 'ert-appointment' ),
 			'addField'                => __( 'Add Field', 'ert-appointment' ),
 			'fieldLabel'              => __( 'Field Label', 'ert-appointment' ),
@@ -425,6 +519,7 @@ final class Assets {
 			'templateRecipient'       => __( 'Template Recipient', 'ert-appointment' ),
 			'channelEmail'            => __( 'Email', 'ert-appointment' ),
 			'channelSms'              => __( 'SMS', 'ert-appointment' ),
+			'channelWhatsapp'         => __( 'WhatsApp', 'ert-appointment' ),
 			'recipientCustomer'       => __( 'Customer', 'ert-appointment' ),
 			'recipientProvider'       => __( 'Provider', 'ert-appointment' ),
 			'recipientAdmin'          => __( 'Admin', 'ert-appointment' ),

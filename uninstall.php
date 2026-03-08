@@ -14,14 +14,14 @@ if (! defined('WP_UNINSTALL_PLUGIN')) {
 global $wpdb;
 
 // Only remove data if the admin opted in via plugin settings.
-$remove_data = get_option('erta_remove_data_on_uninstall', false);
+$erta_remove_data = get_option('erta_remove_data_on_uninstall', false);
 
-if (! $remove_data) {
+if (! $erta_remove_data) {
     return;
 }
 
 // Drop all plugin tables in reverse dependency order.
-$tables = [
+$erta_tables = [
     'erta_notification_logs',
     'erta_notification_templates',
     'erta_appointments',
@@ -35,12 +35,13 @@ $tables = [
     'erta_departments',
 ];
 
-foreach ($tables as $table) {
-    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}{$table}");
+foreach ($erta_tables as $erta_table) {
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- uninstall cleanup intentionally drops plugin tables.
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}{$erta_table}");
 }
 
 // Remove all options stored by the plugin.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- uninstall cleanup query.
 $wpdb->query(
     $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
@@ -50,6 +51,7 @@ $wpdb->query(
 );
 
 // Remove user meta added by the plugin.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- uninstall cleanup query.
 $wpdb->query(
     $wpdb->prepare(
         "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",

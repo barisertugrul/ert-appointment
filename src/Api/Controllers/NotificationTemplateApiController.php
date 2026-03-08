@@ -36,7 +36,7 @@ final class NotificationTemplateApiController {
 		'waitlist_available',
 	);
 
-	private const ALLOWED_CHANNELS = array( 'email', 'sms' );
+	private const ALLOWED_CHANNELS = array( 'email', 'sms', 'whatsapp' );
 
 	private const ALLOWED_RECIPIENTS = array( 'customer', 'provider', 'admin' );
 
@@ -49,6 +49,7 @@ final class NotificationTemplateApiController {
 	public function index( WP_REST_Request $request ): WP_REST_Response {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$rows = $wpdb->get_results(
             // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- no user input, static query
 			"SELECT * FROM {$wpdb->prefix}erta_notification_templates
@@ -67,6 +68,7 @@ final class NotificationTemplateApiController {
 		$id = (int) $request->get_param( 'id' );
 
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional read on plugin table.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_notification_templates WHERE id = %d",
@@ -105,6 +107,7 @@ final class NotificationTemplateApiController {
 		global $wpdb;
 
 		// Prevent duplicates: one template per event + channel + recipient.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional duplicate check on plugin table.
 		$exists = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}erta_notification_templates
@@ -124,6 +127,7 @@ final class NotificationTemplateApiController {
 			);
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- intentional insert into plugin templates table.
 		$wpdb->insert(
 			"{$wpdb->prefix}erta_notification_templates",
 			array(
@@ -139,6 +143,7 @@ final class NotificationTemplateApiController {
 		);
 
 		$id  = $wpdb->insert_id;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- fetch created row by ID.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_notification_templates WHERE id = %d",
@@ -156,6 +161,7 @@ final class NotificationTemplateApiController {
 		$id = (int) $request->get_param( 'id' );
 
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- load existing row for update.
 		$existing = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_notification_templates WHERE id = %d",
@@ -180,6 +186,7 @@ final class NotificationTemplateApiController {
 		$nextChannel   = $data['channel'] ?? ( $existing['channel'] ?? '' );
 		$nextRecipient = $data['recipient'] ?? ( $existing['recipient_type'] ?? '' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- duplicate uniqueness check before update.
 		$duplicate = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}erta_notification_templates
@@ -213,8 +220,10 @@ final class NotificationTemplateApiController {
 			fn( $v ) => $v !== null
 		);
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional update on plugin templates table.
 		$wpdb->update( "{$wpdb->prefix}erta_notification_templates", $update, array( 'id' => $id ) );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- fetch updated row by ID.
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}erta_notification_templates WHERE id = %d",
@@ -266,7 +275,7 @@ final class NotificationTemplateApiController {
 			}
 
 			if ( ! in_array( $data['channel'] ?? '', self::ALLOWED_CHANNELS, true ) ) {
-				$errors[] = 'channel must be email or sms.';
+				$errors[] = 'channel must be email, sms or whatsapp.';
 			}
 
 			if ( ! in_array( $data['recipient'] ?? '', self::ALLOWED_RECIPIENTS, true ) ) {

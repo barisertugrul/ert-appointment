@@ -37,7 +37,12 @@
 
         <p v-if="appointmentLocation" class="erta-success-info" v-text="appointmentLocation"></p>
         <p v-if="arrivalNotice" class="erta-success-info" v-text="arrivalNotice"></p>
-        <p v-if="postBookingInstructions" class="erta-success-info" v-text="postBookingInstructions"></p>
+        <div
+          v-if="postBookingInstructions"
+          class="erta-info-box"
+          :style="postInfoBoxStyle"
+          v-text="postBookingInstructions"
+        ></div>
       </div>
 
       <button class="erta-btn erta-btn--ghost" @click="$emit('book-again')">
@@ -49,6 +54,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { formatDateSafe, formatTimeSafe } from '../../utils/locale.js';
 
 const props = defineProps({
@@ -57,11 +63,22 @@ const props = defineProps({
   appointmentLocation: { type: String, default: '' },
   arrivalNotice: { type: String, default: '' },
   postBookingInstructions: { type: String, default: '' },
+  postBookingColor: { type: String, default: '' },
 });
 
 defineEmits(['book-again']);
 
 const t = (k) => window.ertaData?.i18n?.[k] ?? k;
+
+const postInfoBoxStyle = computed(() => {
+  if (!props.postBookingColor) {
+    return {};
+  }
+
+  return {
+    '--erta-info-box-bg': props.postBookingColor,
+  };
+});
 
 function formatDate(dt) {
   return formatDateSafe(dt);

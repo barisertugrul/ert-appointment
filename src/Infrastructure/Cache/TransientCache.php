@@ -88,6 +88,7 @@ final class TransientCache {
 
 		$like = $wpdb->esc_like( '_transient_erta_' . $prefix ) . '%';
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- WordPress core has no delete-transient-by-prefix API.
 		$keys = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",

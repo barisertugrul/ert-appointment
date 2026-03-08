@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Api\Controllers;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- admin form endpoints intentionally query plugin-owned custom form table.
+
 use WP_REST_Request;
 use WP_REST_Response;
 use ERTAppointment\Domain\Form\Form;
@@ -37,15 +39,24 @@ final class AdminFormApiController {
 		private readonly FormRepository $forms
 	) {}
 
+	private function table(): string {
+		global $wpdb;
+		return $wpdb->prefix . 'erta_forms';
+	}
+
+	private function tableSql(): string {
+		return esc_sql( $this->table() );
+	}
+
 	// ── List ──────────────────────────────────────────────────────────────
 
 	public function index( WP_REST_Request $request ): WP_REST_Response {
 		global $wpdb;
+		$table = $this->table();
 
 		// FormRepository may only have findForScope; query all directly.
 		$rows = $wpdb->get_results(
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- no user input, static query
-			"SELECT * FROM {$wpdb->prefix}erta_forms ORDER BY scope ASC, id ASC",
+			$wpdb->prepare( 'SELECT * FROM %i ORDER BY scope ASC, id ASC', $table ),
 			ARRAY_A
 		);
 
@@ -65,8 +76,9 @@ final class AdminFormApiController {
 		}
 
 		global $wpdb;
+		$table = $this->table();
 		$wpdb->insert(
-			"{$wpdb->prefix}erta_forms",
+			$table,
 			array(
 				'scope'      => $data['scope'],
 				'scope_id'   => $data['scope_id'],
@@ -79,9 +91,10 @@ final class AdminFormApiController {
 		);
 
 		$id = $wpdb->insert_id;
-		$formTable = esc_sql( $wpdb->prefix . 'erta_forms' );
+		$this->persistSubmitButtonText( (int) $id, (string) ( $data['submit_button_text'] ?? '' ) );
+		$formTable = $this->table();
 		$created = $wpdb->get_row(
-			$wpdb->prepare( 'SELECT * FROM ' . $formTable . ' WHERE id = %d', (int) $id ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $formTable, (int) $id ),
 			ARRAY_A
 		);
 
@@ -97,8 +110,10 @@ final class AdminFormApiController {
 		$id = (int) $request->get_param( 'id' );
 
 		global $wpdb;
+		$table    = $this->table();
+		$tableSql = $this->table();
 		$existing = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}erta_forms WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $tableSql, $id ),
 			ARRAY_A
 		);
 
@@ -114,7 +129,7 @@ final class AdminFormApiController {
 		}
 
 		$wpdb->update(
-			"{$wpdb->prefix}erta_forms",
+			$table,
 			array(
 				'scope'      => $data['scope'] ?? $existing['scope'],
 				'scope_id'   => $data['scope_id'] ?? $existing['scope_id'],
@@ -125,8 +140,10 @@ final class AdminFormApiController {
 			array( 'id' => $id )
 		);
 
+		$this->persistSubmitButtonText( $id, (string) ( $data['submit_button_text'] ?? '' ) );
+
 		$updated = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}erta_forms WHERE id = %d", $id ),
+			$wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', $tableSql, $id ),
 			ARRAY_A
 		);
 
@@ -139,15 +156,18 @@ final class AdminFormApiController {
 		$id = (int) $request->get_param( 'id' );
 
 		global $wpdb;
+		$table    = $this->table();
+		$tableSql = $this->table();
 		$existing = $wpdb->get_var(
-			$wpdb->prepare( "SELECT id FROM {$wpdb->prefix}erta_forms WHERE id = %d", $id )
+			$wpdb->prepare( 'SELECT id FROM %i WHERE id = %d', $tableSql, $id )
 		);
 
 		if ( ! $existing ) {
 			return new WP_REST_Response( array( 'error' => 'Form not found.' ), 404 );
 		}
 
-		$wpdb->delete( "{$wpdb->prefix}erta_forms", array( 'id' => $id ) );
+		$wpdb->delete( $table, array( 'id' => $id ) );
+		$this->deleteSubmitButtonText( $id );
 
 		return new WP_REST_Response(
 			array(
@@ -168,6 +188,7 @@ final class AdminFormApiController {
 			'scope'    => sanitize_key( $request->get_param( 'scope' ) ?? 'global' ),
 			'scope_id' => (int) ( $request->get_param( 'scope_id' ) ?? 0 ),
 			'fields'   => $fields,
+			'submit_button_text' => sanitize_text_field( (string) ( $request->get_param( 'submit_button_text' ) ?? '' ) ),
 		);
 	}
 
@@ -251,6 +272,44 @@ final class AdminFormApiController {
 
 	private function decodeRow( array $row ): array {
 		$row['fields'] = json_decode( $row['fields'] ?? '[]', true ) ?? array();
+		$row['submit_button_text'] = $this->getSubmitButtonText( isset( $row['id'] ) ? (int) $row['id'] : 0 );
 		return $row;
 	}
+
+	private function submitButtonOptionKey( int $formId ): string {
+		return 'erta_form_submit_button_' . $formId;
+	}
+
+	private function getSubmitButtonText( int $formId ): string {
+		if ( $formId <= 0 ) {
+			return '';
+		}
+
+		$value = get_option( $this->submitButtonOptionKey( $formId ), '' );
+		return is_string( $value ) ? sanitize_text_field( $value ) : '';
+	}
+
+	private function persistSubmitButtonText( int $formId, string $submitButtonText ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		$sanitized = sanitize_text_field( $submitButtonText );
+		if ( $sanitized === '' ) {
+			$this->deleteSubmitButtonText( $formId );
+			return;
+		}
+
+		update_option( $this->submitButtonOptionKey( $formId ), $sanitized, false );
+	}
+
+	private function deleteSubmitButtonText( int $formId ): void {
+		if ( $formId <= 0 ) {
+			return;
+		}
+
+		delete_option( $this->submitButtonOptionKey( $formId ) );
+	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

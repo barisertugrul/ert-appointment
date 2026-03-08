@@ -14,6 +14,7 @@ use ERTAppointment\Domain\Appointment\AppointmentStatus;
 use ERTAppointment\Domain\Appointment\BookAppointmentDTO;
 use ERTAppointment\Domain\Appointment\RescheduleDTO;
 use ERTAppointment\Domain\Appointment\SlotNotAvailableException;
+use ERTAppointment\Settings\ResolvedConfig;
 use ERTAppointment\Settings\SettingsManager;
 
 /**
@@ -247,6 +248,7 @@ final class AppointmentApiController {
 
 		// Resolve which providers the current user manages.
 		$userId      = get_current_user_id();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional provider mapping lookup.
 		$providerIds = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT provider_id FROM {$wpdb->prefix}erta_provider_users WHERE user_id = %d",
@@ -347,22 +349,22 @@ final class AppointmentApiController {
 	 * @return array<string, mixed>
 	 */
 	private function formatAppointment( \ERTAppointment\Domain\Appointment\Appointment $appointment ): array {
-		$config = $this->settings->resolveForProvider( $appointment->providerId );
+		$config = $this->resolvePresentationConfig( $appointment->providerId );
 		$location = $config->appointmentLocation();
 		$arrivalNotice = '';
 
-		if ( $config->showArrivalReminder() && $appointment->arrivalBufferMinutes > 0 ) {
+		if ( $appointment->arrivalBufferMinutes > 0 ) {
 			if ( $location !== '' ) {
 				$arrivalNotice = sprintf(
 					/* translators: 1: location text, 2: minutes */
-					__( 'You should be at %1$s at least %2$d minutes before your appointment.', 'ert-appointment' ),
+					__( 'Note: Please be in front of %1$s at least %2$d minutes before your appointment.', 'ert-appointment' ),
 					$location,
 					$appointment->arrivalBufferMinutes
 				);
 			} else {
 				$arrivalNotice = sprintf(
 					/* translators: %d: minutes */
-					__( 'You should arrive at least %d minutes before your appointment.', 'ert-appointment' ),
+					__( 'Note: Please arrive at least %d minutes before your appointment.', 'ert-appointment' ),
 					$appointment->arrivalBufferMinutes
 				);
 			}
@@ -391,12 +393,25 @@ final class AppointmentApiController {
 			'appointment_location' => $location,
 			'arrival_notice'   => $arrivalNotice,
 			'booking_form_intro' => $config->bookingFormIntro(),
+			'booking_form_intro_color' => $config->bookingFormIntroColor(),
 			'post_booking_instructions' => $config->postBookingInstructions(),
+			'post_booking_instructions_color' => $config->postBookingInstructionsColor(),
 			'is_upcoming'      => $appointment->isUpcoming(),
 			'is_cancellable'   => $appointment->isCancellable(),
 			'is_reschedulable' => $appointment->isReschedulable(),
 			'created_at'       => $appointment->createdAt->format( 'Y-m-d\TH:i:s' ),
 		);
+	}
+
+	private function resolvePresentationConfig( int $providerId ) {
+		$globalMode = sanitize_key( (string) $this->settings->getGlobal( 'booking_mode', '' ) );
+
+		if ( $globalMode === 'general' ) {
+			$global = $this->settings->getAll( 'global', null );
+			return new ResolvedConfig( $global, null );
+		}
+
+		return $this->settings->resolveForProvider( $providerId );
 	}
 
 	private function providerName( int $providerId ): string {
@@ -409,6 +424,7 @@ final class AppointmentApiController {
 		}
 
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional provider name lookup.
 		$name = (string) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT name FROM {$wpdb->prefix}erta_providers WHERE id = %d",
@@ -431,6 +447,7 @@ final class AppointmentApiController {
 		}
 
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional department name lookup.
 		$name = (string) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT name FROM {$wpdb->prefix}erta_departments WHERE id = %d",

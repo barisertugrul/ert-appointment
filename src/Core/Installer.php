@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Core;
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- installer intentionally manages plugin schema/data during lifecycle and repair.
+
 use ERTAppointment\Settings\SettingsManager;
 
 /**
@@ -71,8 +73,9 @@ final class Installer {
 		$installedVersion = (string) get_option( self::DB_VERSION_OPTION, '' );
 		$providerRole     = get_role( 'erta_provider' );
 		$hasTemplates     = $this->hasNotificationTemplates();
+		$hasWhatsAppTemplates = $this->hasWhatsAppNotificationTemplates();
 
-		if ( $installedVersion === self::DB_VERSION && $providerRole !== null && $hasTemplates ) {
+		if ( $installedVersion === self::DB_VERSION && $providerRole !== null && $hasTemplates && $hasWhatsAppTemplates ) {
 			return;
 		}
 
@@ -97,8 +100,23 @@ final class Installer {
 	private function hasNotificationTemplates(): bool {
 		global $wpdb;
 
-		$table = $this->tableSql( $wpdb->prefix . 'erta_notification_templates' );
-		$count = (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $table );
+		$table = $wpdb->prefix . 'erta_notification_templates';
+		$count = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
+
+		return $count > 0;
+	}
+
+	private function hasWhatsAppNotificationTemplates(): bool {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'erta_notification_templates';
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE channel = %s',
+				$table,
+				'whatsapp'
+			)
+		);
 
 		return $count > 0;
 	}
@@ -115,18 +133,28 @@ final class Installer {
 		}
 
 		global $wpdb;
-		$table = $this->tableSql( $wpdb->prefix . 'erta_settings' );
-
-		$wpdb->query( "UPDATE {$table} SET scope_id = 0 WHERE scope = 'global' AND scope_id IS NULL" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$table = $wpdb->prefix . 'erta_settings';
+		$tableSql = $table;
 
 		$wpdb->query(
-			"DELETE s1 FROM {$table} s1
-			 INNER JOIN {$table} s2
+			$wpdb->prepare(
+				"UPDATE %i SET scope_id = 0 WHERE scope = 'global' AND scope_id IS NULL",
+				$tableSql
+			)
+		);
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE s1 FROM %i s1
+			 INNER JOIN %i s2
 			   ON s1.scope = s2.scope
 			  AND ((s1.scope_id = s2.scope_id) OR (s1.scope_id IS NULL AND s2.scope_id IS NULL))
 			  AND s1.setting_key = s2.setting_key
-			  AND s1.id < s2.id"
-		); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			  AND s1.id < s2.id",
+				$tableSql,
+				$tableSql
+			)
+		);
 
 		update_option( 'erta_settings_repaired_v1', true );
 	}
@@ -559,6 +587,7 @@ final class Installer {
 	private function seedDefaultNotificationTemplates(): void {
 		global $wpdb;
 		$table = $wpdb->prefix . 'erta_notification_templates';
+		$tableSql = esc_sql( $table );
 
 		$templates = array(
 			// --- Customer templates ------------------------------------------
@@ -602,6 +631,46 @@ final class Installer {
 				'body'      => $this->getTemplateContent( 'customer-pending' ),
 				'is_active' => 1,
 			),
+			array(
+				'event_type'     => 'appointment_confirmed',
+				'channel'        => 'whatsapp',
+				'recipient_type' => 'customer',
+				'subject'        => __( 'Your appointment is confirmed – {{appointment_date}}', 'ert-appointment' ),
+				'body'           => $this->getTemplateContent( 'customer-confirmed' ),
+				'is_active'      => 0,
+			),
+			array(
+				'event_type'     => 'appointment_cancelled',
+				'channel'        => 'whatsapp',
+				'recipient_type' => 'customer',
+				'subject'        => __( 'Your appointment has been cancelled', 'ert-appointment' ),
+				'body'           => $this->getTemplateContent( 'customer-cancelled' ),
+				'is_active'      => 0,
+			),
+			array(
+				'event_type'     => 'appointment_rescheduled',
+				'channel'        => 'whatsapp',
+				'recipient_type' => 'customer',
+				'subject'        => __( 'Your appointment has been rescheduled – {{appointment_date}}', 'ert-appointment' ),
+				'body'           => $this->getTemplateContent( 'customer-rescheduled' ),
+				'is_active'      => 0,
+			),
+			array(
+				'event_type'     => 'appointment_reminder_24h',
+				'channel'        => 'whatsapp',
+				'recipient_type' => 'customer',
+				'subject'        => __( 'Reminder: Your appointment is tomorrow', 'ert-appointment' ),
+				'body'           => $this->getTemplateContent( 'customer-reminder' ),
+				'is_active'      => 0,
+			),
+			array(
+				'event_type'     => 'appointment_pending',
+				'channel'        => 'whatsapp',
+				'recipient_type' => 'customer',
+				'subject'        => __( 'Your booking request has been received', 'ert-appointment' ),
+				'body'           => $this->getTemplateContent( 'customer-pending' ),
+				'is_active'      => 0,
+			),
 			// --- Admin / provider templates ----------------------------------
 			array(
 				'event_type'     => 'appointment_confirmed',
@@ -621,12 +690,11 @@ final class Installer {
 			),
 		);
 
-		$tableSql = $this->tableSql( $table );
-
 		foreach ( $templates as $template ) {
 			$exists = $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT id FROM ' . $tableSql . ' WHERE event_type = %s AND channel = %s AND recipient_type = %s',
+					'SELECT id FROM %i WHERE event_type = %s AND channel = %s AND recipient_type = %s',
+					$tableSql,
 					$template['event_type'],
 					$template['channel'],
 					$template['recipient_type']
@@ -764,10 +832,9 @@ View in admin: {{admin_url}}',
 	private function seedDefaultForm(): void {
 		global $wpdb;
 		$table = $wpdb->prefix . 'erta_forms';
-		$tableSql = $this->tableSql( $table );
 
 		$exists = $wpdb->get_var(
-			$wpdb->prepare( 'SELECT id FROM ' . $tableSql . ' WHERE scope = %s LIMIT 1', 'global' )
+			$wpdb->prepare( 'SELECT id FROM %i WHERE scope = %s LIMIT 1', $table, 'global' )
 		);
 		if ( $exists ) {
 			return;
@@ -855,3 +922,5 @@ View in admin: {{admin_url}}',
 		}
 	}
 }
+
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
