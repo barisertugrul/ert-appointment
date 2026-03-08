@@ -37,6 +37,7 @@ final class NotificationTemplateApiController {
 	);
 
 	private const ALLOWED_CHANNELS = array( 'email', 'sms', 'whatsapp' );
+	private const PRO_ONLY_CHANNELS = array( 'sms', 'whatsapp' );
 
 	private const ALLOWED_RECIPIENTS = array( 'customer', 'provider', 'admin' );
 
@@ -186,6 +187,10 @@ final class NotificationTemplateApiController {
 		$nextChannel   = $data['channel'] ?? ( $existing['channel'] ?? '' );
 		$nextRecipient = $data['recipient'] ?? ( $existing['recipient_type'] ?? '' );
 
+		if ( ! $this->isProActive() && in_array( $nextChannel, self::PRO_ONLY_CHANNELS, true ) ) {
+			return new WP_REST_Response( array( 'error' => __( 'This channel is available in Pro version.', 'ert-appointment' ) ), 403 );
+		}
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- duplicate uniqueness check before update.
 		$duplicate = $wpdb->get_var(
 			$wpdb->prepare(
@@ -278,6 +283,10 @@ final class NotificationTemplateApiController {
 				$errors[] = 'channel must be email, sms or whatsapp.';
 			}
 
+			if ( ! $this->isProActive() && in_array( $data['channel'] ?? '', self::PRO_ONLY_CHANNELS, true ) ) {
+				$errors[] = __( 'Selected channel is available in Pro version only.', 'ert-appointment' );
+			}
+
 			if ( ! in_array( $data['recipient'] ?? '', self::ALLOWED_RECIPIENTS, true ) ) {
 				$errors[] = 'recipient must be customer, provider, or admin.';
 			}
@@ -293,6 +302,9 @@ final class NotificationTemplateApiController {
 			if ( isset( $data['channel'] ) && ! in_array( $data['channel'], self::ALLOWED_CHANNELS, true ) ) {
 				$errors[] = __( 'Invalid channel.', 'ert-appointment' );
 			}
+			if ( isset( $data['channel'] ) && ! $this->isProActive() && in_array( $data['channel'], self::PRO_ONLY_CHANNELS, true ) ) {
+				$errors[] = __( 'Selected channel is available in Pro version only.', 'ert-appointment' );
+			}
 			if ( isset( $data['recipient'] ) && ! in_array( $data['recipient'], self::ALLOWED_RECIPIENTS, true ) ) {
 				$errors[] = __( 'Invalid recipient.', 'ert-appointment' );
 			}
@@ -302,6 +314,10 @@ final class NotificationTemplateApiController {
 		// (Could be extended to return warnings alongside the saved data.)
 
 		return $errors;
+	}
+
+	private function isProActive(): bool {
+		return (bool) apply_filters( 'erta_is_pro_active', false );
 	}
 
 	/**

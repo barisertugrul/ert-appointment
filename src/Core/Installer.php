@@ -73,9 +73,8 @@ final class Installer {
 		$installedVersion = (string) get_option( self::DB_VERSION_OPTION, '' );
 		$providerRole     = get_role( 'erta_provider' );
 		$hasTemplates     = $this->hasNotificationTemplates();
-		$hasWhatsAppTemplates = $this->hasWhatsAppNotificationTemplates();
 
-		if ( $installedVersion === self::DB_VERSION && $providerRole !== null && $hasTemplates && $hasWhatsAppTemplates ) {
+		if ( $installedVersion === self::DB_VERSION && $providerRole !== null && $hasTemplates ) {
 			return;
 		}
 
@@ -102,21 +101,6 @@ final class Installer {
 
 		$table = $wpdb->prefix . 'erta_notification_templates';
 		$count = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) );
-
-		return $count > 0;
-	}
-
-	private function hasWhatsAppNotificationTemplates(): bool {
-		global $wpdb;
-
-		$table = $wpdb->prefix . 'erta_notification_templates';
-		$count = (int) $wpdb->get_var(
-			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %i WHERE channel = %s',
-				$table,
-				'whatsapp'
-			)
-		);
 
 		return $count > 0;
 	}
@@ -630,46 +614,6 @@ final class Installer {
 				'subject'   => __( 'Your booking request has been received', 'ert-appointment' ),
 				'body'      => $this->getTemplateContent( 'customer-pending' ),
 				'is_active' => 1,
-			),
-			array(
-				'event_type'     => 'appointment_confirmed',
-				'channel'        => 'whatsapp',
-				'recipient_type' => 'customer',
-				'subject'        => __( 'Your appointment is confirmed – {{appointment_date}}', 'ert-appointment' ),
-				'body'           => $this->getTemplateContent( 'customer-confirmed' ),
-				'is_active'      => 0,
-			),
-			array(
-				'event_type'     => 'appointment_cancelled',
-				'channel'        => 'whatsapp',
-				'recipient_type' => 'customer',
-				'subject'        => __( 'Your appointment has been cancelled', 'ert-appointment' ),
-				'body'           => $this->getTemplateContent( 'customer-cancelled' ),
-				'is_active'      => 0,
-			),
-			array(
-				'event_type'     => 'appointment_rescheduled',
-				'channel'        => 'whatsapp',
-				'recipient_type' => 'customer',
-				'subject'        => __( 'Your appointment has been rescheduled – {{appointment_date}}', 'ert-appointment' ),
-				'body'           => $this->getTemplateContent( 'customer-rescheduled' ),
-				'is_active'      => 0,
-			),
-			array(
-				'event_type'     => 'appointment_reminder_24h',
-				'channel'        => 'whatsapp',
-				'recipient_type' => 'customer',
-				'subject'        => __( 'Reminder: Your appointment is tomorrow', 'ert-appointment' ),
-				'body'           => $this->getTemplateContent( 'customer-reminder' ),
-				'is_active'      => 0,
-			),
-			array(
-				'event_type'     => 'appointment_pending',
-				'channel'        => 'whatsapp',
-				'recipient_type' => 'customer',
-				'subject'        => __( 'Your booking request has been received', 'ert-appointment' ),
-				'body'           => $this->getTemplateContent( 'customer-pending' ),
-				'is_active'      => 0,
 			),
 			// --- Admin / provider templates ----------------------------------
 			array(

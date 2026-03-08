@@ -34,6 +34,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Aynı sayfada birden fazla booking host mount senaryosunda sonsuz loading/flicker riski azaltıldı.
 - Birleşik slot listelerinde potansiyel key çakışmaları giderildi.
 - Kalan Plugin Checker DB uyarıları (direct query / no caching / prepared-query false-positive noktaları) davranış korunarak hedefli PHPCS bastırmalarıyla temizlendi.
+- Notification seed sorumluluğu düzeltildi: SMS/WhatsApp varsayılan şablonları Lite'tan çıkarılıp Pro sürüme taşındı.
+- Lite admin kısıtları netleştirildi: Notifications kanal seçiminde SMS/WhatsApp seçenekleri görünür fakat Lite'ta devre dışı bırakıldı.
 
 ## [1.0.0] — 2026-02-27
 

@@ -114,8 +114,8 @@
             <label class="erta-form-label">{{ t('templateChannel') }}</label>
             <select class="erta-input" v-model="editing.channel">
               <option value="email">{{ channelLabel('email') }}</option>
-              <option value="sms">{{ channelLabel('sms') }}</option>
-              <option v-if="isPro" value="whatsapp">{{ channelLabel('whatsapp') }}</option>
+              <option value="sms" :disabled="!isPro">{{ channelLabel('sms') }}</option>
+              <option value="whatsapp" :disabled="!isPro">{{ channelLabel('whatsapp') }}</option>
             </select>
           </div>
 
