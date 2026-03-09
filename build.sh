@@ -7,6 +7,7 @@
 #    ./build.sh              # sürümü plugin header'dan okur
 #    ./build.sh 1.2.0        # sürümü elle belirle
 #    ./build.sh --skip-npm   # JS derlemesini atla (hızlı test)
+#    ./build.sh --no-local-sync   # yerel WP klasörü senkronunu kapat
 #
 #  Çıktı:
 #    dist/ert-appointment-v<sürüm>.zip
@@ -17,7 +18,8 @@
 #    3. composer install --no-dev (mevcutsa).
 #    4. PO → MO derleme (msgfmt mevcutsa).
 #    5. Geliştirme dosyaları dışarıda bırakılarak ZIP oluşturulur.
-#    6. SHA-256 checksum ve içerik listesi yazdırılır.
+#    6. Build içeriği değiştiyse yerel WP plugin klasörü güncellenir.
+#    7. SHA-256 checksum ve içerik listesi yazdırılır.
 # =============================================================================
 
 set -euo pipefail
@@ -32,13 +34,49 @@ warn()  { echo -e "${YELLOW}  ⚠${NC} $*"; }
 die()   { echo -e "${RED}  ✗${NC} $*" >&2; exit 1; }
 title() { echo -e "\n${BOLD}$*${NC}"; }
 
+normalize_path() {
+    local input="$1"
+    input="${input//\\//}"
+    printf '%s' "$input"
+}
+
+hash_cmd() {
+    if command -v sha256sum &>/dev/null; then
+        echo "sha256sum"
+    elif command -v shasum &>/dev/null; then
+        echo "shasum -a 256"
+    else
+        echo ""
+    fi
+}
+
+compute_dir_fingerprint() {
+    local dir="$1"
+    local hc
+    hc="$(hash_cmd)"
+
+    if [[ -z "$hc" ]]; then
+        echo ""
+        return 0
+    fi
+
+    (
+        cd "$dir"
+        find . -type f -print0 \
+            | LC_ALL=C sort -z \
+            | xargs -0 $hc
+    ) | $hc | awk '{print $1}'
+}
+
 # ── Argüman ayrıştırma ────────────────────────────────────────────────────────
 SKIP_NPM=false
+LOCAL_SYNC=true
 VERSION_ARG=""
 
 for arg in "$@"; do
     case "$arg" in
         --skip-npm) SKIP_NPM=true ;;
+        --no-local-sync) LOCAL_SYNC=false ;;
         --*)        warn "Bilinmeyen flag: $arg — yoksayılıyor" ;;
         *)          VERSION_ARG="$arg" ;;
     esac
@@ -50,6 +88,10 @@ MAIN_FILE="${PLUGIN_SLUG}.php"
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DIST_DIR="${ROOT_DIR}/dist"
 TMP_DIR="$(mktemp -d)"
+LOCAL_SYNC_TARGET_DEFAULT="D:/xampp/htdocs/wordpress-plugin/wp-content/plugins/${PLUGIN_SLUG}"
+LOCAL_SYNC_TARGET="${ERT_LOCAL_SYNC_TARGET:-$LOCAL_SYNC_TARGET_DEFAULT}"
+FINGERPRINT_DIR="${ROOT_DIR}/.build-cache"
+FINGERPRINT_FILE="${FINGERPRINT_DIR}/${PLUGIN_SLUG}.sync.sha256"
 
 # Dağıtım ZIP'ine dahil EDİLMEYECEK dosya/klasörler
 EXCLUDES=(
@@ -113,12 +155,55 @@ fi
 ARCHIVE="${DIST_DIR}/${PLUGIN_SLUG}-v${VERSION}.zip"
 STAGE="${TMP_DIR}/${PLUGIN_SLUG}"
 
+sync_to_local_wp() {
+    local source_dir="$1"
+    local target_dir
+    local current_fp=""
+    local last_fp=""
+
+    if ! $LOCAL_SYNC; then
+        warn "Yerel WP senkronu kapalı (--no-local-sync)"
+        return 0
+    fi
+
+    target_dir="$(normalize_path "$LOCAL_SYNC_TARGET")"
+    mkdir -p "$FINGERPRINT_DIR"
+
+    current_fp="$(compute_dir_fingerprint "$source_dir")"
+    if [[ -f "$FINGERPRINT_FILE" ]]; then
+        last_fp="$(cat "$FINGERPRINT_FILE" 2>/dev/null || true)"
+    fi
+
+    if [[ -n "$current_fp" && "$current_fp" == "$last_fp" ]]; then
+        ok "Yerel WP senkronu atlandı (build içeriği değişmedi)"
+        return 0
+    fi
+
+    step "Yerel WP senkronu: ${target_dir}"
+    mkdir -p "$(dirname "$target_dir")"
+
+    if command -v rsync &>/dev/null; then
+        rsync -a --delete "${source_dir}/" "${target_dir}/"
+    else
+        rm -rf "$target_dir"
+        mkdir -p "$target_dir"
+        cp -r "${source_dir}/." "$target_dir/"
+    fi
+
+    if [[ -n "$current_fp" ]]; then
+        printf '%s' "$current_fp" > "$FINGERPRINT_FILE"
+    fi
+
+    ok "Yerel WP plugin klasörü güncellendi"
+}
+
 # ── Başlık ───────────────────────────────────────────────────────────────────
 title "══════════════════════════════════════════"
 title "  ERT Appointment (Lite)  —  v${VERSION}"
 title "══════════════════════════════════════════"
 echo  "  Kaynak : ${ROOT_DIR}"
 echo  "  Çıktı  : ${ARCHIVE}"
+echo  "  Local Sync: ${LOCAL_SYNC_TARGET}"
 $SKIP_NPM && echo -e "  ${YELLOW}--skip-npm aktif${NC}"
 
 # ── Ön kontroller ────────────────────────────────────────────────────────────
@@ -249,6 +334,10 @@ find "${STAGE}" -maxdepth 1 -type f \( -name "*.docx" -o -name "*.html" \) -dele
 
 [[ -f "${STAGE}/${MAIN_FILE}" ]] || die "Hazırlama başarısız — ${MAIN_FILE} stage'de yok"
 ok "Dosyalar hazırlandı"
+
+# ── Yerel WordPress plugin senkronu ─────────────────────────────────────────
+title "Yerel WP senkronu"
+sync_to_local_wp "$STAGE"
 
 # ── ZIP oluştur ───────────────────────────────────────────────────────────────
 title "ZIP oluşturuluyor"

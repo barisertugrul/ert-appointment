@@ -36,6 +36,20 @@
   --erta-pro-card-border-color: var(--erta-gray-200);
 }
 
+#erta-booking-app.erta-booking-host .erta-booking-wizard {
+  background: #fff;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  box-shadow: var(--erta-shadow);
+  padding: 16px;
+}
+
+@media (max-width: 640px) {
+  #erta-booking-app.erta-booking-host .erta-booking-wizard {
+    padding: 12px;
+  }
+}
+
 /* ── Steps Progress ──────────────────────────────────────────────────────── */
 .erta-steps {
   display: flex;

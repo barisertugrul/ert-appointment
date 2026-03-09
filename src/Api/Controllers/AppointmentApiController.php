@@ -323,6 +323,8 @@ final class AppointmentApiController {
 				'date_from'     => $request->get_param( 'date_from' ),
 				'date_to'       => $request->get_param( 'date_to' ),
 				'search'        => $request->get_param( 'search' ),
+				'order_by'      => $request->get_param( 'order_by' ),
+				'order'         => $request->get_param( 'order' ),
 			)
 		);
 

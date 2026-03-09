@@ -7,39 +7,83 @@
     <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
 
     <template v-else>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">
-        <div class="erta-card" style="padding:12px">
-          <h3 style="margin:0 0 8px 0;font-size:14px">{{ t('latestAppointments') }}</h3>
-          <div v-if="!latest.length" style="font-size:12px;color:#9ca3af">{{ t('noAppointments') }}</div>
-          <div v-for="appt in latest" :key="`latest-${appt.id}`" style="font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9">
-            <strong>#{{ appt.id }}</strong> · {{ appt.customer_name }}
-            <div style="color:#6b7280">{{ fmt(appt.start_datetime) }}</div>
-          </div>
+      <div class="erta-stats-grid">
+        <div class="erta-stat-card">
+          <div class="erta-stat-card__value">{{ stats.today ?? 0 }}</div>
+          <div class="erta-stat-card__label">{{ t('todayAppointments') }}</div>
         </div>
-
-        <div class="erta-card" style="padding:12px">
-          <h3 style="margin:0 0 8px 0;font-size:14px">{{ t('upcomingAppointments') }}</h3>
-          <div v-if="!upcoming.length" style="font-size:12px;color:#9ca3af">{{ t('noUpcomingAppointments') }}</div>
-          <div v-for="appt in upcoming" :key="`upcoming-${appt.id}`" style="font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9">
-            <strong>#{{ appt.id }}</strong> · {{ appt.customer_name }}
-            <div style="color:#6b7280">{{ fmt(appt.start_datetime) }}</div>
-          </div>
+        <div class="erta-stat-card">
+          <div class="erta-stat-card__value">{{ stats.pending ?? 0 }}</div>
+          <div class="erta-stat-card__label">{{ t('pending') }}</div>
         </div>
+        <div class="erta-stat-card">
+          <div class="erta-stat-card__value">{{ stats.confirmed ?? 0 }}</div>
+          <div class="erta-stat-card__label">{{ t('confirmed') }}</div>
+        </div>
+        <div class="erta-stat-card">
+          <div class="erta-stat-card__value">{{ stats.thisMonth ?? 0 }}</div>
+          <div class="erta-stat-card__label">{{ t('thisMonth') }}</div>
+        </div>
+      </div>
 
-        <div class="erta-card" style="padding:12px">
-          <h3 style="margin:0 0 8px 0;font-size:14px">{{ t('pendingApproval') }}</h3>
-          <div v-if="!pending.length" style="font-size:12px;color:#9ca3af">{{ t('noAppointments') }}</div>
-          <div v-for="appt in pending" :key="`pending-${appt.id}`" style="font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;gap:8px;align-items:center">
+      <div class="erta-dashboard-panels">
+        <section class="erta-dashboard-panel">
+          <h3 class="erta-dashboard-panel__title">{{ t('latestAppointments') }}</h3>
+          <div v-if="!latestLimited.length" class="erta-dashboard-panel__empty">{{ t('noAppointments') }}</div>
+          <div
+            v-for="(appt, index) in latestLimited"
+            :key="`latest-${appt.id}`"
+            class="erta-dashboard-item"
+          >
             <div>
-              <strong>#{{ appt.id }}</strong> · {{ appt.customer_name }}
-              <div style="color:#6b7280">{{ fmt(appt.start_datetime) }}</div>
+              <div><strong>{{ index + 1 }}.</strong> {{ appt.customer_name }}</div>
+              <div class="erta-dashboard-item__meta">{{ fmt(appt.start_datetime) }}</div>
             </div>
-            <div style="display:flex;gap:6px">
+            <span class="erta-badge" :class="`erta-badge--${appt.status}`">{{ statusLabel(appt) }}</span>
+          </div>
+        </section>
+
+        <section class="erta-dashboard-panel">
+          <h3 class="erta-dashboard-panel__title">{{ t('upcomingAppointments') }}</h3>
+          <div v-if="!upcomingLimited.length" class="erta-dashboard-panel__empty">{{ t('noUpcomingAppointments') }}</div>
+          <div
+            v-for="(appt, index) in upcomingLimited"
+            :key="`upcoming-${appt.id}`"
+            class="erta-dashboard-item"
+          >
+            <div>
+              <div><strong>{{ index + 1 }}.</strong> {{ appt.customer_name }}</div>
+              <div class="erta-dashboard-item__meta">{{ fmt(appt.start_datetime) }}</div>
+            </div>
+            <span class="erta-badge" :class="`erta-badge--${appt.status}`">{{ statusLabel(appt) }}</span>
+          </div>
+        </section>
+
+        <section class="erta-dashboard-panel">
+          <div class="erta-dashboard-panel__head">
+            <h3 class="erta-dashboard-panel__title">{{ t('pendingApproval') }}</h3>
+            <select v-model="pendingSort" class="erta-dashboard-sort">
+              <option value="date_asc">Tarih (Artan)</option>
+              <option value="id_asc">Kayıt No (Artan)</option>
+            </select>
+          </div>
+          <div v-if="!pendingLimited.length" class="erta-dashboard-panel__empty">{{ t('noAppointments') }}</div>
+          <div
+            v-for="(appt, index) in pendingLimited"
+            :key="`pending-${appt.id}`"
+            class="erta-dashboard-item"
+          >
+            <div>
+              <div><strong>{{ index + 1 }}.</strong> {{ appt.customer_name }}</div>
+              <div class="erta-dashboard-item__meta">{{ fmt(appt.start_datetime) }}</div>
+            </div>
+            <div class="erta-dashboard-item__actions">
+              <span class="erta-badge" :class="`erta-badge--${appt.status}`">{{ statusLabel(appt) }}</span>
               <button class="erta-btn erta-btn--sm erta-btn--primary" :disabled="actionLoading" @click="doConfirm(appt)">✓</button>
               <button class="erta-btn erta-btn--sm erta-btn--danger" :disabled="actionLoading" @click="openCancel(appt)">✕</button>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       <div v-if="cancelTarget" class="erta-modal-overlay" @click.self="cancelTarget = null">
@@ -64,37 +108,93 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useAdminApi } from '../../composables/useAdminApi.js';
 
-const api     = useAdminApi();
-const t       = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
+const api = useAdminApi();
+const t = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
 const loading = ref(true);
 const actionLoading = ref(false);
 const error = ref(null);
+const stats = ref({});
 const latest = ref([]);
 const upcoming = ref([]);
 const pending = ref([]);
 const cancelTarget = ref(null);
 const cancelReason = ref('');
+const pendingSort = ref('date_asc');
+
+const toTs = (value) => {
+  const ts = new Date(value).getTime();
+  return Number.isFinite(ts) ? ts : 0;
+};
+
+const nowTs = () => Date.now();
+
+const latestLimited = computed(() => [...latest.value]
+  .sort((left, right) => {
+    const createdDiff = toTs(right.created_at) - toTs(left.created_at);
+    if (createdDiff !== 0) {
+      return createdDiff;
+    }
+
+    return Number(right.id || 0) - Number(left.id || 0);
+  })
+  .slice(0, 5));
+
+const upcomingLimited = computed(() => [...upcoming.value]
+  .filter((item) => ['pending', 'confirmed'].includes(item.status))
+  .filter((item) => toTs(item.start_datetime) >= nowTs())
+  .sort((left, right) => {
+    const startDiff = toTs(left.start_datetime) - toTs(right.start_datetime);
+    if (startDiff !== 0) {
+      return startDiff;
+    }
+
+    return Number(left.id || 0) - Number(right.id || 0);
+  })
+  .slice(0, 5));
+
+const pendingLimited = computed(() => [...pending.value]
+  .filter((item) => item.status === 'pending')
+  .filter((item) => toTs(item.start_datetime) >= nowTs())
+  .sort((left, right) => {
+    if (pendingSort.value === 'id_asc') {
+      return Number(left.id || 0) - Number(right.id || 0);
+    }
+
+    const startDiff = toTs(left.start_datetime) - toTs(right.start_datetime);
+    if (startDiff !== 0) {
+      return startDiff;
+    }
+
+    return Number(left.id || 0) - Number(right.id || 0);
+  })
+  .slice(0, 5));
 
 onMounted(async () => {
   const today = new Date().toISOString().slice(0, 10);
   const [latestRes, upcomingRes, pendingRes] = await Promise.all([
-    api.listAppointments({ page: 1, per_page: 10 }),
-    api.listAppointments({ date_from: today, per_page: 50 }),
-    api.listAppointments({ status: 'pending', page: 1, per_page: 10 }),
+    api.listAppointments({ page: 1, per_page: 50, order_by: 'created_at', order: 'desc' }),
+    api.listAppointments({ date_from: today, per_page: 100, order_by: 'start_datetime', order: 'asc' }),
+    api.listAppointments({ status: 'pending', page: 1, per_page: 100, date_from: today, order_by: 'start_datetime', order: 'asc' }),
   ]);
 
   loading.value = false;
   latest.value = latestRes.data?.items ?? [];
   pending.value = pendingRes.data?.items ?? [];
-  upcoming.value = (upcomingRes.data?.items ?? []).filter((a) => ['pending', 'confirmed'].includes(a.status)).slice(0, 10);
+  upcoming.value = upcomingRes.data?.items ?? [];
+
+  stats.value = {
+    today: (upcomingRes.data?.items ?? []).filter((a) => String(a.start_datetime).startsWith(today)).length,
+    pending: pendingRes.data?.total ?? pending.value.length,
+    confirmed: (upcomingRes.data?.items ?? []).filter((a) => a.status === 'confirmed').length,
+    thisMonth: latestRes.data?.total ?? latest.value.length,
+  };
 });
 
-function formatDate(dt) { return new Date(dt).toLocaleDateString(); }
-function formatTime(dt) { return new Date(dt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 function fmt(dt) { return new Date(dt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }); }
+function statusLabel(appt) { return appt.status_label || t(appt.status || 'pending'); }
 
 function openCancel(appt) {
   cancelTarget.value = appt;
@@ -113,7 +213,11 @@ async function doConfirm(appt) {
 
   appt.status = 'confirmed';
   appt.status_label = t('confirmed');
+  latest.value = latest.value.map((item) => item.id === appt.id ? { ...item, status: 'confirmed', status_label: t('confirmed') } : item);
+  upcoming.value = upcoming.value.map((item) => item.id === appt.id ? { ...item, status: 'confirmed', status_label: t('confirmed') } : item);
   pending.value = pending.value.filter((item) => item.id !== appt.id);
+  stats.value.pending = Math.max(0, (stats.value.pending ?? 0) - 1);
+  stats.value.confirmed = (stats.value.confirmed ?? 0) + 1;
 }
 
 async function doCancel() {
@@ -133,7 +237,9 @@ async function doCancel() {
   }
 
   upcoming.value = upcoming.value.map((appt) => appt.id === target.id ? { ...appt, status: 'cancelled', status_label: t('cancelled') } : appt);
+  latest.value = latest.value.map((appt) => appt.id === target.id ? { ...appt, status: 'cancelled', status_label: t('cancelled') } : appt);
   pending.value = pending.value.filter((appt) => appt.id !== target.id);
+  stats.value.pending = Math.max(0, (stats.value.pending ?? 0) - 1);
 
   cancelTarget.value = null;
   cancelReason.value = '';

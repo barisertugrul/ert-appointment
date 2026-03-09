@@ -230,6 +230,16 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$dateTo       = (string) ( $filters['date_to'] ?? '' );
 		$search       = (string) ( $filters['search'] ?? '' );
 		$like         = '%' . $wpdb->esc_like( $search ) . '%';
+		$orderBy      = sanitize_key( (string) ( $filters['order_by'] ?? 'start_datetime' ) );
+		$order        = strtoupper( sanitize_key( (string) ( $filters['order'] ?? 'desc' ) ) ) === 'ASC' ? 'ASC' : 'DESC';
+
+		$allowedOrderBy = array(
+			'start_datetime' => 'start_datetime',
+			'created_at'     => 'created_at',
+			'id'             => 'id',
+		);
+
+		$orderBySql = $allowedOrderBy[ $orderBy ] ?? 'start_datetime';
 
 		$total = (int) $wpdb->get_var(
 			$wpdb->prepare(
@@ -265,15 +275,15 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM %i
+				"SELECT * FROM %i
 				 WHERE (%d = 0 OR provider_id = %d)
 				   AND (%d = 0 OR department_id = %d)
 				   AND (%s = %s OR status = %s OR status = %s OR status = %s)
 				   AND (%s = %s OR start_datetime >= %s)
 				   AND (%s = %s OR start_datetime <= %s)
 				   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
-				 ORDER BY start_datetime DESC
-				 LIMIT %d OFFSET %d',
+				 ORDER BY {$orderBySql} {$order}
+				 LIMIT %d OFFSET %d",
 				$table,
 				$providerId,
 				$providerId,

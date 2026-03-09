@@ -141,7 +141,7 @@ final class NotificationService {
 	 * @return array<string, string>
 	 */
 	private function buildContext( Appointment $appointment ): array {
-		$config = $this->settings->resolveForProvider( $appointment->providerId );
+		$config = $this->resolveConfigForAppointment( $appointment );
 		$location = $config->appointmentLocation();
 		$arrivalInstructions = '';
 
@@ -194,6 +194,16 @@ final class NotificationService {
 		return (array) apply_filters( 'erta_template_placeholders', $context, $appointment );
 	}
 
+	private function resolveConfigForAppointment( Appointment $appointment ): \ERTAppointment\Settings\ResolvedConfig {
+		if ( $appointment->providerId !== null ) {
+			return $this->settings->resolveForProvider( $appointment->providerId );
+		}
+
+		$globalSettings = $this->settings->getAll( 'global', null );
+
+		return new \ERTAppointment\Settings\ResolvedConfig( $globalSettings, null );
+	}
+
 	private function appendCustomerInfo( array $rendered, Appointment $appointment ): array {
 		$context = $this->buildContext( $appointment );
 		$extraLines = array();
@@ -221,7 +231,11 @@ final class NotificationService {
 		return $rendered;
 	}
 
-	private function loadProviderName( int $providerId ): string {
+	private function loadProviderName( ?int $providerId ): string {
+		if ( $providerId === null ) {
+			return '';
+		}
+
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider display name.
 		return (string) $wpdb->get_var(
@@ -232,7 +246,11 @@ final class NotificationService {
 		);
 	}
 
-	private function loadProviderEmail( int $providerId ): ?string {
+	private function loadProviderEmail( ?int $providerId ): ?string {
+		if ( $providerId === null ) {
+			return null;
+		}
+
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider email.
 		$email = $wpdb->get_var(
@@ -261,7 +279,11 @@ final class NotificationService {
 		return $email ?: null;
 	}
 
-	private function loadProviderPhone( int $providerId ): ?string {
+	private function loadProviderPhone( ?int $providerId ): ?string {
+		if ( $providerId === null ) {
+			return null;
+		}
+
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- intentional lookup for provider phone.
 		$phone = $wpdb->get_var(

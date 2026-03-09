@@ -80,6 +80,79 @@
 .erta-stat-card__value { font-size: 2rem; font-weight: 700; color: var(--erta-primary); }
 .erta-stat-card__label { font-size: .85rem; color: var(--erta-gray-500); margin-top: 4px; }
 
+/* ── Dashboard panels ─────────────────────────────────────────────────────── */
+.erta-dashboard-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.erta-dashboard-panel {
+  background: #fff;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: var(--erta-radius);
+  box-shadow: var(--erta-shadow);
+  padding: 14px;
+}
+
+.erta-dashboard-panel__title {
+  margin: 0 0 10px;
+  font-size: .92rem;
+  color: var(--erta-gray-800);
+}
+
+.erta-dashboard-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.erta-dashboard-panel__head .erta-dashboard-panel__title {
+  margin: 0;
+}
+
+.erta-dashboard-sort {
+  min-height: 30px;
+  border: 1px solid var(--erta-gray-200);
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: .78rem;
+  color: var(--erta-gray-800);
+  background: #fff;
+}
+
+.erta-dashboard-panel__empty {
+  font-size: .82rem;
+  color: var(--erta-gray-500);
+}
+
+.erta-dashboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--erta-gray-200);
+  font-size: .83rem;
+}
+
+.erta-dashboard-item:last-child {
+  border-bottom: none;
+}
+
+.erta-dashboard-item__meta {
+  color: var(--erta-gray-500);
+  margin-top: 2px;
+}
+
+.erta-dashboard-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* ── Data table ──────────────────────────────────────────────────────────── */
 .erta-table-wrap { overflow-x: auto; }
 

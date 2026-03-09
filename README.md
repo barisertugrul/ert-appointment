@@ -256,6 +256,12 @@ add_filter('erta_payment_gateways', function(array $gateways): array {
 
 ---
 
+## Planlananlar (Roadmap)
+
+- Admin panelden belirli bir gün/saat slotunu manuel olarak kapatma (date+time bazlı blocked slot yönetimi)
+
+---
+
 ## Lisans
 
 GPLv2 or later

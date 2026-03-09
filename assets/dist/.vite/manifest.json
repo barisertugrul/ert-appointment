@@ -3,98 +3,98 @@
     "file": "chunks/pinia-w4MOnyD2.js",
     "name": "pinia"
   },
-  "_useAdminApi-Dg4v4pC0.js": {
-    "file": "chunks/useAdminApi-Dg4v4pC0.js",
+  "_useAdminApi-BojPA_M7.js": {
+    "file": "chunks/useAdminApi-BojPA_M7.js",
     "name": "useAdminApi"
   },
   "assets/js/admin/components/pages/AppointmentsPage.vue": {
-    "file": "chunks/AppointmentsPage-BYKZ1TfZ.js",
+    "file": "chunks/AppointmentsPage-RoN1T7Gi.js",
     "name": "AppointmentsPage",
     "src": "assets/js/admin/components/pages/AppointmentsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/DashboardPage.vue": {
-    "file": "chunks/DashboardPage-Bh8yZDME.js",
+    "file": "chunks/DashboardPage-DQ2RykUx.js",
     "name": "DashboardPage",
     "src": "assets/js/admin/components/pages/DashboardPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/DepartmentsPage.vue": {
-    "file": "chunks/DepartmentsPage-BFGwO4Zw.js",
+    "file": "chunks/DepartmentsPage-CgFPC0q2.js",
     "name": "DepartmentsPage",
     "src": "assets/js/admin/components/pages/DepartmentsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/FormsPage.vue": {
-    "file": "chunks/FormsPage-CXduK_jx.js",
+    "file": "chunks/FormsPage-B041B63V.js",
     "name": "FormsPage",
     "src": "assets/js/admin/components/pages/FormsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/NotificationsPage.vue": {
-    "file": "chunks/NotificationsPage-DqGjP0eO.js",
+    "file": "chunks/NotificationsPage-C8GJfWlZ.js",
     "name": "NotificationsPage",
     "src": "assets/js/admin/components/pages/NotificationsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/ProvidersPage.vue": {
-    "file": "chunks/ProvidersPage-DlwZTnLG.js",
+    "file": "chunks/ProvidersPage-zQDNH8c9.js",
     "name": "ProvidersPage",
     "src": "assets/js/admin/components/pages/ProvidersPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/ReportsPage.vue": {
-    "file": "chunks/ReportsPage-dYWOE9iW.js",
+    "file": "chunks/ReportsPage-BIuyim6M.js",
     "name": "ReportsPage",
     "src": "assets/js/admin/components/pages/ReportsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/SettingsPage.vue": {
-    "file": "chunks/SettingsPage-BhBIJJ8-.js",
+    "file": "chunks/SettingsPage-lVkP29t2.js",
     "name": "SettingsPage",
     "src": "assets/js/admin/components/pages/SettingsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/components/pages/WorkingHoursPage.vue": {
-    "file": "chunks/WorkingHoursPage-C2h-fJ6j.js",
+    "file": "chunks/WorkingHoursPage-Br-mbrVc.js",
     "name": "WorkingHoursPage",
     "src": "assets/js/admin/components/pages/WorkingHoursPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "_pinia-w4MOnyD2.js",
-      "_useAdminApi-Dg4v4pC0.js"
+      "_useAdminApi-BojPA_M7.js"
     ]
   },
   "assets/js/admin/main.js": {

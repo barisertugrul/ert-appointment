@@ -77,6 +77,10 @@ The booking widget uses its own scoped CSS and is designed to work with any them
 
 Yes. The plugin ships with translations for Turkish, German, French, Spanish, Arabic and Russian. Additional translations can be added via the standard WordPress `.po`/`.mo` workflow.
 
+== Roadmap ==
+
+* Manual slot blocking from admin for a specific date and time range (date+time based blocked slots)
+
 == Screenshots ==
 
 1. Frontend booking form — service/provider and date-time selection
