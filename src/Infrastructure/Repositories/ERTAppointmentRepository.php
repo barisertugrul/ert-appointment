@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Infrastructure\Repositories;
 
+use function esc_sql;
+use function sanitize_key;
+use function esc_html__;
+use const ARRAY_A;
+
 // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- repository performs intentional reads on plugin-owned custom tables.
 
 use DateTimeImmutable;
@@ -60,19 +65,19 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		global $wpdb;
 		$table = $this->table();
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-                 WHERE provider_id = %d
-                   AND start_datetime BETWEEN %s AND %s
-                 ORDER BY start_datetime ASC',
-				$table,
-				$providerId,
-				$from->format( 'Y-m-d H:i:s' ),
-				$to->format( 'Y-m-d H:i:s' )
-			),
-			ARRAY_A
-		);
+				$rows = $wpdb->get_results(
+						$wpdb->prepare(
+								'SELECT * FROM %i
+								 WHERE provider_id = %d
+									 AND start_datetime BETWEEN %s AND %s
+								 ORDER BY start_datetime ASC',
+								$table,
+								$providerId,
+								$from->format( 'Y-m-d H:i:s' ),
+								$to->format( 'Y-m-d H:i:s' )
+						),
+						ARRAY_A
+				);
 
 		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
 	}
@@ -83,19 +88,19 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$table   = $this->table();
 		$dateStr = $date->format( 'Y-m-d' );
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT start_datetime, end_datetime FROM %i
-                 WHERE provider_id = %d
-                   AND DATE(start_datetime) = %s
-                   AND status NOT IN (\'cancelled\', \'rescheduled\', \'no_show\')
-                 ORDER BY start_datetime ASC',
-				$table,
-				$providerId,
-				$dateStr
-			),
-			ARRAY_A
-		);
+				$rows = $wpdb->get_results(
+						$wpdb->prepare(
+								'SELECT start_datetime, end_datetime FROM %i
+								 WHERE provider_id = %d
+									 AND DATE(start_datetime) = %s
+									 AND status NOT IN (\'cancelled\', \'rescheduled\', \'no_show\')
+								 ORDER BY start_datetime ASC',
+								$table,
+								$providerId,
+								$dateStr
+						),
+						ARRAY_A
+				);
 
 		return array_map(
 			fn( $row ) => array(
@@ -173,19 +178,19 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 
 		$now = current_time( 'mysql' );
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT * FROM %i
-                 WHERE start_datetime > %s
-                   AND status IN (\'pending\', \'confirmed\')
-                 ORDER BY start_datetime ASC
-                 LIMIT %d',
-				$table,
-				$now,
-				$limit
-			),
-			ARRAY_A
-		);
+				$rows = $wpdb->get_results(
+						$wpdb->prepare(
+								'SELECT * FROM %i
+								 WHERE start_datetime > %s
+									 AND status IN (\'pending\', \'confirmed\')
+								 ORDER BY start_datetime ASC
+								 LIMIT %d',
+								$table,
+								$now,
+								$limit
+						),
+						ARRAY_A
+				);
 
 		return array_map( fn( $row ) => Appointment::fromRow( $row ), $rows );
 	}
@@ -197,9 +202,9 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				'SELECT status, COUNT(*) AS cnt
-                 FROM %i
-                 WHERE start_datetime BETWEEN %s AND %s
-                 GROUP BY status',
+				 FROM %i
+				 WHERE start_datetime BETWEEN %s AND %s
+				 GROUP BY status',
 				$table,
 				$from->format( 'Y-m-d H:i:s' ),
 				$to->format( 'Y-m-d H:i:s' )
@@ -223,23 +228,21 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$providerId   = (int) ( $filters['provider_id'] ?? 0 );
 		$departmentId = (int) ( $filters['department_id'] ?? 0 );
 		$statusList   = array_values( array_map( 'sanitize_key', (array) ( $filters['status'] ?? array() ) ) );
-		$status1      = $statusList[0] ?? '';
-		$status2      = $statusList[1] ?? '';
-		$status3      = $statusList[2] ?? '';
-		$dateFrom     = (string) ( $filters['date_from'] ?? '' );
-		$dateTo       = (string) ( $filters['date_to'] ?? '' );
-		$search       = (string) ( $filters['search'] ?? '' );
-		$like         = '%' . $wpdb->esc_like( $search ) . '%';
-		$orderBy      = sanitize_key( (string) ( $filters['order_by'] ?? 'start_datetime' ) );
-		$order        = strtoupper( sanitize_key( (string) ( $filters['order'] ?? 'desc' ) ) ) === 'ASC' ? 'ASC' : 'DESC';
+		$baseSql = 'SELECT * FROM %i '
+			. ' WHERE (%d = 0 OR provider_id = %d) '
+			. '   AND (%d = 0 OR department_id = %d) '
+			. '   AND (%s = %s OR status = %s OR status = %s OR status = %s) '
+			. '   AND (%s = %s OR start_datetime >= %s) '
+			. '   AND (%s = %s OR start_datetime <= %s) '
+			. '   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)';
 
-		$allowedOrderBy = array(
-			'start_datetime' => 'start_datetime',
-			'created_at'     => 'created_at',
-			'id'             => 'id',
-		);
-
-		$orderBySql = $allowedOrderBy[ $orderBy ] ?? 'start_datetime';
+		// Güvenli sıralama ve order parametreleri
+		$allowedOrderBy = array('start_datetime', 'created_at', 'id');
+		$orderByRaw = (string) ( $filters['order_by'] ?? 'start_datetime' );
+		$orderRaw = (string) ( $filters['order'] ?? 'desc' );
+		$orderBySql = in_array($orderByRaw, $allowedOrderBy, true) ? $orderByRaw : 'start_datetime';
+		$order = strtoupper($orderRaw);
+		$order = ($order === 'ASC' || $order === 'DESC') ? $order : 'ASC';
 
 		$total = (int) $wpdb->get_var(
 			$wpdb->prepare(
@@ -273,42 +276,51 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 			)
 		);
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM %i
-				 WHERE (%d = 0 OR provider_id = %d)
-				   AND (%d = 0 OR department_id = %d)
-				   AND (%s = %s OR status = %s OR status = %s OR status = %s)
-				   AND (%s = %s OR start_datetime >= %s)
-				   AND (%s = %s OR start_datetime <= %s)
-				   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
-				 ORDER BY {$orderBySql} {$order}
-				 LIMIT %d OFFSET %d",
-				$table,
-				$providerId,
-				$providerId,
-				$departmentId,
-				$departmentId,
-				$status1,
-				'',
-				$status1,
-				$status2,
-				$status3,
-				$dateFrom,
-				'',
-				$dateFrom,
-				$dateTo,
-				'',
-				$dateTo,
-				$search,
-				'',
-				$like,
-				$like,
-				$perPage,
-				$offset
-			),
-			ARRAY_A
+
+		// Tablo adını güvenli şekilde ekle
+		// Tablo adı, ORDER BY, LIMIT, OFFSET whitelist ile güvenli ekleniyor
+		$allowedOrderBy = array('start_datetime', 'created_at', 'id');
+		$orderByRaw = (string) ( $filters['order_by'] ?? 'start_datetime' );
+		$orderRaw = (string) ( $filters['order'] ?? 'desc' );
+		$orderBySql = in_array($orderByRaw, $allowedOrderBy, true) ? $orderByRaw : 'start_datetime';
+		$order = strtoupper($orderRaw);
+		$order = ($order === 'ASC' || $order === 'DESC') ? $order : 'ASC';
+		$tableSql = esc_sql($table);
+		$limit = intval($perPage);
+		$offset = intval($offset);
+
+		$whereSql = "WHERE (%d = 0 OR provider_id = %d)
+			AND (%d = 0 OR department_id = %d)
+			AND (%s = %s OR status = %s OR status = %s OR status = %s)
+			AND (%s = %s OR start_datetime >= %s)
+			AND (%s = %s OR start_datetime <= %s)
+			AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)";
+
+		$preparedWhere = $wpdb->prepare(
+			$whereSql,
+			$providerId,
+			$providerId,
+			$departmentId,
+			$departmentId,
+			$status1,
+			'',
+			$status1,
+			$status2,
+			$status3,
+			$dateFrom,
+			'',
+			$dateFrom,
+			$dateTo,
+			'',
+			$dateTo,
+			$search,
+			'',
+			$like,
+			$like
 		);
+
+		$sql = "SELECT * FROM `{$tableSql}` " . $preparedWhere . " ORDER BY {$orderBySql} {$order} LIMIT {$limit} OFFSET {$offset}";
+		$rows = $wpdb->get_results($sql, ARRAY_A);
 
 		return array(
 			'items' => array_map( fn( $row ) => Appointment::fromRow( $row ), $rows ),

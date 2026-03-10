@@ -3,7 +3,7 @@
         'name' => 'ert-appointment/ert-appointment',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ab10afd66c7976dab0203a8f089bdbec1e9fd552',
+        'reference' => 'd496b383a26d850b5bb86d36731c4c4350c41c3d',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'ert-appointment/ert-appointment' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ab10afd66c7976dab0203a8f089bdbec1e9fd552',
+            'reference' => 'd496b383a26d850b5bb86d36731c4c4350c41c3d',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -123,6 +123,15 @@
   background: #fff;
 }
 
+.wp-core-ui select.erta-dashboard-sort.erta-dashboard-sort--compact,
+select.erta-dashboard-sort.erta-dashboard-sort--compact {
+  font-size: 10px;
+  line-height: 1.5;
+  min-height: 0;
+  height: auto;
+  padding: 3px 24px 3px 8px;
+}
+
 .erta-dashboard-panel__empty {
   font-size: .82rem;
   color: var(--erta-gray-500);
@@ -506,7 +515,7 @@ select.erta-input { -webkit-appearance: none; -moz-appearance: none; appearance:
 }
 
 /* ── Action buttons ───────────────────────────────────────────────────────── */
-.erta-action-btns { display: flex; gap: 4px; }
+.erta-action-btns { display: flex; gap: 4px; justify-content: flex-end; }
 .erta-empty-cell { text-align: center; color: var(--erta-gray-500); padding: 24px !important; }
 
 /* ── Detail table ─────────────────────────────────────────────────────────── */

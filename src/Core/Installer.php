@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ERTAppointment\Core;
 
+use function esc_sql;
+
 // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- installer intentionally manages plugin schema/data during lifecycle and repair.
 
 use ERTAppointment\Settings\SettingsManager;
@@ -415,7 +417,9 @@ final class Installer {
         ) {$charset};"
 		);
 
-		$wpdb->query( "ALTER TABLE {$p}erta_appointments MODIFY provider_id BIGINT UNSIGNED NULL" );
+		$appointments_table = esc_sql($p . 'erta_appointments');
+		$sql = "ALTER TABLE `{$appointments_table}` MODIFY provider_id BIGINT UNSIGNED NULL";
+		$wpdb->query($sql);
 
 		// --- Notification templates ------------------------------------------
 		dbDelta(

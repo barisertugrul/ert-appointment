@@ -28,7 +28,13 @@
 
       <div class="erta-dashboard-panels">
         <section class="erta-dashboard-panel">
-          <h3 class="erta-dashboard-panel__title">{{ t('latestAppointments') }}</h3>
+          <div class="erta-dashboard-panel__head">
+            <h3 class="erta-dashboard-panel__title">{{ t('latestAppointments') }}</h3>
+            <select v-model="latestSort" class="erta-dashboard-sort erta-dashboard-sort--compact">
+              <option value="appointment_date">Randevu tarihine göre</option>
+              <option value="created_date">Kayıt tarihine göre</option>
+            </select>
+          </div>
           <div v-if="!latestLimited.length" class="erta-dashboard-panel__empty">{{ t('noAppointments') }}</div>
           <div
             v-for="(appt, index) in latestLimited"
@@ -62,9 +68,9 @@
         <section class="erta-dashboard-panel">
           <div class="erta-dashboard-panel__head">
             <h3 class="erta-dashboard-panel__title">{{ t('pendingApproval') }}</h3>
-            <select v-model="pendingSort" class="erta-dashboard-sort">
-              <option value="date_asc">Tarih (Artan)</option>
-              <option value="id_asc">Kayıt No (Artan)</option>
+            <select v-model="pendingSort" class="erta-dashboard-sort erta-dashboard-sort--compact">
+              <option value="appointment_date">Randevu tarihine göre</option>
+              <option value="created_date">Kayıt tarihine göre</option>
             </select>
           </div>
           <div v-if="!pendingLimited.length" class="erta-dashboard-panel__empty">{{ t('noAppointments') }}</div>
@@ -122,7 +128,8 @@ const upcoming = ref([]);
 const pending = ref([]);
 const cancelTarget = ref(null);
 const cancelReason = ref('');
-const pendingSort = ref('date_asc');
+const latestSort = ref('created_date');
+const pendingSort = ref('appointment_date');
 
 const toTs = (value) => {
   const ts = new Date(value).getTime();
@@ -133,6 +140,15 @@ const nowTs = () => Date.now();
 
 const latestLimited = computed(() => [...latest.value]
   .sort((left, right) => {
+    if (latestSort.value === 'appointment_date') {
+      const startDiff = toTs(right.start_datetime) - toTs(left.start_datetime);
+      if (startDiff !== 0) {
+        return startDiff;
+      }
+
+      return Number(right.id || 0) - Number(left.id || 0);
+    }
+
     const createdDiff = toTs(right.created_at) - toTs(left.created_at);
     if (createdDiff !== 0) {
       return createdDiff;
@@ -159,7 +175,12 @@ const pendingLimited = computed(() => [...pending.value]
   .filter((item) => item.status === 'pending')
   .filter((item) => toTs(item.start_datetime) >= nowTs())
   .sort((left, right) => {
-    if (pendingSort.value === 'id_asc') {
+    if (pendingSort.value === 'created_date') {
+      const createdDiff = toTs(left.created_at) - toTs(right.created_at);
+      if (createdDiff !== 0) {
+        return createdDiff;
+      }
+
       return Number(left.id || 0) - Number(right.id || 0);
     }
 
