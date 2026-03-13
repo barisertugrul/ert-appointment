@@ -1045,3 +1045,9 @@ msgstr ""
 
 msgid "Some bulk operations failed."
 msgstr ""
+
+msgid "Department features are available in Pro."
+msgstr ""
+
+msgid "Staff member features are available in Pro."
+msgstr ""

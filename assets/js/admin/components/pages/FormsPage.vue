@@ -9,7 +9,11 @@
         <button class="erta-btn erta-btn--primary" @click="openNew">+ {{ t('newForm') }}</button>
       </div>
 
-      <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
+      <div v-if="!isPro">
+        <div class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
+        <div class="erta-alert erta-alert--info">{{ t('providerProOnly') }}</div>
+      </div>
+      <div v-if="error" class="erta-alert erta-alert--error">{{ error }}</div>
 
       <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
       <div v-else class="erta-table-wrap">
@@ -507,7 +511,7 @@ function moveField(idx, dir) {
 async function saveForm() {
   saveError.value = null;
   if (!isPro && editing.value?.scope === 'department') {
-    saveError.value = t('departmentProOnly');
+    saveError.value = t('departmentProOnly') + '\n' + t('providerProOnly') + '\n' + t('upgradeToPro');
     return;
   }
   saving.value    = true;

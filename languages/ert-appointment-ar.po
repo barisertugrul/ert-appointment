@@ -821,7 +821,7 @@ msgid "Date and time selector – renders the booking calendar widget"
 msgstr ""
 
 msgid "This feature requires ERT Appointment Pro."
-msgstr "هذه الميزة تتطلب ERT Appointment Pro."
+msgstr " هذه الميزة تتطلب ERT Appointment Pro."
 
 msgid "Appointment: %s"
 msgstr "موعد: %s"
@@ -1056,3 +1056,15 @@ msgstr "تم الحذف."
 
 msgid "Some bulk operations failed."
 msgstr "فشلت بعض العمليات الجماعية."
+
+msgid "Department features are available in Pro."
+msgstr "Department features are available in Pro."
+
+msgid "Departments management is available in Pro."
+msgstr "Departments management is available in Pro."
+
+msgid "Staff member features are available in Pro."
+msgstr "Staff member features are available in Pro."
+
+msgid "Staff member management is available in Pro."
+msgstr "Staff member management is available in Pro."

@@ -2,13 +2,16 @@
 <template>
   <div class="erta-page">
     <div class="erta-page-header">
-      <h1 class="erta-page-title">{{ t('providers') }}</h1>
-      <button class="erta-btn erta-btn--primary" @click="openForm(null)">+ {{ t('addProvider') }}</button>
+      <h1 class="erta-page-title">
+        {{ t('providers') }}
+        <span v-if="!isPro" class="erta-pro-badge">{{ t('proBadge') }}</span>
+      </h1>
+      <button class="erta-btn erta-btn--primary" :disabled="!isPro" @click="openForm(null)">+ {{ t('addProvider') }}</button>
     </div>
-    <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
+    <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('providersProOnly') }}</div>
     <div v-if="error" class="erta-alert erta-alert--error">{{ error }}</div>
     <div v-if="loading" class="erta-loading"><span class="erta-spinner"></span></div>
-    <div v-else class="erta-table-wrap">
+    <div v-else class="erta-table-wrap" :class="{ 'erta-pro-gate': !isPro }">
       <table class="erta-table">
         <thead><tr><th>#</th><th>{{ t('name') }}</th><th>{{ t('department') }}</th><th>{{ t('type') }}</th><th>{{ t('status') }}</th><th>{{ t('actions') }}</th></tr></thead>
         <tbody>
@@ -75,6 +78,7 @@ onMounted(async () => {
   await Promise.all([loadProviders(), loadDepartments()]);
   loading.value = false;
 });
+
 async function loadProviders() {
   const { data, error: err } = await api.listProviders();
   if (err) { error.value = err; return; }

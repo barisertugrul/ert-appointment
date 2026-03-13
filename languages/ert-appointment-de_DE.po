@@ -1058,3 +1058,15 @@ msgstr "Gelöscht."
 
 msgid "Some bulk operations failed."
 msgstr "Einige Massenaktionen sind fehlgeschlagen."
+
+msgid "Department features are available in Pro."
+msgstr "Department features are available in Pro."
+
+msgid "Departments management is available in Pro."
+msgstr "Departments management is available in Pro."
+
+msgid "Staff member features are available in Pro."
+msgstr "Staff member features are available in Pro."
+
+msgid "Staff member management is available in Pro."
+msgstr "Staff member management is available in Pro."

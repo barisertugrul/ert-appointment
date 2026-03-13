@@ -450,6 +450,8 @@ final class Assets {
 			'addProvider'             => __( 'Add Staff Member', 'ert-appointment' ),
 			'editProvider'            => __( 'Edit Staff Member', 'ert-appointment' ),
 			'noProviders'             => __( 'No staff members found.', 'ert-appointment' ),
+			'providersProOnly'        => __( 'Staff member management is available in Pro.', 'ert-appointment' ),
+			'providerProOnly'         => __( 'Staff member features are available in Pro.', 'ert-appointment' ),
 			'providerTypeIndividual'  => __( 'Individual', 'ert-appointment' ),
 			'providerTypeUnit'        => __( 'Unit', 'ert-appointment' ),
 			'departmentRequiredForUnit' => __( 'Please select a department when type is Unit.', 'ert-appointment' ),

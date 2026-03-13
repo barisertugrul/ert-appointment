@@ -57,7 +57,7 @@ const navItems = [
   { page: 'erta-dashboard',     icon: '📊', label: t('dashboard')     },
   { page: 'erta-appointments',  icon: '📋', label: t('appointments')  },
   { page: 'erta-departments',   icon: '🏢', label: t('departments'), proBadgeOnly: true },
-  { page: 'erta-providers',     icon: '👤', label: t('providers')     },
+  { page: 'erta-providers',     icon: '👤', label: t('providers'), proBadgeOnly: true },
   { page: 'erta-forms',          icon: '📝', label: t('forms')         },
   { page: 'erta-working-hours', icon: '🕐', label: t('workingHours')  },
   { page: 'erta-notifications', icon: '🔔', label: t('notifications') },

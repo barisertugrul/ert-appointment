@@ -382,44 +382,40 @@ final class Installer {
 
 		// --- Appointments ----------------------------------------------------
 		dbDelta(
-			"CREATE TABLE {$p}erta_appointments (
-            id                     BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-			provider_id            BIGINT UNSIGNED NULL,
-            department_id          BIGINT UNSIGNED NULL,
-            form_id                BIGINT UNSIGNED NULL,
-            customer_user_id       BIGINT UNSIGNED NULL,
-            customer_name          VARCHAR(200)    NOT NULL,
-            customer_email         VARCHAR(200)    NOT NULL,
-            customer_phone         VARCHAR(50)     NULL,
-            start_datetime         DATETIME        NOT NULL,
-            end_datetime           DATETIME        NOT NULL,
-            duration_minutes       INT             NOT NULL,
+		"CREATE TABLE {$p}erta_appointments (
+			id                     BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			provider_id            BIGINT UNSIGNED NULL,  // <-- NULL olarak tanımlı
+			department_id          BIGINT UNSIGNED NULL,
+			form_id                BIGINT UNSIGNED NULL,
+			customer_user_id       BIGINT UNSIGNED NULL,
+			customer_name          VARCHAR(200)    NOT NULL,
+			customer_email         VARCHAR(200)    NOT NULL,
+			customer_phone         VARCHAR(50)     NULL,
+			start_datetime         DATETIME        NOT NULL,
+			end_datetime           DATETIME        NOT NULL,
+			duration_minutes       INT             NOT NULL,
 			status                 VARCHAR(30)     NOT NULL DEFAULT 'pending',
 			payment_status         VARCHAR(20)     NOT NULL DEFAULT 'not_required',
-            payment_amount         DECIMAL(10,2)   NULL,
-            payment_gateway        VARCHAR(50)     NULL,
-            payment_transaction_id VARCHAR(200)    NULL,
-            form_data              LONGTEXT        NULL COMMENT 'JSON submitted form values',
-            notes                  TEXT            NULL,
-            internal_notes         TEXT            NULL COMMENT 'Visible to admin/provider only',
-            cancellation_reason    TEXT            NULL,
-            rescheduled_from       BIGINT UNSIGNED NULL COMMENT 'Original appointment ID',
-            group_id               BIGINT UNSIGNED NULL COMMENT 'Pro: group appointment reference',
-            arrival_buffer_minutes INT             NOT NULL DEFAULT 0,
-            created_at             DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at             DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY         idx_provider_dt   (provider_id, start_datetime),
-            KEY         idx_status        (status),
-            KEY         idx_customer_email (customer_email),
-            KEY         idx_customer_user  (customer_user_id),
-            KEY         idx_group          (group_id)
-        ) {$charset};"
-		);
-
-		$appointments_table = esc_sql($p . 'erta_appointments');
-		$sql = "ALTER TABLE `{$appointments_table}` MODIFY provider_id BIGINT UNSIGNED NULL";
-		$wpdb->query($sql);
+			payment_amount         DECIMAL(10,2)   NULL,
+			payment_gateway        VARCHAR(50)     NULL,
+			payment_transaction_id VARCHAR(200)    NULL,
+			form_data              LONGTEXT        NULL COMMENT 'JSON submitted form values',
+			notes                  TEXT            NULL,
+			internal_notes         TEXT            NULL COMMENT 'Visible to admin/provider only',
+			cancellation_reason    TEXT            NULL,
+			rescheduled_from       BIGINT UNSIGNED NULL COMMENT 'Original appointment ID',
+			group_id               BIGINT UNSIGNED NULL COMMENT 'Pro: group appointment reference',
+			arrival_buffer_minutes INT             NOT NULL DEFAULT 0,
+			created_at             DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			updated_at             DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+			PRIMARY KEY (id),
+			KEY         idx_provider_dt   (provider_id, start_datetime),
+			KEY         idx_status        (status),
+			KEY         idx_customer_email (customer_email),
+			KEY         idx_customer_user  (customer_user_id),
+			KEY         idx_group          (group_id)
+		) {$charset};"
+	);
 
 		// --- Notification templates ------------------------------------------
 		dbDelta(

@@ -1056,3 +1056,15 @@ msgstr "Silindi."
 
 msgid "Some bulk operations failed."
 msgstr "Bazı toplu işlemler başarısız oldu."
+
+msgid "Department features are available in Pro."
+msgstr "Bölüm özellikleri Pro sürümde aktiftir."
+
+msgid "Departments management is available in Pro."
+msgstr "Bölüm yönetimi Pro sürümde aktiftir."
+
+msgid "Staff member features are available in Pro."
+msgstr "Personel özellikleri Pro sürümde aktiftir."
+
+msgid "Staff member management is available in Pro."
+msgstr "Personel yönetimi Pro sürümde aktiftir."

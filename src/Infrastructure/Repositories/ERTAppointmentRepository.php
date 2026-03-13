@@ -228,99 +228,182 @@ final class ERTAppointmentRepository implements AppointmentRepository {
 		$providerId   = (int) ( $filters['provider_id'] ?? 0 );
 		$departmentId = (int) ( $filters['department_id'] ?? 0 );
 		$statusList   = array_values( array_map( 'sanitize_key', (array) ( $filters['status'] ?? array() ) ) );
-		$baseSql = 'SELECT * FROM %i '
-			. ' WHERE (%d = 0 OR provider_id = %d) '
-			. '   AND (%d = 0 OR department_id = %d) '
-			. '   AND (%s = %s OR status = %s OR status = %s OR status = %s) '
-			. '   AND (%s = %s OR start_datetime >= %s) '
-			. '   AND (%s = %s OR start_datetime <= %s) '
-			. '   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)';
+		$dateFrom     = (string) ( $filters['date_from'] ?? '' );
+		$dateTo       = (string) ( $filters['date_to'] ?? '' );
+		$search       = (string) ( $filters['search'] ?? '' );
+		$orderByRaw   = (string) ( $filters['order_by'] ?? 'start_datetime' );
+		$orderRaw     = (string) ( $filters['order'] ?? 'desc' );
 
-		// Güvenli sıralama ve order parametreleri
-		$allowedOrderBy = array('start_datetime', 'created_at', 'id');
-		$orderByRaw = (string) ( $filters['order_by'] ?? 'start_datetime' );
-		$orderRaw = (string) ( $filters['order'] ?? 'desc' );
-		$orderBySql = in_array($orderByRaw, $allowedOrderBy, true) ? $orderByRaw : 'start_datetime';
-		$order = strtoupper($orderRaw);
-		$order = ($order === 'ASC' || $order === 'DESC') ? $order : 'ASC';
+		$like = $search ? '%' . $wpdb->esc_like( $search ) . '%' : '';
+
+		$statusList = array_slice( $statusList, 0, 3 );
+		while ( count( $statusList ) < 3 ) {
+			$statusList[] = '';
+		}
+		list( $status1, $status2, $status3 ) = $statusList;
+
+		$allowedOrderBy = array( 'start_datetime', 'created_at', 'id' );
+		$orderBy        = in_array( $orderByRaw, $allowedOrderBy, true ) ? $orderByRaw : 'start_datetime';
+		$orderDir       = strtoupper( $orderRaw ) === 'ASC' ? 'ASC' : 'DESC';
 
 		$total = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM %i
-				 WHERE (%d = 0 OR provider_id = %d)
-				   AND (%d = 0 OR department_id = %d)
-				   AND (%s = %s OR status = %s OR status = %s OR status = %s)
-				   AND (%s = %s OR start_datetime >= %s)
-				   AND (%s = %s OR start_datetime <= %s)
-				   AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)',
+				"SELECT COUNT(*) FROM %i
+				WHERE (%d = 0 OR provider_id = %d)
+				AND (%d = 0 OR department_id = %d)
+				AND (%s = %s OR status = %s OR status = %s OR status = %s)
+				AND (%s = %s OR start_datetime >= %s)
+				AND (%s = %s OR start_datetime <= %s)
+				AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)",
 				$table,
-				$providerId,
-				$providerId,
-				$departmentId,
-				$departmentId,
-				$status1,
-				'',
-				$status1,
-				$status2,
-				$status3,
-				$dateFrom,
-				'',
-				$dateFrom,
-				$dateTo,
-				'',
-				$dateTo,
-				$search,
-				'',
-				$like,
-				$like
+				$providerId, $providerId,
+				$departmentId, $departmentId,
+				$status1, '', $status1, $status2, $status3,
+				$dateFrom, '', $dateFrom,
+				$dateTo, '', $dateTo,
+				$search, '', $like, $like
 			)
 		);
 
-
-		// Tablo adını güvenli şekilde ekle
-		// Tablo adı, ORDER BY, LIMIT, OFFSET whitelist ile güvenli ekleniyor
-		$allowedOrderBy = array('start_datetime', 'created_at', 'id');
-		$orderByRaw = (string) ( $filters['order_by'] ?? 'start_datetime' );
-		$orderRaw = (string) ( $filters['order'] ?? 'desc' );
-		$orderBySql = in_array($orderByRaw, $allowedOrderBy, true) ? $orderByRaw : 'start_datetime';
-		$order = strtoupper($orderRaw);
-		$order = ($order === 'ASC' || $order === 'DESC') ? $order : 'ASC';
-		$tableSql = esc_sql($table);
-		$limit = intval($perPage);
-		$offset = intval($offset);
-
-		$whereSql = "WHERE (%d = 0 OR provider_id = %d)
-			AND (%d = 0 OR department_id = %d)
-			AND (%s = %s OR status = %s OR status = %s OR status = %s)
-			AND (%s = %s OR start_datetime >= %s)
-			AND (%s = %s OR start_datetime <= %s)
-			AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)";
-
-		$preparedWhere = $wpdb->prepare(
-			$whereSql,
-			$providerId,
-			$providerId,
-			$departmentId,
-			$departmentId,
-			$status1,
-			'',
-			$status1,
-			$status2,
-			$status3,
-			$dateFrom,
-			'',
-			$dateFrom,
-			$dateTo,
-			'',
-			$dateTo,
-			$search,
-			'',
-			$like,
-			$like
-		);
-
-		$sql = "SELECT * FROM `{$tableSql}` " . $preparedWhere . " ORDER BY {$orderBySql} {$order} LIMIT {$limit} OFFSET {$offset}";
-		$rows = $wpdb->get_results($sql, ARRAY_A);
+		if ( $orderBy === 'start_datetime' && $orderDir === 'ASC' ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY start_datetime ASC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		} elseif ( $orderBy === 'start_datetime' && $orderDir === 'DESC' ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY start_datetime DESC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		} elseif ( $orderBy === 'created_at' && $orderDir === 'ASC' ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY created_at ASC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		} elseif ( $orderBy === 'created_at' && $orderDir === 'DESC' ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY created_at DESC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		} elseif ( $orderBy === 'id' && $orderDir === 'ASC' ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY id ASC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		} else {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM %i
+					WHERE (%d = 0 OR provider_id = %d)
+					AND (%d = 0 OR department_id = %d)
+					AND (%s = %s OR status = %s OR status = %s OR status = %s)
+					AND (%s = %s OR start_datetime >= %s)
+					AND (%s = %s OR start_datetime <= %s)
+					AND (%s = %s OR customer_name LIKE %s OR customer_email LIKE %s)
+					ORDER BY id DESC
+					LIMIT %d OFFSET %d",
+					$table,
+					$providerId, $providerId,
+					$departmentId, $departmentId,
+					$status1, '', $status1, $status2, $status3,
+					$dateFrom, '', $dateFrom,
+					$dateTo, '', $dateTo,
+					$search, '', $like, $like,
+					$perPage, $offset
+				),
+				ARRAY_A
+			);
+		}
 
 		return array(
 			'items' => array_map( fn( $row ) => Appointment::fromRow( $row ), $rows ),

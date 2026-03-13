@@ -10,14 +10,17 @@
 
     <div v-if="saved" class="erta-alert erta-alert--success">{{ t('settingsSaved') }}</div>
     <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
+    <div v-if="!isPro" class="erta-alert erta-alert--info">
+      <span v-html="t('departmentProOnly') + '<br>' + t('providerProOnly') + '<br><a href=\'' + buyProUrl + '\' target=\'_blank\' rel=\'noopener noreferrer\'>' + t('upgradeToPro') + '</a>'"></span>
+    </div>
 
     <div class="erta-scope-row">
       <label>{{ t('scope') }}</label>
       <div class="erta-scope-grid">
         <select class="erta-input" v-model="scope" @change="onScopeChanged">
           <option value="global">{{ t('global') }}</option>
-          <option value="department">{{ t('department') }}</option>
-          <option value="provider">{{ t('provider') }}</option>
+          <option :disabled="!isPro" value="department">{{ t('department') }} <span v-if="!isPro" class="erta-pro-badge">({{ t('proBadge') }})</span></option>
+          <option :disabled="!isPro" value="provider">{{ t('provider') }} <span v-if="!isPro" class="erta-pro-badge">({{ t('proBadge') }})</span></option>
         </select>
 
         <select
@@ -555,6 +558,7 @@ const scope = ref('global');
 const scopeId = ref(0);
 const departments = ref([]);
 const providers = ref([]);
+const buyProUrl   = window.ertaAdminData?.buyProUrl ?? 'https://www.ertyazilim.com/ert-appointment-pro/#buy';
 
 // Integration state
 const googleConnected  = ref(false);

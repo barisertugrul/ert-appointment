@@ -15,7 +15,9 @@
 
     <div v-if="saved"  class="erta-alert erta-alert--success">{{ t('saved') }}</div>
     <div v-if="error"  class="erta-alert erta-alert--error">{{ error }}</div>
-    <div v-if="!isPro" class="erta-alert erta-alert--info">{{ t('departmentProOnly') }}</div>
+    <div v-if="!isPro" class="erta-alert erta-alert--info">
+      <span v-html="t('departmentProOnly') + '<br>' + t('providerProOnly') + '<br><a href=\'' + buyProUrl + '\' target=\'_blank\' rel=\'noopener noreferrer\'>' + t('upgradeToPro') + '</a>'"></span>
+    </div>
 
     <!-- Scope selector -->
     <div class="erta-scope-bar">
@@ -24,7 +26,7 @@
         <select class="erta-input erta-input--narrow" v-model="scope" @change="loadScope">
           <option value="global">{{ t('global') }}</option>
           <option value="department" :disabled="!isPro">{{ t('department') }} ({{ t('proBadge') }})</option>
-          <option value="provider">{{ t('provider') }}</option>
+          <option value="provider" :disabled="!isPro">{{ t('provider') }} ({{ t('proBadge') }})</option>
         </select>
         <label v-if="scope !== 'global'" class="erta-form-label">{{ t('selectScopeItem') }}</label>
         <select
@@ -192,6 +194,7 @@ import { useAdminApi } from '../../composables/useAdminApi.js';
 const api = useAdminApi();
 const t   = (k) => window.ertaAdminData?.i18n?.[k] ?? k;
 const isPro = window.ertaAdminData?.isPro ?? false;
+const buyProUrl   = window.ertaAdminData?.buyProUrl ?? 'https://www.ertyazilim.com/ert-appointment-pro/#buy';
 
 // ── State ──────────────────────────────────────────────────────────────────
 const scope      = ref('global');

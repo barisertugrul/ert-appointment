@@ -1059,3 +1059,15 @@ msgstr "Supprimé."
 
 msgid "Some bulk operations failed."
 msgstr "Certaines opérations groupées ont échoué."
+
+msgid "Department features are available in Pro."
+msgstr "Department features are available in Pro."
+
+msgid "Departments management is available in Pro."
+msgstr "Departments management is available in Pro."
+
+msgid "Staff member features are available in Pro."
+msgstr "Staff member features are available in Pro."
+
+msgid "Staff member management is available in Pro."
+msgstr "Staff member management is available in Pro."
